@@ -28,8 +28,8 @@
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
-            <artifactId>lombok-maven</artifactId>
-            <version>1.16.8.0</version>
+            <artifactId>lombok</artifactId>
+            <version>1.16.8</version>
         </dependency>
         <dependency>
             <groupId>com.jonathan.flaresoft</groupId>
