@@ -34,6 +34,10 @@ public final class NativeKeyEvent extends NativeKeyUtils {
         return time;
     }
 
+    public boolean hasModifiers() {
+        return isCtrlDown() || isAltDown() || isShiftDown();
+    }
+
     public String codeString() {
         return String.valueOf((char) keyCode);
     }
