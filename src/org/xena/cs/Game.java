@@ -13,19 +13,9 @@ public final class Game {
         }
     }
 
-    private GameEntity[] entities;
-
     private final Me me = new Me();
-    private final Map<Integer, Player> players = new HashMap<>(256);
+    private final Map<Integer, GameEntity> entities = new HashMap<>(256);
     private final ClientState clientState = new ClientState();
-
-    public GameEntity[] entities() {
-        return entities;
-    }
-
-    public void setEntities(GameEntity[] entities) {
-        this.entities = entities;
-    }
 
     public Me me() {
         return me;
@@ -35,8 +25,8 @@ public final class Game {
         return clientState;
     }
 
-    public Map<Integer, Player> players() {
-        return players;
+    public Map<Integer, GameEntity> entities() {
+        return entities;
     }
 
 }

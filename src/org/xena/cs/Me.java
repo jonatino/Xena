@@ -12,10 +12,10 @@ public class Me extends Player {
     private int crosshair;
 
     @Getter
-    private int target;
+    private Player target;
 
     @Getter
-    private final float[] punch = new float[3];
+    private int shotsFired;
 
     @Override
     public void update() {
@@ -24,20 +24,16 @@ public class Me extends Player {
             setAddress(myAddress);
             super.update();
             index = process().readInt(myAddress + m_dwIndex) - 1;
-            crosshair = process().readInt(myAddress + m_iCrossHairID) - 1;
-            target = clientModule().readInt(m_dwEntityList + (crosshair * 16));
 
-            int weaponBase = process().readInt(myAddress + m_hActiveWeapon);
-            if (weaponBase > 0) {
-                int entNum = weaponBase & 0xFFF;
-                int weaponID = clientModule().readInt(m_dwEntityList + (entNum - 1) * 16);
-                if (weaponID > 0 && weaponID != activeWeapon.getWeaponID()) {
-                    activeWeapon.setWeaponID(process().readInt(weaponID + m_iWeaponID));
-                    activeWeapon.setCanReload(process().readBoolean(weaponID + m_bCanReload));
-                    activeWeapon.setClip1(process().readInt(weaponID + m_iClip1));
-                    activeWeapon.setClip2(process().readInt(weaponID + m_iClip2));
-                }
+            crosshair = process().readInt(myAddress + m_iCrossHairID) - 1;
+            GameEntity entity = Game.current().entities().get(clientModule().readInt(m_dwEntityList + (crosshair * 0x10)));
+            if (crosshair > 0 && entity != null && entity.isPlayer()) {
+                target = entity.asPlayer();
+            } else {
+                target = null;
             }
+
+            shotsFired = process().readInt(address() + m_iShotsFired);
         }
     }
 

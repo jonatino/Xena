@@ -124,11 +124,11 @@ public final class Xena implements NativeKeyListener {
 
                 updateClientState(game.clientState());
                 game.me().update();
-                updateEntityList(game.entities());
+                updateEntityList();
 
                 for (Plugin plugin : pluginManager) {
                     if (plugin.canPulse()) {
-                        plugin.pulse(game.clientState(), game.me(), game.entities(), game.players().values());
+                        plugin.pulse(game.clientState(), game.me(), game.entities().values());
                     }
                 }
 
@@ -155,40 +155,34 @@ public final class Xena implements NativeKeyListener {
         clientState.setLocalPlayerIndex(process.readInt(address + m_dwLocalPlayerIndex));
     }
 
-    private void updateEntityList(GameEntity[] entities) {
+    private void updateEntityList() {
         int entityCount = clientModule.readInt(m_dwGlowObject + 4);
-
- /*       if (entities == null || entityCount != entities.length) {
-            game.setEntities(new GameEntity[entityCount]);
-        }*/
 
         for (int i = 0; i < entityCount; i++) {
             int entityAddress = clientModule.readInt(m_dwEntityList + (i * 16));
             if (entityAddress >= 0x200) {
-                int playerTeam = process.readInt(entityAddress + m_iTeamNum);
-                if (playerTeam == 2 || playerTeam == 3) {
-                    int vt = process.readInt(entityAddress + 0x8);
-                    if (vt <= 0) {
-                        continue;
-                    }
-                    int fn = process.readInt(vt + 0x8);
-                    if (fn <= 0) {
-                        continue;
-                    }
-                    int cls = process.readInt(fn + 0x1);
-                    if (cls <= 0) {
-                        continue;
-                    }
-                    int classId = process.readInt(cls + 20);
-                    if (classId == 35) {
-                        Player player = game.players().get(entityAddress);
-                        if (player == null || player.address() != entityAddress || player.getTeam() != playerTeam) {
-                            game.players().put(entityAddress, player = new Player());
-                        }
-                        player.setAddress(entityAddress);
-                        player.update();
-                    }
+                GameEntity entity = game.entities().get(entityAddress);
+
+                int vt = process.readInt(entityAddress + 0x8);
+                if (vt <= 0) {
+                    continue;
                 }
+                int fn = process.readInt(vt + 0x8);
+                if (fn <= 0) {
+                    continue;
+                }
+                int cls = process.readInt(fn + 0x1);
+                if (cls <= 0) {
+                    continue;
+                }
+                int classId = process.readInt(cls + 20);
+                int team = process.readInt(entityAddress + m_iTeamNum);
+                if (entity == null || entity.getTeam() != team) {
+                    game.entities().put(entityAddress, entity = (classId == 35 ? new Player() : new GameEntity()));
+                }
+                entity.setAddress(entityAddress);
+                entity.setClassId(classId);
+                entity.update();
             }
         }
     }
@@ -196,7 +190,7 @@ public final class Xena implements NativeKeyListener {
     @Override
     public boolean onKeyPressed(NativeKeyEvent event) {
         if (overlay != null && overlay.isVisible()) {
-            if (event.keyCode() == KeyEvent.VK_F9) {
+            if (event.keyCode() == KeyEvent.VK_F9 && !event.hasModifiers()) {
                 overlay.minimize();
                 return true;
             }

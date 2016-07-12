@@ -1,13 +1,16 @@
 package org.xena.cs;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import static org.abendigo.OffsetManager.process;
 import static org.abendigo.offsets.Offsets.*;
 
 public class GameEntity extends GameObject {
 
-//	protected final Game game = Game.current();
+    @Getter
+    @Setter
+    protected int classId;
 
     @Getter
     protected int model;
@@ -30,6 +33,12 @@ public class GameEntity extends GameObject {
     @Getter
     private final float[] position = new float[3];
 
+    @Getter
+    protected boolean dead;
+
+    @Getter
+    protected boolean spotted;
+
     public void update() {
         model = process().readInt(address() + m_dwModel);
         boneMatrix = process().readInt(address() + m_dwBoneMatrix);
@@ -40,14 +49,17 @@ public class GameEntity extends GameObject {
         position[0] = process().readFloat(address() + m_vecOrigin);
         position[1] = process().readFloat(address() + m_vecOrigin + 4);
         position[2] = process().readFloat(address() + m_vecOrigin + 8);
+
+        dead = process().readBoolean(address() + m_lifeState);
+        spotted = process().readInt(address() + m_bSpotted) > 0;
+    }
+
+    public Player asPlayer() {
+        return (Player) this;
     }
 
     public boolean isPlayer() {
-        return this instanceof GamePlayer;
-    }
-
-    public GamePlayer asPlayer() {
-        return (GamePlayer) this;
+        return classId == 35;
     }
 
 }
