@@ -8,7 +8,6 @@ import org.xena.Xena;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
-import org.xena.cs.Player;
 import org.xena.keylistener.GlobalKeyboard;
 import org.xena.keylistener.NativeKeyCombination;
 import org.xena.logging.Logger;
@@ -68,7 +67,7 @@ public abstract class Plugin {
         enabled = false;
     }
 
-    public abstract void pulse(ClientState clientState, Me me, GameEntity[] entities, Collection<Player> players);
+    public abstract void pulse(ClientState clientState, Me me, Collection<GameEntity> entities);
 
     protected final Logger logger() {
         return logger;
