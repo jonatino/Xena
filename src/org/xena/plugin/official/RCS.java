@@ -4,7 +4,6 @@ import org.xena.Xena;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
-import org.xena.cs.Player;
 import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
@@ -19,7 +18,7 @@ public final class RCS extends Plugin {
 
     public RCS(Logger logger, Xena xena) {
         super(logger, xena);
-        aimHelper = new AngleUtils(this, null, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
+        aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
     }
 
     private static final float[] oldAng = new float[3];
@@ -28,11 +27,11 @@ public final class RCS extends Plugin {
     private static final float[] viewAng = new float[3];
 
     @Override
-    public void pulse(ClientState clientState, Me me, GameEntity[] entities, Collection<Player> players) {
+    public void pulse(ClientState clientState, Me me, Collection<GameEntity> entities) {
         int shotsFired = me.getShotsFired();
         if (shotsFired > 1) {
-            aimHelper.getAngle(viewAng);
-            aimHelper.getPunch(me, punch);
+            //aimHelper.getAngle(viewAng);
+            // aimHelper.getPunch(me, punch);
 
 
             viewAng[0] = viewAng[0] + oldAng[0];
