@@ -14,10 +14,10 @@ public class Player extends GameEntity {
     protected int health;
 
     @Getter
-    protected int[] weaponIds = new int[48];
+    protected long[] weaponIds = new long[8];
 
     @Getter
-    protected Weapon activeWeapon = Weapon.DEFAULT;
+    protected Weapon activeWeapon = new Weapon();
 
     @Getter
     protected final float[] velocity = new float[3];
@@ -44,15 +44,11 @@ public class Player extends GameEntity {
     protected boolean gunGameImmunity;
 
     @Getter
-    protected int shotsFired;
-
-    @Getter
     protected boolean hasBomb;
 
     @Override
     public void update() {
         super.update();
-        shotsFired = process().readInt(address() + m_iShotsFired);
         velocity[0] = process().readFloat(address() + m_vecVelocity);
         velocity[1] = process().readFloat(address() + m_vecVelocity + 4);
         velocity[2] = process().readFloat(address() + m_vecVelocity + 8);
@@ -61,13 +57,19 @@ public class Player extends GameEntity {
         viewOffsets[1] = process().readFloat(address() + m_vecViewOffset + 4);
         viewOffsets[2] = process().readFloat(address() + m_vecViewOffset + 8);
 
-        int anglePointer = engineModule().readInt(m_dwClientState);
+        long anglePointer = engineModule().readUnsignedInt(m_dwClientState);
         viewAngles[0] = process().readFloat(anglePointer + m_dwViewAngles);
         viewAngles[1] = process().readFloat(anglePointer + m_dwViewAngles + 4);
         viewAngles[2] = process().readFloat(anglePointer + m_dwViewAngles + 8);
 
-        int boneMatrix = process().readInt(address() + m_dwBoneMatrix);
-        bones[0] = process().readFloat(boneMatrix + 0x30 * 6 + 0x0C);
+        long boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
+        try {
+            bones[0] = process().readFloat(boneMatrix + 0x30 * 6 + 0x0C);
+        } catch (Exception e) {
+            System.out.println(Game.current().me().address());
+            System.out.println(address() + ", " + team);
+            System.exit(-1);
+        }
         bones[1] = process().readFloat(boneMatrix + 0x30 * 6 + 0x1C);
         bones[2] = process().readFloat(boneMatrix + 0x30 * 6 + 0x2C);
 
@@ -77,24 +79,22 @@ public class Player extends GameEntity {
         hasBomb = false;
 
         for (int i = 0; i < weaponIds.length; i++) {
-            int weaponBase = process().readInt(address() + m_hMyWeapons + ((i - 1) * 0x04));
+            long weaponBase = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04));
 
-            int entNum = weaponBase & 0xFFF;
-            int id = clientModule().readInt(m_dwEntityList + (entNum - 1) * 0x10);
+            long entNum = weaponBase & 0xFFF;
+            long id = clientModule().readUnsignedInt(m_dwEntityList + (entNum - 1) * 0x10);
 
             weaponIds[i] = id;
             if (id > 0) {
-                int weaponId = process().readInt(id + m_iWeaponID);
-                if (weaponId != activeWeapon.getWeaponID()) {
-                    activeWeapon.setWeaponID(weaponId);
-                    activeWeapon.setCanReload(process().readBoolean(id + m_bCanReload));
-                    activeWeapon.setClip1(process().readInt(id + m_iClip1));
-                    activeWeapon.setClip2(process().readInt(id + m_iClip2));
-                }
-                if (weaponId == 50) {
+                activeWeapon.setWeaponID(process().readUnsignedInt(id + m_iWeaponID));
+                activeWeapon.setCanReload(process().readBoolean(id + m_bCanReload));
+                activeWeapon.setClip1(process().readUnsignedInt(id + m_iClip1));
+                activeWeapon.setClip2(process().readUnsignedInt(id + m_iClip2));
+                if (activeWeapon.getWeaponID() == 50) {
                     hasBomb = true;
                 }
             }
         }
+
     }
 }

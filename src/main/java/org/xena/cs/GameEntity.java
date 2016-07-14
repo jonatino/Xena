@@ -13,16 +13,20 @@ public class GameEntity extends GameObject {
     protected int classId;
 
     @Getter
-    protected int model;
+    @Setter
+    protected long glowObjectPointer;
 
     @Getter
-    protected int index;
+    protected long index;
 
     @Getter
-    protected int boneMatrix;
+    protected long model;
 
     @Getter
-    protected int team;
+    protected long boneMatrix;
+
+    @Getter
+    protected long team;
 
     @Getter
     protected boolean running;
@@ -40,9 +44,9 @@ public class GameEntity extends GameObject {
     protected boolean spotted;
 
     public void update() {
-        model = process().readInt(address() + m_dwModel);
-        boneMatrix = process().readInt(address() + m_dwBoneMatrix);
-        team = process().readInt(address() + m_iTeamNum);
+        model = process().readUnsignedInt(address() + m_dwModel);
+        boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
+        team = process().readUnsignedInt(address() + m_iTeamNum);
         running = process().readBoolean(address() + m_bMoveType);
         dormant = process().readBoolean(address() + m_bDormant);
 
@@ -51,7 +55,9 @@ public class GameEntity extends GameObject {
         position[2] = process().readFloat(address() + m_vecOrigin + 8);
 
         dead = process().readBoolean(address() + m_lifeState);
-        spotted = process().readInt(address() + m_bSpotted) > 0;
+        spotted = process().readUnsignedInt(address() + m_bSpotted) > 0;
+
+
     }
 
     public Player asPlayer() {
@@ -59,7 +65,11 @@ public class GameEntity extends GameObject {
     }
 
     public boolean isPlayer() {
-        return classId == 35;
+        return this instanceof Player;
+    }
+
+    public EntityType type() {
+        return EntityType.byId(classId);
     }
 
 }

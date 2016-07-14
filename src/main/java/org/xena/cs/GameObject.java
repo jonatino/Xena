@@ -2,21 +2,21 @@ package org.xena.cs;
 
 class GameObject implements Addressed {
 
-    private int address;
+    private long address;
 
     @Override
-    public int address() {
+    public long address() {
         return address;
     }
 
     @Override
-    public void setAddress(int address) {
+    public void setAddress(long address) {
         this.address = address;
     }
 
     @Override
     public int hashCode() {
-        return address;
+        return (int) address;
     }
 
     @Override

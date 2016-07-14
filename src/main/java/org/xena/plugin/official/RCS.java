@@ -28,7 +28,7 @@ public final class RCS extends Plugin {
 
     @Override
     public void pulse(ClientState clientState, Me me, Collection<GameEntity> entities) {
-        int shotsFired = me.getShotsFired();
+        long shotsFired = me.getShotsFired();
         if (shotsFired > 1) {
             //aimHelper.getAngle(viewAng);
             //aimHelper.getPunch(me, punch);

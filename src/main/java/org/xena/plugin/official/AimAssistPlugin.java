@@ -19,18 +19,18 @@ public final class AimAssistPlugin extends Plugin {
 
     public AimAssistPlugin(Logger logger, Xena xena) {
         super(logger, xena);
-        aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
+        aimHelper = new AngleUtils(this, 15.5f, 1.7F, 2.5F, 1.7F, 2.5F);
     }
 
     private final float[] aim = new float[3];
 
-    private int prevFired = 0;
+    private long prevFired = 0;
 
     private Player lastTarget = null;
 
     @Override
     public void pulse(ClientState clientState, Me me, Collection<GameEntity> entities) {
-        int shotsFired = me.getShotsFired();
+        long shotsFired = me.getShotsFired();
         if (shotsFired < 1 || shotsFired < prevFired) {
             prevFired = 0;
             return;
@@ -51,7 +51,7 @@ public final class AimAssistPlugin extends Plugin {
 
         if (shotsFired > 1 && shotsFired >= prevFired) {
             try {
-                int shots;
+                long shots;
                 if (aimHelper.canShoot(me, target) && (shots = me.getShotsFired()) > 1 && shots >= prevFired) {
                     float delta = aimHelper.delta(me.getPosition(), target.getBones());
                     if (delta < 190) {

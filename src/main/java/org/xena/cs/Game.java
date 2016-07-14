@@ -14,7 +14,7 @@ public final class Game {
     }
 
     private final Me me = new Me();
-    private final Map<Integer, GameEntity> entities = new HashMap<>(256);
+    private final Map<Long, GameEntity> entities = new HashMap<>(256);
     private final ClientState clientState = new ClientState();
 
     public Me me() {
@@ -25,7 +25,7 @@ public final class Game {
         return clientState;
     }
 
-    public Map<Integer, GameEntity> entities() {
+    public Map<Long, GameEntity> entities() {
         return entities;
     }
 

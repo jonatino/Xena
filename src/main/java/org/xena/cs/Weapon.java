@@ -5,15 +5,13 @@ import lombok.Setter;
 
 public class Weapon extends GameObject {
 
-    static final Weapon DEFAULT = new Weapon();
+    @Getter
+    @Setter
+    private long clip1;
 
     @Getter
     @Setter
-    private int clip1;
-
-    @Getter
-    @Setter
-    private int clip2;
+    private long clip2;
 
     @Getter
     @Setter
@@ -21,10 +19,10 @@ public class Weapon extends GameObject {
 
     @Getter
     @Setter
-    private int ammoType;
+    private long ammoType;
 
     @Getter
     @Setter
-    private int weaponID;
+    private long weaponID;
 
 }

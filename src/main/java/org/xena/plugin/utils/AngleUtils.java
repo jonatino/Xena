@@ -75,11 +75,12 @@ public final class AngleUtils {
     }
 
     public boolean canShoot(Me me, Player target) {
-        int weaponID = me.getActiveWeapon().getWeaponID();
+        long weaponID = me.getActiveWeapon().getWeaponID();
         if (weaponID == 42) {
             return false;
         }
-        return me.getActiveWeapon().getClip1() > 0 && !me.isDead() && target.getTeam() != me.getTeam() && !target.isDead() && target.isSpotted();
+        //System.out.println(me.getActiveWeapon().getClip1()+", "+me.isDead()+", "+target.getTeam()+", "+me.getTeam());
+        return me.getActiveWeapon().getClip1() > 0 && !target.isDead() && !me.isDead() && target.getTeam() != me.getTeam();
     }
 
     private static float[] smoothedAngles = new float[3];
@@ -102,7 +103,7 @@ public final class AngleUtils {
         if (Float.isNaN(angles[0]) || Float.isNaN(angles[1]) || Float.isNaN(angles[2])) {
             return angles;
         }
-        int anglePointer = plugin.engine().readInt(m_dwClientState);
+        long anglePointer = plugin.engine().readUnsignedInt(m_dwClientState);
         plugin.process().writeFloat(anglePointer + m_dwViewAngles, angles[0]);
         plugin.process().writeFloat(anglePointer + m_dwViewAngles + 4, angles[1]);
         return angles;

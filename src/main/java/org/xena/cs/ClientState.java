@@ -7,14 +7,14 @@ public class ClientState extends GameObject {
 
     @Setter
     @Getter
-    private int localPlayerIndex;
+    private long localPlayerIndex;
 
     @Setter
     @Getter
-    private int inGame;
+    private long inGame;
 
     @Setter
     @Getter
-    private int maxPlayer;
+    private long maxPlayer;
 
 }

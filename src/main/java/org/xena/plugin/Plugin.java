@@ -21,7 +21,7 @@ public abstract class Plugin {
     private static int pluginUid;
 
     private final int uid;
-    private final Xena xena;
+    public final Xena xena;
     private final Logger logger;
     private final NativeProcess process;
     private final Module client;

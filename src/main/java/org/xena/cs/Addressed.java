@@ -2,8 +2,8 @@ package org.xena.cs;
 
 public interface Addressed {
 
-    int address();
+    long address();
 
-    void setAddress(int address);
+    void setAddress(long address);
 
 }

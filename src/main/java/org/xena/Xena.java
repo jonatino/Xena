@@ -5,10 +5,8 @@ import com.beaudoin.jmm.process.Module;
 import com.beaudoin.jmm.process.NativeProcess;
 import com.beaudoin.jmm.process.impl.win32.Win32Process;
 import com.sun.jna.ptr.IntByReference;
-import org.xena.cs.ClientState;
-import org.xena.cs.Game;
-import org.xena.cs.GameEntity;
-import org.xena.cs.Player;
+import lombok.Getter;
+import org.xena.cs.*;
 import org.xena.gui.Overlay;
 import org.xena.keylistener.GlobalKeyboard;
 import org.xena.keylistener.NativeKeyEvent;
@@ -31,20 +29,28 @@ public final class Xena implements NativeKeyListener {
 
     public static final int CYCLE_TIME = 8;
 
+    @Getter
     private final PluginManager pluginManager;
 
+    @Getter
     private final NativeProcess process;
 
+    @Getter
     private final Module clientModule;
 
+    @Getter
     private final Module engineModule;
 
+    @Getter
     private boolean paused;
 
+    @Getter
     private long lastCycle;
 
+    @Getter
     private Overlay overlay;
 
+    @Getter
     private GlobalKeyboard keylistener;
 
     public Xena(NativeProcess process, Module clientModule, Module engineModule, PluginManager pluginManager) {
@@ -57,10 +63,11 @@ public final class Xena implements NativeKeyListener {
     void run(Logger logger, int cycleMS) throws InterruptedException {
         keylistener = GlobalKeyboard.register(this);
 
-        // pluginManager.enable(new RadarPlugin(logger, process, clientModule, engineModule, taskManager));
+        //pluginManager.enable(new RadarPlugin(logger, process, clientModule, engineModule, taskManager));
         pluginManager.add(new GlowESPPlugin(logger, this));
-        // pluginManager.add(new RCS(logger, this, taskManager));
+        //pluginManager.add(new RCS(logger, this, taskManager));
         pluginManager.add(new ForceAimPlugin(logger, this));
+        //pluginManager.add(new SpinBotPlugin(logger, this));
         //pluginManager.add(new NoFlashPlugin(logger, this, taskManager));
         pluginManager.add(new AimAssistPlugin(logger, this));
 
@@ -81,49 +88,55 @@ public final class Xena implements NativeKeyListener {
                     ref.setValue(0);
                 }
 
-                int myAddress = clientModule.readInt(m_dwLocalPlayer);
+                long myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer);
                 if (myAddress <= 0) {
                     Thread.sleep(3000);
+                    Game.current().entities().clear();
                     continue;
                 }
 
-                int myTeam = process.readInt(myAddress + m_iTeamNum);
+                long myTeam = process.readUnsignedInt(myAddress + m_iTeamNum);
                 if (myTeam != 2 && myTeam != 3) {
                     Thread.sleep(3000);
+                    Game.current().entities().clear();
                     continue;
                 }
 
-                int objectCount = clientModule.readInt(m_dwGlowObject + 4);
+                long objectCount = clientModule.readUnsignedInt(m_dwGlowObject + 4);
                 if (objectCount <= 0) {
                     Thread.sleep(3000);
+                    Game.current().entities().clear();
                     continue;
                 }
 
-                int myIndex = process.readInt(myAddress + m_dwIndex) - 1;
+                long myIndex = process.readUnsignedInt(myAddress + m_dwIndex) - 1;
                 if (myIndex < 0 || myIndex >= objectCount) {
                     Thread.sleep(3000);
+                    Game.current().entities().clear();
                     continue;
                 }
 
-                int enginePointer = engineModule.readInt(m_dwClientState);
+                long enginePointer = engineModule.readUnsignedInt(m_dwClientState);
                 if (enginePointer <= 0) {
                     Thread.sleep(3000);
+                    Game.current().entities().clear();
                     continue;
                 }
 
-                int inGame = process.readInt(enginePointer + m_dwInGame);
+                long inGame = process.readUnsignedInt(enginePointer + m_dwInGame);
                 if (inGame != 6) {
                     Thread.sleep(3000);
+                    Game.current().entities().clear();
                     continue;
                 }
 
                 if (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0) {
                     Thread.sleep(3000);
+                    Game.current().entities().clear();
                     continue;
                 }
 
                 updateClientState(game.clientState());
-                game.me().update();
                 updateEntityList();
 
                 for (Plugin plugin : pluginManager) {
@@ -145,45 +158,70 @@ public final class Xena implements NativeKeyListener {
     }
 
     private void updateClientState(ClientState clientState) {
-        int address = engineModule.readInt(m_dwClientState);
+        long address = engineModule.readUnsignedInt(m_dwClientState);
         if (address < 0) {
             throw new IllegalStateException("Could not find client state");
         }
         clientState.setAddress(address);
-        clientState.setInGame(process.readInt(address + m_dwInGame));
-        clientState.setMaxPlayer(process.readInt(address + m_dwMaxPlayer));
-        clientState.setLocalPlayerIndex(process.readInt(address + m_dwLocalPlayerIndex));
+        clientState.setInGame(process.readUnsignedInt(address + m_dwInGame));
+        clientState.setMaxPlayer(process.readUnsignedInt(address + m_dwMaxPlayer));
+        clientState.setLocalPlayerIndex(process.readUnsignedInt(address + m_dwLocalPlayerIndex));
     }
 
     private void updateEntityList() {
-        int entityCount = clientModule.readInt(m_dwGlowObject + 4);
+        long pointerGlow = clientModule.readUnsignedInt(m_dwGlowObject);
+        long entityCount = clientModule.readUnsignedInt(m_dwGlowObject + 4);
+
+        long myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer);
 
         for (int i = 0; i < entityCount; i++) {
-            int entityAddress = clientModule.readInt(m_dwEntityList + (i * 16));
-            if (entityAddress >= 0x200) {
-                GameEntity entity = game.entities().get(entityAddress);
-
-                int vt = process.readInt(entityAddress + 0x8);
-                if (vt <= 0) {
-                    continue;
-                }
-                int fn = process.readInt(vt + 0x8);
-                if (fn <= 0) {
-                    continue;
-                }
-                int cls = process.readInt(fn + 0x1);
-                if (cls <= 0) {
-                    continue;
-                }
-                int classId = process.readInt(cls + 20);
-                int team = process.readInt(entityAddress + m_iTeamNum);
-                if (entity == null || entity.getTeam() != team) {
-                    game.entities().put(entityAddress, entity = (classId == 35 ? new Player() : new GameEntity()));
-                }
-                entity.setAddress(entityAddress);
-                entity.setClassId(classId);
-                entity.update();
+            long glowObjectPointer = pointerGlow + (i * 56);
+            long entityAddress = process.readUnsignedInt(glowObjectPointer);
+            if (entityAddress < 0x200) {
+                continue;
             }
+            EntityType type = getEntityType(entityAddress);
+            if (type == null) {
+                continue;
+            }
+            long team = process.readUnsignedInt(entityAddress + m_iTeamNum);
+
+            GameEntity entity = game.entities().get(entityAddress);
+            if (entity == null || (type == EntityType.CCSPlayer && entity.getTeam() != team)) {
+                if (entity == null && myAddress == entityAddress) {
+                    entity = Game.current().me();
+                } else if (entity == null && type == EntityType.CCSPlayer) {
+                    entity = new Player();
+                } else if (entity == null) {
+                    entity = new GameEntity();
+                }
+                game.entities().put(entityAddress, entity);
+            }
+            entity.setAddress(entityAddress);
+            entity.setClassId(type.getId());
+            entity.setGlowObjectPointer(glowObjectPointer);
+            entity.update();
+        }
+    }
+
+    public EntityType getEntityType(long address) {
+        try {
+            long vt = process.readUnsignedInt(address + 0x8);
+            if (vt <= 0) {
+                return null;
+            }
+            long fn = process.readUnsignedInt(vt + 0x8);
+            if (fn <= 0) {
+                return null;
+            }
+            long cls = process.readUnsignedInt(fn + 0x1);
+            if (cls <= 0) {
+                return null;
+            }
+            long classId = process.readUnsignedInt(cls + 20);
+            return EntityType.byId(classId);
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -203,39 +241,4 @@ public final class Xena implements NativeKeyListener {
         return false;
     }
 
-    public Game getGame() {
-        return this.game;
-    }
-
-    public PluginManager getPluginManager() {
-        return this.pluginManager;
-    }
-
-    public NativeProcess getProcess() {
-        return this.process;
-    }
-
-    public Module getClientModule() {
-        return this.clientModule;
-    }
-
-    public Module getEngineModule() {
-        return this.engineModule;
-    }
-
-    public boolean isPaused() {
-        return this.paused;
-    }
-
-    public long getLastCycle() {
-        return this.lastCycle;
-    }
-
-    public Overlay getOverlay() {
-        return this.overlay;
-    }
-
-    public GlobalKeyboard getKeylistener() {
-        return this.keylistener;
-    }
 }
