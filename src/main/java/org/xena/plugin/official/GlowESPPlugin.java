@@ -57,7 +57,7 @@ public final class GlowESPPlugin extends Plugin {
                 ignored.printStackTrace();
             }
         }
-        sleep(64);
+        sleep(128);
     }
 
 }
