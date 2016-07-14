@@ -78,6 +78,7 @@ public final class SpinBotPlugin extends Plugin {
         } else {
             lastTarget = null;
         }
+        sleep(10);
     }
 
 }
