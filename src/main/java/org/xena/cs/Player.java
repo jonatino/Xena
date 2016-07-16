@@ -62,17 +62,6 @@ public class Player extends GameEntity {
         viewAngles[1] = process().readFloat(anglePointer + m_dwViewAngles + 4);
         viewAngles[2] = process().readFloat(anglePointer + m_dwViewAngles + 8);
 
-        long boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
-        try {
-            bones[0] = process().readFloat(boneMatrix + 0x30 * 6 + 0x0C);
-        } catch (Exception e) {
-            System.out.println(Game.current().me().address());
-            System.out.println(address() + ", " + team);
-            System.exit(-1);
-        }
-        bones[1] = process().readFloat(boneMatrix + 0x30 * 6 + 0x1C);
-        bones[2] = process().readFloat(boneMatrix + 0x30 * 6 + 0x2C);
-
         punch[0] = process().readFloat(address() + m_vecPunch);
         punch[1] = process().readFloat(address() + m_vecPunch + 4);
 
@@ -96,5 +85,11 @@ public class Player extends GameEntity {
             }
         }
 
+        long boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
+        if (boneMatrix > 0) {
+            bones[0] = process().readFloat(boneMatrix + 0x30 * 6 + 0x0C);
+            bones[1] = process().readFloat(boneMatrix + 0x30 * 6 + 0x1C);
+            bones[2] = process().readFloat(boneMatrix + 0x30 * 6 + 0x2C);
+        }
     }
 }
