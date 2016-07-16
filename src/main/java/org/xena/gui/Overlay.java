@@ -14,8 +14,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-import static org.xena.Xena.CYCLE_TIME;
-
 public final class Overlay extends JWindow {
 
     private static final int WIDTH = 200;
@@ -87,7 +85,7 @@ public final class Overlay extends JWindow {
 
         height += 30;
 
-        status = new JLabel("<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + CYCLE_TIME + ")</html>", SwingConstants.LEFT);
+        status = new JLabel("<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + Xena.CYCLE_TIME + ")</html>", SwingConstants.LEFT);
         status.setFont(new Font("Sans Serif", Font.BOLD, 12));
         status.setForeground(Color.WHITE);
         status.setBounds(3, height, getWidth() - 5, 35);
