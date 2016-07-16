@@ -14,7 +14,6 @@ Xena is a CS:GO (Counter Strike Globlal Offensive) cheat made from scratch writt
 
 ### So... what's to come?
 Xena is more of a side project I seem to fall back into every couple of months. While I 'do' have plans for it, I can not provide any ETA. So without further ado, here are some features you can look forward to (possibly contribute yourself <3)
-- Gradle 
 - Cross-Platform (Note: the cheat it's self is cross paltform, but I need the atterns for offsets for the Offset Scanner)
 - Some type of configuration tool to change esp color/aim settings etc.
 
