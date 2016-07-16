@@ -88,53 +88,7 @@ public final class Xena implements NativeKeyListener {
                     ref.setValue(0);
                 }
 
-                long myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer);
-                if (myAddress <= 0) {
-                    Thread.sleep(3000);
-                    Game.current().entities().clear();
-                    continue;
-                }
-
-                long myTeam = process.readUnsignedInt(myAddress + m_iTeamNum);
-                if (myTeam != 2 && myTeam != 3) {
-                    Thread.sleep(3000);
-                    Game.current().entities().clear();
-                    continue;
-                }
-
-                long objectCount = clientModule.readUnsignedInt(m_dwGlowObject + 4);
-                if (objectCount <= 0) {
-                    Thread.sleep(3000);
-                    Game.current().entities().clear();
-                    continue;
-                }
-
-                long myIndex = process.readUnsignedInt(myAddress + m_dwIndex) - 1;
-                if (myIndex < 0 || myIndex >= objectCount) {
-                    Thread.sleep(3000);
-                    Game.current().entities().clear();
-                    continue;
-                }
-
-                long enginePointer = engineModule.readUnsignedInt(m_dwClientState);
-                if (enginePointer <= 0) {
-                    Thread.sleep(3000);
-                    Game.current().entities().clear();
-                    continue;
-                }
-
-                long inGame = process.readUnsignedInt(enginePointer + m_dwInGame);
-                if (inGame != 6) {
-                    Thread.sleep(3000);
-                    Game.current().entities().clear();
-                    continue;
-                }
-
-                if (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0) {
-                    Thread.sleep(3000);
-                    Game.current().entities().clear();
-                    continue;
-                }
+                checkGameStatus();
 
                 updateClientState(game.clientState());
                 updateEntityList();
@@ -154,6 +108,52 @@ public final class Xena implements NativeKeyListener {
                 t.printStackTrace();
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    private void checkGameStatus() throws InterruptedException {
+        while (true) {
+            long myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer);
+            if (myAddress <= 0) {
+                Thread.sleep(3000);
+                continue;
+            }
+
+            long myTeam = process.readUnsignedInt(myAddress + m_iTeamNum);
+            if (myTeam != 2 && myTeam != 3) {
+                Thread.sleep(3000);
+                continue;
+            }
+
+            long objectCount = clientModule.readUnsignedInt(m_dwGlowObject + 4);
+            if (objectCount <= 0) {
+                Thread.sleep(3000);
+                continue;
+            }
+
+            long myIndex = process.readUnsignedInt(myAddress + m_dwIndex) - 1;
+            if (myIndex < 0 || myIndex >= objectCount) {
+                Thread.sleep(3000);
+                continue;
+            }
+
+            long enginePointer = engineModule.readUnsignedInt(m_dwClientState);
+            if (enginePointer <= 0) {
+                Thread.sleep(3000);
+                continue;
+            }
+
+            long inGame = process.readUnsignedInt(enginePointer + m_dwInGame);
+            if (inGame != 6) {
+                Thread.sleep(3000);
+                continue;
+            }
+
+            if (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0) {
+                Thread.sleep(3000);
+                continue;
+            }
+            break;
         }
     }
 
