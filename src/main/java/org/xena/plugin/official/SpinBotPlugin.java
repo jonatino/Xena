@@ -46,7 +46,6 @@ public final class SpinBotPlugin extends Plugin {
                     GameEntity entity = entities.get(lastIdx++);
                     try {
                         if (entity.type() == EntityType.CCSPlayer && entity.isPlayer()) {
-                            // System.out.println(aimHelper.delta(me.getPosition(), entity.asPlayer().getBones()));
                             if (aimHelper.delta(me.getPosition(), entity.asPlayer().getBones()) > 3000) {
                                 continue;
                             }
@@ -54,7 +53,6 @@ public final class SpinBotPlugin extends Plugin {
                             if (aimHelper.canShoot(me, entity.asPlayer())) {
                                 lastTarget = entity.asPlayer();
                             } else {
-                                System.out.println(me.getActiveWeapon().getClip1() + ", " + me.isDead() + ", " + lastTarget.getTeam() + ", " + me.getTeam());
                                 lastTarget = null;
                             }
                         }
