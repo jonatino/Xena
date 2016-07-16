@@ -1,5 +1,6 @@
 package org.xena.plugin.official;
 
+import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.*;
 import org.xena.keylistener.NativeKeyUtils;
@@ -10,7 +11,6 @@ import org.xena.plugin.utils.AngleUtils;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.util.Collection;
 
 @PluginManifest(name = "Spin Bot", description = "Helps you to stay on target.")
 public final class SpinBotPlugin extends Plugin {
@@ -30,22 +30,23 @@ public final class SpinBotPlugin extends Plugin {
     private final float[] aim = new float[3];
 
     private Player lastTarget = null;
-    private int lastIdx = -1;
+    private int lastIdx;
 
     private Robot robot;
 
     @Override
-    public void pulse(ClientState clientState, Me me, Collection<GameEntity> entites) {
+    public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
         if (NativeKeyUtils.isLeftCtrlDown()) {
             if (lastTarget == null) {
                 while (lastTarget == null) {
-                    if (lastIdx + 1 >= entites.size()) {
-                        lastIdx = 1;
+                    if (lastIdx + 1 >= entities.size()) {
+                        lastIdx = 0;
+                        break;
                     }
-                    GameEntity entity = (GameEntity) entites.toArray()[++lastIdx];
+                    GameEntity entity = entities.get(lastIdx++);
                     try {
                         if (entity.type() == EntityType.CCSPlayer && entity.isPlayer()) {
-                            System.out.println(aimHelper.delta(me.getPosition(), entity.asPlayer().getBones()));
+                            // System.out.println(aimHelper.delta(me.getPosition(), entity.asPlayer().getBones()));
                             if (aimHelper.delta(me.getPosition(), entity.asPlayer().getBones()) > 3000) {
                                 continue;
                             }
@@ -53,6 +54,7 @@ public final class SpinBotPlugin extends Plugin {
                             if (aimHelper.canShoot(me, entity.asPlayer())) {
                                 lastTarget = entity.asPlayer();
                             } else {
+                                System.out.println(me.getActiveWeapon().getClip1() + ", " + me.isDead() + ", " + lastTarget.getTeam() + ", " + me.getTeam());
                                 lastTarget = null;
                             }
                         }
@@ -73,6 +75,7 @@ public final class SpinBotPlugin extends Plugin {
                 robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                 robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
             } else {
+                System.out.println(me.getActiveWeapon().getClip1() + ", " + me.isDead() + ", " + lastTarget.getTeam() + ", " + me.getTeam());
                 lastTarget = null;
             }
         } else {
