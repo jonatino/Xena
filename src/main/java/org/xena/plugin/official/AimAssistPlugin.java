@@ -1,5 +1,6 @@
 package org.xena.plugin.official;
 
+import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
@@ -9,8 +10,6 @@ import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
-
-import java.util.Collection;
 
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class AimAssistPlugin extends Plugin {
@@ -29,7 +28,7 @@ public final class AimAssistPlugin extends Plugin {
     private Player lastTarget = null;
 
     @Override
-    public void pulse(ClientState clientState, Me me, Collection<GameEntity> entities) {
+    public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
         long shotsFired = me.getShotsFired();
         if (shotsFired < 1 || shotsFired < prevFired) {
             prevFired = 0;

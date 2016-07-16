@@ -17,6 +17,7 @@ import org.xena.plugin.PluginManager;
 import org.xena.plugin.official.AimAssistPlugin;
 import org.xena.plugin.official.ForceAimPlugin;
 import org.xena.plugin.official.GlowESPPlugin;
+import org.xena.plugin.official.SpinBotPlugin;
 
 import java.awt.event.KeyEvent;
 
@@ -67,7 +68,7 @@ public final class Xena implements NativeKeyListener {
         pluginManager.add(new GlowESPPlugin(logger, this));
         //pluginManager.add(new RCS(logger, this, taskManager));
         pluginManager.add(new ForceAimPlugin(logger, this));
-        //pluginManager.add(new SpinBotPlugin(logger, this));
+        pluginManager.add(new SpinBotPlugin(logger, this));
         //pluginManager.add(new NoFlashPlugin(logger, this, taskManager));
         pluginManager.add(new AimAssistPlugin(logger, this));
 
@@ -95,7 +96,7 @@ public final class Xena implements NativeKeyListener {
 
                 for (Plugin plugin : pluginManager) {
                     if (plugin.canPulse()) {
-                        plugin.pulse(game.clientState(), game.me(), game.entities().values());
+                        plugin.pulse(game.clientState(), game.me(), game.entities());
                     }
                 }
 
@@ -114,7 +115,7 @@ public final class Xena implements NativeKeyListener {
     private void checkGameStatus() throws InterruptedException {
         while (true) {
             long myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer);
-            if (myAddress <= 0) {
+            if (myAddress < 0x200) {
                 Thread.sleep(3000);
                 continue;
             }
@@ -169,37 +170,39 @@ public final class Xena implements NativeKeyListener {
     }
 
     private void updateEntityList() {
-        long pointerGlow = clientModule.readUnsignedInt(m_dwGlowObject);
         long entityCount = clientModule.readUnsignedInt(m_dwGlowObject + 4);
-
         long myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer);
 
         for (int i = 0; i < entityCount; i++) {
-            long glowObjectPointer = pointerGlow + (i * 56);
-            long entityAddress = process.readUnsignedInt(glowObjectPointer);
+            long entityAddress = clientModule.readUnsignedInt(m_dwEntityList + (i * 16));
+
             if (entityAddress < 0x200) {
                 continue;
             }
+
             EntityType type = getEntityType(entityAddress);
             if (type == null) {
                 continue;
             }
-            long team = process.readUnsignedInt(entityAddress + m_iTeamNum);
 
-            GameEntity entity = game.entities().get(entityAddress);
-            if (entity == null || (type == EntityType.CCSPlayer && entity.getTeam() != team)) {
-                if (entity == null && myAddress == entityAddress) {
+            long team = process.readUnsignedInt(entityAddress + m_iTeamNum);
+            if (team != 2 && team != 3 || type != EntityType.CCSPlayer) {
+                continue;
+            }
+
+            GameEntity entity = game.get(entityAddress);
+            if (entity == null) {
+                if (myAddress == entityAddress) {
                     entity = Game.current().me();
-                } else if (entity == null && type == EntityType.CCSPlayer) {
+                } else if (type == EntityType.CCSPlayer) {
                     entity = new Player();
-                } else if (entity == null) {
+                } else {
                     entity = new GameEntity();
                 }
-                game.entities().put(entityAddress, entity);
+                entity.setAddress(entityAddress);
+                game.register(entity);
             }
-            entity.setAddress(entityAddress);
             entity.setClassId(type.getId());
-            entity.setGlowObjectPointer(glowObjectPointer);
             entity.update();
         }
     }

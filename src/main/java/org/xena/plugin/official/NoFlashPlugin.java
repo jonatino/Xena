@@ -1,5 +1,6 @@
 package org.xena.plugin.official;
 
+import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
@@ -7,8 +8,6 @@ import org.xena.cs.Me;
 import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
-
-import java.util.Collection;
 
 import static org.abendigo.offsets.Offsets.m_flFlashMaxAlpha;
 
@@ -20,7 +19,7 @@ public final class NoFlashPlugin extends Plugin {
     }
 
     @Override
-    public void pulse(ClientState clientState, Me me, Collection<GameEntity> entities) {
+    public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
         if (process().readFloat(me.address() + m_flFlashMaxAlpha) > 0.0f) {
             process().writeFloat(me.address() + m_flFlashMaxAlpha, 85.0f);
         } else if (process().readFloat(me.address() + m_flFlashMaxAlpha) == 0.0f) {

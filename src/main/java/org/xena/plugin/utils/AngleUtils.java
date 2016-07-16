@@ -79,7 +79,6 @@ public final class AngleUtils {
         if (weaponID == 42) {
             return false;
         }
-        //System.out.println(me.getActiveWeapon().getClip1()+", "+me.isDead()+", "+target.getTeam()+", "+me.getTeam());
         return me.getActiveWeapon().getClip1() > 0 && !target.isDead() && !me.isDead() && target.getTeam() != me.getTeam();
     }
 

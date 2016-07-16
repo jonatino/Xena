@@ -4,6 +4,7 @@ import com.beaudoin.jmm.process.Module;
 import com.beaudoin.jmm.process.NativeProcess;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
@@ -13,7 +14,6 @@ import org.xena.keylistener.NativeKeyCombination;
 import org.xena.logging.Logger;
 
 import java.awt.event.KeyEvent;
-import java.util.Collection;
 
 @AllArgsConstructor
 public abstract class Plugin {
@@ -67,7 +67,7 @@ public abstract class Plugin {
         enabled = false;
     }
 
-    public abstract void pulse(ClientState clientState, Me me, Collection<GameEntity> entities);
+    public abstract void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities);
 
     protected final Logger logger() {
         return logger;

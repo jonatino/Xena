@@ -13,10 +13,6 @@ public class GameEntity extends GameObject {
     protected int classId;
 
     @Getter
-    @Setter
-    protected long glowObjectPointer;
-
-    @Getter
     protected long index;
 
     @Getter
@@ -54,10 +50,8 @@ public class GameEntity extends GameObject {
         position[1] = process().readFloat(address() + m_vecOrigin + 4);
         position[2] = process().readFloat(address() + m_vecOrigin + 8);
 
-        dead = process().readBoolean(address() + m_lifeState);
-        spotted = process().readUnsignedInt(address() + m_bSpotted) > 0;
-
-
+        dead = process().readByte(address() + m_lifeState) != 0;
+        spotted = process().readUnsignedInt(address() + m_bSpotted) != 0;
     }
 
     public Player asPlayer() {
