@@ -3,7 +3,7 @@
 [![Release](https://jitpack.io/v/Jonatino/Xena.svg)](https://jitpack.io/#Jonatino/Xena)
 
 # Xena.
-Xena is a CS:GO (Counter Strike Globlal Offensive) cheat made from scratch written in Java. Xena has been designed from the ground up with garbage-free, high performance, low resource usage programming practices in mind. Xena works thanks to the power on JNA (https://github.com/java-native-access/jna) to provide very easy direct mapping to native classes.
+Xena is a CS:GO (Counter Strike Global Offensive) cheat made from scratch written in Java. Xena has been designed from the ground up with garbage-free, high performance, low resource usage programming practices in mind. Xena works thanks to the power on JNA (https://github.com/java-native-access/jna) to provide very easy direct mapping to native classes.
 
 
 ### Dependencies
