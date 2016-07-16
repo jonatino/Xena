@@ -5,7 +5,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'application'
 
-mainClassName = "org.xena.Xena"
+mainClassName = "org.xena.Main"
 
 repositories {
     mavenCentral()

@@ -11,14 +11,7 @@ import static org.abendigo.OffsetManager.*;
 
 public final class Main {
 
-    private static final String logo = "  ___  _                    _ _\n" +
-            " / _ \\| |                  | (_)\n" +
-            "/ /_\\ \\ |__   ___ _ __   __| |_  __ _  ___\n" +
-            "|  _  | '_ \\ / _ \\ '_ \\ / _` | |/ _` |/ _ \\\n" +
-            "| | | | |_) |  __/ | | | (_| | | (_| | (_) |\n" +
-            "\\_| |_/_.__/ \\___|_| |_|\\__,_|_|\\__, |\\___/\n" +
-            "A free, open-source CS:GO cheating platform\n" +
-            "                                |___/\n";
+    private static final String logo = "__  __                \n" + "\\ \\/ /___ _ __   __ _ \n" + " \\  // _ \\ '_ \\ / _` |\n" + " /  \\  __/ | | | (_| |\n" + "/_/\\_\\___|_| |_|\\__,_|\n" + "A free, open-source CS:GO cheating platform\n";
 
     private static final Logger logger = Logging.logger(Logging.standardOutputter());
 
