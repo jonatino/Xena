@@ -17,12 +17,11 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.2.1'
-    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.8'
-    compile group: 'com.jonathan.flaresoft', name: 'Java-Memory-Manipulation', version: '0.1'
-    compile group: 'org.abendigo', name: 'Offset-Scanner', version: '0.1'
-    compile group: 'net.openhft', name: 'zero-allocation-hashing', version: '0.6'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile "net.java.dev.jna:jna-platform:4.2.1"
+    compile "org.projectlombok:lombok:1.16.8"
+    compile "com.github.Jonatino:Java-Memory-Manipulation:0.1"
+    compile "com.github.Jonatino:Abendigo-Offset-Scanner:1.0"
+    compile "net.openhft:zero-allocation-hashing:0.6"
 }
 
 buildscript {
@@ -31,6 +30,7 @@ buildscript {
     repositories {
         mavenCentral()
     }
+
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
