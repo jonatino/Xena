@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/Jonatino/Xena.svg?branch=master)](https://travis-ci.org/Jonatino/Xena)
-[![Dependency Status](https://www.versioneye.com/user/projects/578ab9e5c3d40f003caa34c0/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/578ab9e5c3d40f003caa34c0)
+[![Dependency Status](https://www.versioneye.com/user/projects/578ab9e5c3d40f003caa34c0/badge.svg?style=flat)](https://www.versioneye.com/user/projects/578ab9e5c3d40f003caa34c0)
 [![Release](https://jitpack.io/v/Jonatino/Xena.svg)](https://jitpack.io/#Jonatino/Xena)
 [![license](https://img.shields.io/badge/license-LGPL%203.0-redblue.svg)](https://github.com/Jonatino/Xena/blob/master/LICENSE)
 
