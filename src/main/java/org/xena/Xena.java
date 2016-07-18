@@ -1,10 +1,7 @@
 package org.xena;
 
-import com.beaudoin.jmm.natives.win32.Kernel32;
 import com.beaudoin.jmm.process.Module;
 import com.beaudoin.jmm.process.NativeProcess;
-import com.beaudoin.jmm.process.impl.win32.Win32Process;
-import com.sun.jna.ptr.IntByReference;
 import lombok.Getter;
 import org.xena.cs.*;
 import org.xena.gui.Overlay;
@@ -17,7 +14,6 @@ import org.xena.plugin.PluginManager;
 import org.xena.plugin.official.AimAssistPlugin;
 import org.xena.plugin.official.ForceAimPlugin;
 import org.xena.plugin.official.GlowESPPlugin;
-import org.xena.plugin.official.SpinBotPlugin;
 
 import java.awt.event.KeyEvent;
 
@@ -68,7 +64,7 @@ public final class Xena implements NativeKeyListener {
         pluginManager.add(new GlowESPPlugin(logger, this));
         //pluginManager.add(new RCS(logger, this, taskManager));
         pluginManager.add(new ForceAimPlugin(logger, this));
-        pluginManager.add(new SpinBotPlugin(logger, this));
+        //pluginManager.add(new SpinBotPlugin(logger, this));
         //pluginManager.add(new NoFlashPlugin(logger, this, taskManager));
         pluginManager.add(new AimAssistPlugin(logger, this));
 
@@ -77,17 +73,9 @@ public final class Xena implements NativeKeyListener {
         logger.info("We're all set. Welcome to the new Xena platform!");
         logger.info("Use numpad or ALT+nums to toggle corresponding plugins.");
 
-        IntByReference ref = new IntByReference();
         while (!Thread.interrupted()) {
             try {
                 long stamp = currentTimeMillis();
-
-                if (Kernel32.GetExitCodeProcess(((Win32Process) process).pointer(), ref)) {
-                    if (ref.getValue() != 259) {
-                        Thread.currentThread().interrupt();
-                    }
-                    ref.setValue(0);
-                }
 
                 checkGameStatus();
 
@@ -201,6 +189,7 @@ public final class Xena implements NativeKeyListener {
                 }
                 entity.setAddress(entityAddress);
                 game.register(entity);
+                System.out.println("Entity: "+entity+", "+game.entities().size());
             }
             entity.setClassId(type.getId());
             entity.update();

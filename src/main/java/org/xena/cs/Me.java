@@ -22,7 +22,9 @@ public class Me extends Player {
         super.update();
 
         crosshair = process().readUnsignedInt(address() + m_iCrossHairID) - 1;
+        //System.out.println(crosshair);
         GameEntity entity = Game.current().get(clientModule().readUnsignedInt(m_dwEntityList + (crosshair * 0x10)));
+       // System.out.println(entity);
         if (crosshair > 0 && entity != null && entity.isPlayer()) {
             target = entity.asPlayer();
         } else {
