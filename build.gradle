@@ -19,7 +19,7 @@ dependencies {
 
     compile "net.java.dev.jna:jna-platform:4.2.2"
     compile "org.projectlombok:lombok:1.16.10"
-    compile "com.github.Jonatino:Abendigo-Offset-Scanner:1.3"
+    compile "com.github.Jonatino:Abendigo-Offset-Scanner:1.4"
     compile "net.openhft:zero-allocation-hashing:0.6"
 }
 
