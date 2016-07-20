@@ -10,8 +10,7 @@ public final class Utils {
 
 	public static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
-	public static float[]
-	rldToScreen(float[] from, float[] to) {
+	public static float[] worldToScreen(float[] from, float[] to) {
 		float[][] m_vMatrix = new float[4][4];
 
 		int count = 0;
