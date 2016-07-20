@@ -1,16 +1,23 @@
 package org.xena.utils;
 
+import org.abendigo.offsets.Offsets;
+
+import java.awt.*;
+
+import static org.abendigo.OffsetManager.clientModule;
+
 public final class Utils {
 
-/*	public static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+	public static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
-	public static float[] worldToScreen(float[] from, float[] to) {
+	public static float[]
+	rldToScreen(float[] from, float[] to) {
 		float[][] m_vMatrix = new float[4][4];
-		ByteBuffer buffer = Abendigo.gameProcess.read(client.address() + Offsets.m_dwViewMatrix, 4 * 4 * 4);
+
+		int count = 0;
 		for (int row = 0; row < 4; row++) {
 			for (int col = 0; col < 4; col++) {
-				float value = buffer.getFloat();
-				m_vMatrix[row][col] = value;
+				m_vMatrix[row][col] = clientModule().readFloat(Offsets.m_dwViewMatrix + (count++ * 4));
 			}
 		}
 
@@ -41,7 +48,7 @@ public final class Utils {
 		to[1] = y + 0;
 
 		return to;
-	}*/
+	}
 
     public static int[] from(int min, int max) {
         int[] keys = new int[(max - min) + 1];

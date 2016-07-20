@@ -79,7 +79,7 @@ public final class AngleUtils {
         if (weaponID == 42) {
             return false;
         }
-        return me.getActiveWeapon().getClip1() > 0 && !target.isDead() && !me.isDead() && target.getTeam() != me.getTeam();
+	    return me.getActiveWeapon().getClip1() > 0 && !target.isDead() && !me.isDead()/* && target.getTeam() != me.getTeam()*/;
     }
 
     private static float[] smoothedAngles = new float[3];

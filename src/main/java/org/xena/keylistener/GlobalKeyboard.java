@@ -1,9 +1,9 @@
 package org.xena.keylistener;
 
-import com.beaudoin.jmm.natives.win32.Kernel32;
-import com.beaudoin.jmm.natives.win32.User32;
+import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
+import org.xena.natives.User32;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -51,8 +51,8 @@ public final class GlobalKeyboard extends NativeKeyUtils implements EventListene
                         }
                         return new WinDef.LRESULT(0);
                     };
-                    hook = User32.SetWindowsHookExW(WinUser.WH_KEYBOARD_LL, keyboardHook, Kernel32.GetModuleHandle(null), 0);//We have to store it in a static object to prevent GC
-                    while (User32.GetMessageW(null, null, 0, 0) != 0) {
+	                hook = User32.SetWindowsHookExW(WinUser.WH_KEYBOARD_LL, keyboardHook, Kernel32.INSTANCE.GetModuleHandle(null), 0);//We have to store it in a static object to prevent GC
+	                while (User32.GetMessageW(null, null, 0, 0) != 0) {
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {

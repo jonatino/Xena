@@ -1,6 +1,7 @@
 package org.xena.keylistener;
 
-import com.beaudoin.jmm.natives.win32.User32;
+
+import org.xena.natives.User32;
 
 /**
  * Created by Jonathan on 8/30/2015.
