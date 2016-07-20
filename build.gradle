@@ -17,15 +17,18 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile "net.java.dev.jna:jna-platform:4.2.2"
+    compile "net.java.dev.jna:jna:$jna_version"
+    compile "net.java.dev.jna:jna-platform:$jna_version"
+
     compile "org.projectlombok:lombok:1.16.10"
-    compile "com.github.Jonatino:Java-Memory-Manipulation:1.4"
-    compile "com.github.Jonatino:Abendigo-Offset-Scanner:1.4"
+    compile "com.github.Jonatino:Java-Memory-Manipulation:1.6"
+    compile "com.github.Jonatino:Abendigo-Offset-Scanner:1.5"
     compile "net.openhft:zero-allocation-hashing:0.6"
 }
 
 buildscript {
     ext.kotlin_version = '1.0.3'
+    ext.jna_version = '4.3.0-SNAPSHOT'
 
     repositories {
         mavenCentral()
