@@ -1,7 +1,7 @@
 package org.xena.plugin;
 
 import com.beaudoin.jmm.process.Module;
-import com.beaudoin.jmm.process.NativeProcess;
+import com.beaudoin.jmm.process.Process;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.xena.Indexer;
@@ -23,7 +23,7 @@ public abstract class Plugin {
     private final int uid;
     public final Xena xena;
     private final Logger logger;
-    private final NativeProcess process;
+    private final Process process;
     private final Module client;
     private final Module engine;
 
@@ -73,7 +73,7 @@ public abstract class Plugin {
         return logger;
     }
 
-    public final NativeProcess process() {
+    public final Process process() {
         return process;
     }
 

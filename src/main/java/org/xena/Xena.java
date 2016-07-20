@@ -1,7 +1,7 @@
 package org.xena;
 
 import com.beaudoin.jmm.process.Module;
-import com.beaudoin.jmm.process.NativeProcess;
+import com.beaudoin.jmm.process.Process;
 import lombok.Getter;
 import org.xena.cs.*;
 import org.xena.gui.Overlay;
@@ -30,7 +30,7 @@ public final class Xena implements NativeKeyListener {
     private final PluginManager pluginManager;
 
     @Getter
-    private final NativeProcess process;
+    private final Process process;
 
     @Getter
     private final Module clientModule;
@@ -50,7 +50,7 @@ public final class Xena implements NativeKeyListener {
     @Getter
     private GlobalKeyboard keylistener;
 
-    public Xena(NativeProcess process, Module clientModule, Module engineModule, PluginManager pluginManager) {
+    public Xena(Process process, Module clientModule, Module engineModule, PluginManager pluginManager) {
         this.pluginManager = pluginManager;
         this.process = process;
         this.clientModule = clientModule;
