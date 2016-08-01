@@ -34,59 +34,13 @@ class SkinChangerPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
     private val DEFAULT_WEAR = 0.0001f // lower = less wear, higher = more wear
     private val DEFAULT_QUALITY = 1
 
-    private var weapon: Weapons? = null
-    private var weaponAddress: Long = 0
-
-    public fun skins() {
-        Weapons.AK47(490)
-        Weapons.AUG(455)
-        Weapons.AWP(344)
-        Weapons.CZ75A(350)
-        Weapons.DESERT_EAGLE(527)
-        Weapons.FAMAS(194)
-        Weapons.FIVE_SEVEN(427)
-        Weapons.G3SG1(511)
-        Weapons.GALIL(398)
-        Weapons.GLOCK(353)
-        Weapons.M249(496)
-        Weapons.M4A1_SILENCER(548)
-        Weapons.M4A4(309)
-        Weapons.MAC10(433)
-        Weapons.MAG7(431)
-        Weapons.MP7(536)
-        Weapons.MP9(262)
-        Weapons.NEGEV(317)
-        Weapons.NOVA(286)
-        Weapons.P2000(389)
-        Weapons.P250(551)
-        Weapons.P90(156)
-        Weapons.PP_BIZON(542)
-        Weapons.R8_REVOLVER(595)
-        Weapons.SAWED_OFF(256)
-        Weapons.SCAR20(391)
-        Weapons.SSG08(222)
-        Weapons.SG556(287)
-        Weapons.TEC9(520)
-        Weapons.UMP45(556)
-        Weapons.USP_SILENCER(504)
-        Weapons.XM1014(393)
-    }
-
-    private operator fun Weapons.invoke(skinID: Int, skinSeed: Int = DEFAULT_SKIN_SEED, statTrak: Int = DEFAULT_STATTRAK, wear: Float = DEFAULT_WEAR, quality: Int = DEFAULT_QUALITY) {
-        if (this == weapon) skin(skinID, skinSeed, statTrak, wear, quality)
-    }
 
     override fun pulse(clientState: ClientState, me: Me, entities: Indexer<GameEntity>) {
-        for (weaponId in me.weaponIds) {
-            val weapon = Weapons.byID(weaponId)
+        for (weaponData in me.weaponIds) {
+            val weapon = Weapons.byID(weaponData[0].toInt())
             if (weapon != null && weapon.customSkin) {
                 for (i in 0..4) {
-                    process().writeInt(weaponAddress + m_iItemIDHigh, 1)// patch to make the skins stay
-                    process().writeInt(weaponAddress + m_nFallbackPaintKit, weapon.skin)
-                    process().writeInt(weaponAddress + m_nFallbackSeed, DEFAULT_SKIN_SEED)
-                    process().writeInt(weaponAddress + m_nFallbackStatTrak, DEFAULT_STATTRAK)
-                    process().writeInt(weaponAddress + m_iEntityQuality, DEFAULT_QUALITY)
-                    process().writeFloat(weaponAddress + m_flFallbackWear, DEFAULT_WEAR)
+                    appySkin(weaponData[1], weapon.skin)
                 }
             }
         }
@@ -94,7 +48,8 @@ class SkinChangerPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
             engine().writeInt(Game.current().clientState().address() + m_dwForceFullUpdate, -1)
     }
 
-    private fun skin(skinID: Int, skinSeed: Int, statTrak: Int, wear: Float, quality: Int) {
+    private fun appySkin(weaponAddress: Long, skinID: Int, skinSeed: Int = DEFAULT_SKIN_SEED, statTrak: Int = DEFAULT_STATTRAK, wear: Float = DEFAULT_WEAR, quality: Int = DEFAULT_QUALITY) {
+        process().writeInt(weaponAddress + m_iItemIDHigh, 1)
         process().writeInt(weaponAddress + m_nFallbackPaintKit, skinID)
         process().writeInt(weaponAddress + m_nFallbackSeed, skinSeed)
         process().writeInt(weaponAddress + m_nFallbackStatTrak, statTrak)
