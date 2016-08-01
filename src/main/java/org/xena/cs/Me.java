@@ -67,6 +67,11 @@ public class Me extends Player {
 		shotsFired = process().readUnsignedInt(address() + m_iShotsFired);
 	}
 
+	public final static int DEFAULT_SKIN_SEED = 0;
+	public final static int DEFAULT_STATTRAK = -1; // -1 for no StatTrak, 0+ for StatTrak amount
+	public final static float DEFAULT_WEAR = 0.0001f; // lower = less wear, higher = more wear
+	public final static int DEFAULT_QUALITY = 1;
+
 	@Override
 	public int processWeapon(long weaponAddress, int index, boolean active) {
 		int weaponId = super.processWeapon(weaponAddress, index, active);

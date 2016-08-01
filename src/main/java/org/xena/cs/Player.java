@@ -1,95 +1,76 @@
+/*
+ *    Copyright 2016 Jonathan Beaudoin
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.xena.cs;
 
 import lombok.Getter;
 
-import static org.abendigo.OffsetManager.*;
-import static org.abendigo.offsets.Offsets.*;
+import static com.github.jonatino.OffsetManager.clientModule;
+import static com.github.jonatino.OffsetManager.process;
+import static com.github.jonatino.offsets.Offsets.*;
 
 public class Player extends GameEntity {
 
-    @Getter
-    protected int lifeState;
+	@Getter
+	protected int lifeState;
 
-    @Getter
-    protected int health;
+	@Getter
+	protected int health;
 
-    @Getter
-    protected long[] weaponIds = new long[8];
+	@Getter
+	public long[] weaponIds = new long[8];
 
-    @Getter
-    protected Weapon activeWeapon = new Weapon();
+	@Getter
+	protected Weapon activeWeapon = new Weapon();
 
-    @Getter
-    protected final float[] velocity = new float[3];
+	@Getter
+	protected int glowIndex;
 
-    @Getter
-    protected final float[] viewOffsets = new float[3];
+	@Getter
+	protected int armor;
 
-    @Getter
-    protected final float[] viewAngles = new float[3];
+	@Getter
+	protected boolean gunGameImmunity;
 
-    @Getter
-    protected final float[] bones = new float[3];
+	@Getter
+	protected boolean hasBomb;
 
-    @Getter
-    protected final float[] punch = new float[2];
+	@Override
+	public void update() {
+		super.update();
+		hasBomb = false;
 
-    @Getter
-    protected int glowIndex;
+		for (int i = 0; i < weaponIds.length; i++) {
+			long currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04)) & 0xFFF;
+			long weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10);
 
-    @Getter
-    protected int armor;
+			if (weaponAddress > 0) {
+				processWeapon(weaponAddress, i, false);
+			}
+		}
+	}
 
-    @Getter
-    protected boolean gunGameImmunity;
+	public int processWeapon(long weaponAddress, int index, boolean active) {
+		int weaponId = process().readInt(weaponAddress + m_iItemDefinitionIndex);
+		if (weaponId == Weapons.C4.getId()) {
+			hasBomb = true;
 
-    @Getter
-    protected boolean hasBomb;
+		}
+		weaponIds[index] = weaponId;
+		return weaponId;
+	}
 
-    @Override
-    public void update() {
-        super.update();
-        velocity[0] = process().readFloat(address() + m_vecVelocity);
-        velocity[1] = process().readFloat(address() + m_vecVelocity + 4);
-        velocity[2] = process().readFloat(address() + m_vecVelocity + 8);
-
-        viewOffsets[0] = process().readFloat(address() + m_vecViewOffset);
-        viewOffsets[1] = process().readFloat(address() + m_vecViewOffset + 4);
-        viewOffsets[2] = process().readFloat(address() + m_vecViewOffset + 8);
-
-        long anglePointer = engineModule().readUnsignedInt(m_dwClientState);
-        viewAngles[0] = process().readFloat(anglePointer + m_dwViewAngles);
-        viewAngles[1] = process().readFloat(anglePointer + m_dwViewAngles + 4);
-        viewAngles[2] = process().readFloat(anglePointer + m_dwViewAngles + 8);
-
-        punch[0] = process().readFloat(address() + m_vecPunch);
-        punch[1] = process().readFloat(address() + m_vecPunch + 4);
-
-        hasBomb = false;
-
-        for (int i = 0; i < weaponIds.length; i++) {
-            long weaponBase = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04));
-
-            long entNum = weaponBase & 0xFFF;
-            long id = clientModule().readUnsignedInt(m_dwEntityList + (entNum - 1) * 0x10);
-
-            weaponIds[i] = id;
-            if (id > 0) {
-                activeWeapon.setWeaponID(process().readUnsignedInt(id + m_iWeaponID));
-                activeWeapon.setCanReload(process().readBoolean(id + m_bCanReload));
-                activeWeapon.setClip1(process().readUnsignedInt(id + m_iClip1));
-                activeWeapon.setClip2(process().readUnsignedInt(id + m_iClip2));
-                if (activeWeapon.getWeaponID() == 50) {
-                    hasBomb = true;
-                }
-            }
-        }
-
-        long boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
-        if (boneMatrix > 0) {
-            bones[0] = process().readFloat(boneMatrix + 0x30 * 6 + 0x0C);
-            bones[1] = process().readFloat(boneMatrix + 0x30 * 6 + 0x1C);
-            bones[2] = process().readFloat(boneMatrix + 0x30 * 6 + 0x2C);
-        }
-    }
 }
