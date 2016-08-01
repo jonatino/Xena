@@ -31,7 +31,7 @@ public class Player extends GameEntity {
 	protected int health;
 
 	@Getter
-	public long[] weaponIds = new long[8];
+	public int[] weaponIds = new int[8];
 
 	@Getter
 	protected Weapon activeWeapon = new Weapon();
