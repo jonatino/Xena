@@ -67,11 +67,6 @@ public class Me extends Player {
 		shotsFired = process().readUnsignedInt(address() + m_iShotsFired);
 	}
 
-	public final static int DEFAULT_SKIN_SEED = 0;
-	public final static int DEFAULT_STATTRAK = -1; // -1 for no StatTrak, 0+ for StatTrak amount
-	public final static float DEFAULT_WEAR = 0.0001f; // lower = less wear, higher = more wear
-	public final static int DEFAULT_QUALITY = 1;
-
 	@Override
 	public int processWeapon(long weaponAddress, int index, boolean active) {
 		int weaponId = super.processWeapon(weaponAddress, index, active);
@@ -80,17 +75,6 @@ public class Me extends Player {
 			activeWeapon.setCanReload(process().readBoolean(weaponAddress + m_bCanReload));
 			activeWeapon.setClip1(process().readUnsignedInt(weaponAddress + m_iClip1));
 			activeWeapon.setClip2(process().readUnsignedInt(weaponAddress + m_iClip2));
-		}
-		Weapons weapon = Weapons.byID(weaponId);
-		if (weapon != null && weapon.getCustomSkin()) {
-			for (int i = 0; i < 5; i++) {
-				process().writeInt(weaponAddress + m_iItemIDHigh, 1);// patch to make the skins stay
-				process().writeInt(weaponAddress + m_nFallbackPaintKit, weapon.getSkin());
-				process().writeInt(weaponAddress + m_nFallbackSeed, DEFAULT_SKIN_SEED);
-				process().writeInt(weaponAddress + m_nFallbackStatTrak, DEFAULT_STATTRAK);
-				process().writeInt(weaponAddress + m_iEntityQuality, DEFAULT_QUALITY);
-				process().writeFloat(weaponAddress + m_flFallbackWear, DEFAULT_WEAR);
-			}
 		}
 		return weaponId;
 	}
