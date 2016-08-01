@@ -1,60 +1,78 @@
+/*
+ *    Copyright 2016 Jonathan Beaudoin
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.xena.utils;
 
-import org.abendigo.offsets.Offsets;
+import com.github.jonatino.misc.MemoryBuffer;
+import com.github.jonatino.offsets.Offsets;
 
 import java.awt.*;
 
-import static org.abendigo.OffsetManager.clientModule;
+import static com.github.jonatino.OffsetManager.clientModule;
 
 public final class Utils {
 
 	public static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
-	public static float[] worldToScreen(float[] from, float[] to) {
-		float[][] m_vMatrix = new float[4][4];
+	private static boolean screenTransform(float[] from, float[] to) {
+		float[][] flMatrix = new float[4][4];
 
-		int count = 0;
+		MemoryBuffer buffer = clientModule().read(Offsets.m_dwViewMatrix, 64);
 		for (int row = 0; row < 4; row++) {
-			for (int col = 0; col < 4; col++) {
-				m_vMatrix[row][col] = clientModule().readFloat(Offsets.m_dwViewMatrix + (count++ * 4));
+			for (int c = 0; c < 4; c++) {
+				flMatrix[row][c] = buffer.getFloat();
 			}
 		}
 
-		float w = 0.0f;
+		to[0] = flMatrix[0][0] * from[0] + flMatrix[0][1] * from[1] + flMatrix[0][2] * from[2] + flMatrix[0][3];
+		to[1] = flMatrix[1][0] * from[0] + flMatrix[1][1] * from[1] + flMatrix[1][2] * from[2] + flMatrix[1][3];
+		float w = flMatrix[3][0] * from[0] + flMatrix[3][1] * from[1] + flMatrix[3][2] * from[2] + flMatrix[3][3];
 
-		to[0] = m_vMatrix[0][0] * from[0] + m_vMatrix[0][1] * from[1] + m_vMatrix[0][2] * from[2] + m_vMatrix[0][3];
-		to[1] = m_vMatrix[1][0] * from[0] + m_vMatrix[1][1] * from[1] + m_vMatrix[1][2] * from[2] + m_vMatrix[1][3];
-		w = m_vMatrix[3][0] * from[0] + m_vMatrix[3][1] * from[1] + m_vMatrix[3][2] * from[2] + m_vMatrix[3][3];
-
-		if (w < 0.01f) {
-			return to;
+		if (w < 0.001f) {
+			to[0] *= 100000;
+			to[1] *= 100000;
+			return true;
 		}
 
 		float invw = 1.0f / w;
 		to[0] *= invw;
 		to[1] *= invw;
 
-		int width = SCREEN_SIZE.width;
-		int height = SCREEN_SIZE.height;
+		return false;
+	}
 
-		float x = width / 2;
-		float y = height / 2;
+	public static float[] worldToScreen(float[] from, float[] to) {
+		if (!screenTransform(from, to)) {
+			int iScreenWidth = SCREEN_SIZE.width;
+			int iScreenHeight = SCREEN_SIZE.height;
 
-		x += 0.5 * to[0] * width + 0.5;
-		y -= 0.5 * to[1] * height + 0.5;
+			to[0] = (iScreenWidth / 2.0f) + (to[0] * iScreenWidth) / 2;
+			to[1] = (iScreenHeight / 2.0f) - (to[1] * iScreenHeight) / 2;
 
-		to[0] = x + 0;
-		to[1] = y + 0;
-
+			return to;
+		}
 		return to;
 	}
 
-    public static int[] from(int min, int max) {
-        int[] keys = new int[(max - min) + 1];
-        for (int i = 0; i < keys.length; i++) {
-            keys[i] = min++;
-        }
-        return keys;
-    }
+	public static int[] from(int min, int max) {
+		int[] keys = new int[(max - min) + 1];
+		for (int i = 0; i < keys.length; i++) {
+			keys[i] = min++;
+		}
+		return keys;
+	}
 
 }

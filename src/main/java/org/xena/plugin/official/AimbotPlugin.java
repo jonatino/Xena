@@ -1,14 +1,14 @@
 /*
-package org.abendigo.plugin.official;
+package com.github.jonatino.plugin.official;
 
-import org.abendigo.cs.*;
+import com.github.jonatino.cs.*;
 import Logger;
-import org.abendigo.plugin.AbstractPlugin;
+import com.github.jonatino.plugin.AbstractPlugin;
 import PluginManifest;
-import org.abendigo.process.Data;
-import org.abendigo.process.GameProcess;
-import org.abendigo.process.Module;
-import org.abendigo.task.TaskManager;
+import com.github.jonatino.process.Data;
+import com.github.jonatino.process.GameProcess;
+import com.github.jonatino.process.Module;
+import com.github.jonatino.task.TaskManager;
 
 import java.util.Set;
 
