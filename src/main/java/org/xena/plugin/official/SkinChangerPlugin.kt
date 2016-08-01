@@ -72,22 +72,24 @@ class SkinChangerPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
         Weapons.XM1014(393)
     }
 
-    private operator fun Weapons.invoke(skinID: Int, skinSeed: Int = DEFAULT_SKIN_SEED,
-                                        statTrak: Int = DEFAULT_STATTRAK, wear: Float = DEFAULT_WEAR,
-                                        quality: Int = DEFAULT_QUALITY) {
+    private operator fun Weapons.invoke(skinID: Int, skinSeed: Int = DEFAULT_SKIN_SEED, statTrak: Int = DEFAULT_STATTRAK, wear: Float = DEFAULT_WEAR, quality: Int = DEFAULT_QUALITY) {
         if (this == weapon) skin(skinID, skinSeed, statTrak, wear, quality)
     }
 
     override fun pulse(clientState: ClientState, me: Me, entities: Indexer<GameEntity>) {
-        /* for (i in me.weaponIds) {
-             try {
-                 weapon = Weapons.byID(i.toInt())
-
-                 skins()
-             } catch (t: Throwable) {
-                 t.printStackTrace()
-             }
-         }*/
+        for (weaponId in me.weaponIds) {
+            val weapon = Weapons.byID(weaponId)
+            if (weapon != null && weapon.customSkin) {
+                for (i in 0..4) {
+                    process().writeInt(weaponAddress + m_iItemIDHigh, 1)// patch to make the skins stay
+                    process().writeInt(weaponAddress + m_nFallbackPaintKit, weapon.skin)
+                    process().writeInt(weaponAddress + m_nFallbackSeed, DEFAULT_SKIN_SEED)
+                    process().writeInt(weaponAddress + m_nFallbackStatTrak, DEFAULT_STATTRAK)
+                    process().writeInt(weaponAddress + m_iEntityQuality, DEFAULT_QUALITY)
+                    process().writeFloat(weaponAddress + m_flFallbackWear, DEFAULT_WEAR)
+                }
+            }
+        }
         if (NativeKeyUtils.isKeyDown(KeyEvent.VK_F1))
             engine().writeInt(Game.current().clientState().address() + m_dwForceFullUpdate, -1)
     }
