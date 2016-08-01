@@ -1,8 +1,21 @@
+/*
+ *    Copyright 2016 Jonathan Beaudoin
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package org.xena.plugin.official;
 
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinUser;
 import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.ClientState;
@@ -14,116 +27,78 @@ import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
-import org.xena.utils.Utils;
-
-import java.util.Arrays;
-
-import static com.sun.jna.platform.win32.WinUser.SM_CXSCREEN;
-import static com.sun.jna.platform.win32.WinUser.SM_CYSCREEN;
 
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class ForceAimPlugin extends Plugin {
 
-    private final AngleUtils aimHelper;
+	private final AngleUtils aimHelper;
 
-    public ForceAimPlugin(Logger logger, Xena xena) {
-        super(logger, xena);
-        aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
-    }
+	public ForceAimPlugin(Logger logger, Xena xena) {
+		super(logger, xena);
+		aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
+	}
 
 	private float[] aim = new float[3];
 	private final float[] lastaim = new float[3];
 
-    private Player lastTarget = null;
+	private Player lastTarget = null;
 
-    @Override
-    public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
-        if (NativeKeyUtils.isLeftAltDown()) {
+	@Override
+	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
+		if (NativeKeyUtils.isLeftAltDown()) {
 
-            Player target = me.getTarget();
-            if (lastTarget != null && target == null) {
-                if (!lastTarget.isDead() && lastTarget.isSpotted()) {
-                    target = lastTarget;
-                } else {
-                    lastTarget = null;
-                }
-            }
+			Player target = me.getTarget();
+			if (lastTarget != null && target == null) {
+				if (!lastTarget.isDead() && lastTarget.isSpotted()) {
+					target = lastTarget;
+				} else {
+					lastTarget = null;
+				}
+			}
 
-            if (target == null) {
-                return;
-            }
+			if (target == null) {
+				return;
+			}
 
-            System.out.println(target + ", " + target.address());
+			if (target == null) {
+				lastaim[0] = 0;
+				lastaim[1] = 0;
+				return;
+			}
 
-            if (aimHelper.canShoot(me, target)) {
-                aimHelper.velocityComp(me, target, target.getBones());
-                aimHelper.calculateAngle(me, me.getPosition(), target.getBones(), aim);
-	            //aimHelper.setAngleSmooth(aim, target.getViewAngles());
+			//System.out.println(target + ", " + target.address());
 
-	            float[] nan = new float[3];
-	            Utils.worldToScreen(aim, nan);
-	            MouseMove(nan[0], nan[1]);
-	            lastaim[0] = aim[0];
-	            lastaim[1] = aim[1];
+			if (aimHelper.canShoot(me, target)) {
+				aimHelper.velocityComp(me, target, target.getBones());
+				aimHelper.calculateAngle(me, me.getPosition(), target.getBones(), aim);
+				aimHelper.setAngleSmooth(aim, target.getViewAngles());
+				//aimang = localViewAngles - aimAng;
 
-	            lastTarget = target;
-            } else {
-                lastTarget = null;
-            }
-        } else {
-            lastTarget = null;
-        }
-    }
+				float deltax = aim[0] - lastaim[0];
+				float deltay = lastaim[1] - aim[1];
 
-	public static final long MOUSEEVENTF_MOVE = 0x0001L;
-	public static final long MOUSEEVENTF_ABSOLUTE = 0x8000L;
+				float x = deltax / (0.022f * 2.0f * 1.0f); // your formula. I have 2 sens in-game, using 6/11 windows sensitivity
+				float y = deltay / (0.022f * 2.0f * 1.0f);
 
-	public static WinDef.RECT getRect(String windowName) {
-		WinDef.HWND hwnd = User32.INSTANCE.FindWindow(null, windowName);
-		if (hwnd == null) {
-			throw new RuntimeException(windowName);
+				//System.out.println(deltax+", "+deltay+", "+ x +", "+ y);
+				//MouseMove(x, y);
+				lastTarget = target;
+			} else {
+				lastTarget = null;
+			}
+		} else {
+			lastTarget = null;
 		}
-
-		WinDef.RECT rect = new WinDef.RECT();
-		boolean result = User32.INSTANCE.GetWindowRect(hwnd, rect);
-		if (!result) {
-			throw new RuntimeException(windowName);
-		}
-		return rect;
 	}
+
+	public static final int MOUSEEVENTF_MOVE = 0x0001;
+	public static final int MOUSEEVENTF_ABSOLUTE = 0x8000;
 
 	public static void MouseMove(float delta_x, float delta_y) {
 		int mouse_move_x = (int) delta_x;
 		int mouse_move_y = (int) delta_y;
-		double fScreenWidth = User32.INSTANCE.GetSystemMetrics(SM_CXSCREEN) - 1;
-		double fScreenHeight = User32.INSTANCE.GetSystemMetrics(SM_CYSCREEN) - 1;
-		double dx = 65535.0f / fScreenWidth;
-		double dy = 65535.0f / fScreenHeight;
-		WinDef.RECT rect = getRect("Counter-Strike: Global Offensive");//TODO fix this dumb shit rofl
-		int[] mouse_center = new int[2];
-		int[] wndpos = new int[2];
 
-		wndpos[0] = rect.left;
-		wndpos[1] = rect.top;
-
-		mouse_center[0] = (rect.right - rect.left) / 2;
-		mouse_center[1] = (rect.bottom - rect.top) / 2;
-
-		double fx = (wndpos[0] + mouse_center[0] + delta_x) * dx;
-		double fy = (wndpos[1] + mouse_center[1] + delta_y) * dy;
-		WinUser.INPUT input = new WinUser.INPUT();
-		input.input.setType("mi");
-		input.input.mi.dwFlags = new WinDef.DWORD(MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE);
-		input.input.mi.dx = new WinDef.LONG((long) fx);
-		input.input.mi.dy = new WinDef.LONG((long) fy);
-
-		System.out.println(fx + ", " + fy);
-		System.out.println(mouse_move_x + ", " + mouse_move_y);
-		System.out.println(Arrays.toString(wndpos));
-		System.out.println(Arrays.toString(mouse_center));
-
-		WinUser.INPUT[] inArray = (WinUser.INPUT[]) input.toArray(1);
-		User32.INSTANCE.SendInput(new WinDef.DWORD(1), inArray, input.size());
+		org.xena.natives.User32.mouse_event(MOUSEEVENTF_MOVE, mouse_move_x, mouse_move_y, 0, null);
 	}
 
 }
