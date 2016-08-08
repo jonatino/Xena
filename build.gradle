@@ -27,6 +27,10 @@ buildscript {
 
     ext.jna_version = '4.3.0-SNAPSHOT'
     ext.kotlin_version = '1.0.3'
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
 plugins {
@@ -38,6 +42,7 @@ allprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'java'
     apply plugin: 'application'
+    apply plugin: 'kotlin'
 }
 
 group project_group
@@ -127,6 +132,6 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile "com.github.jonatino:Abendigo-Offset-Scanner:1.6.3"
+    compile "com.github.jonatino:Abendigo-Offset-Scanner:1.6.4"
     compile "org.projectlombok:lombok:1.16.10"
 }
