@@ -24,7 +24,6 @@ import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 
 import static com.github.jonatino.offsets.Offsets.m_dwGlowObject;
-import static com.github.jonatino.offsets.Offsets.m_iTeamNum;
 
 @PluginManifest(name = "Glow ESP", description = "Make entities glow on your screen.")
 public final class GlowESPPlugin extends Plugin {
@@ -51,16 +50,6 @@ public final class GlowESPPlugin extends Plugin {
 				continue;
 			}
 
-			EntityType type = xena.getEntityType(entityAddress);
-			if (type == null) {
-				continue;
-			}
-
-			long team = process().readUnsignedInt(entityAddress + m_iTeamNum);
-			if (team != 2 && team != 3 || (type != EntityType.CCSPlayer && type != EntityType.CC4)) {
-				continue;
-			}
-
 			GameEntity entity = Game.current().get(entityAddress);
 			if (entity != null) {
 				try {
@@ -75,14 +64,14 @@ public final class GlowESPPlugin extends Plugin {
 				}
 			}
 		}
-		sleep(128);
+		sleep(64);
 	}
 
 	private float[] getColor(GameEntity entity) {
 		if (entity.getTeam() == 3) {
 			return TEAM_CT;
 		}
-		if (entity.isPlayer() && entity.asPlayer().isHasBomb()) {
+		if (entity.isBombCarrier()) {
 			return BOMB_CARRY;
 		}
 		if (entity.type() == EntityType.CC4) {
