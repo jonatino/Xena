@@ -41,7 +41,7 @@ public final class Xena implements NativeKeyListener {
 
 	private final Game game = Game.current();
 
-	public static final int CYCLE_TIME = 0;
+	public static final int CYCLE_TIME = 8;
 
 	@Getter
 	private final PluginManager pluginManager;
@@ -78,13 +78,13 @@ public final class Xena implements NativeKeyListener {
 	void run(Logger logger, int cycleMS) throws InterruptedException {
 		keylistener = GlobalKeyboard.register(this);
 
-		//pluginManager.enable(new RadarPlugin(logger, process, clientModule, engineModule, taskManager));
+		//pluginManager.enable(new RadarPlugin(logger, this));
 		pluginManager.add(new GlowESPPlugin(logger, this));
-		//pluginManager.add(new RCS(logger, this, taskManager));
+		//pluginManager.add(new RCS(logger, this));
 		pluginManager.add(new ForceAimPlugin(logger, this));
 		pluginManager.add(new SkinChangerPlugin(logger, this));
 		//pluginManager.add(new SpinBotPlugin(logger, this));
-		//pluginManager.add(new NoFlashPlugin(logger, this, taskManager));
+		//pluginManager.add(new NoFlashPlugin(logger, this));
 		pluginManager.add(new AimAssistPlugin(logger, this));
 
 		overlay = Overlay.open(this);
@@ -99,10 +99,14 @@ public final class Xena implements NativeKeyListener {
 				checkGameStatus();
 
 				updateClientState(game.clientState());
-				if (System.currentTimeMillis() - lastRefresh >= 2000) {
+				if (System.currentTimeMillis() - lastRefresh >= 10_000) {
 					clearPlayers();
 					updateEntityList();
 					lastRefresh = System.currentTimeMillis();
+				}
+				if (game.entities().size() <=0) {
+					Thread.sleep(1000);
+					continue;
 				}
 				game.entities().forEach(GameEntity::update);
 
@@ -129,48 +133,48 @@ public final class Xena implements NativeKeyListener {
 			long myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer);
 			if (myAddress < 0x200) {
 				clearPlayers();
-				Thread.sleep(3000);
+				Thread.sleep(10000);
 				continue;
 			}
 
 			long myTeam = process.readUnsignedInt(myAddress + m_iTeamNum);
 			if (myTeam != 2 && myTeam != 3) {
 				clearPlayers();
-				Thread.sleep(3000);
+				Thread.sleep(10000);
 				continue;
 			}
 
 			long objectCount = clientModule.readUnsignedInt(m_dwGlowObject + 4);
 			if (objectCount <= 0) {
 				clearPlayers();
-				Thread.sleep(3000);
+				Thread.sleep(10000);
 				continue;
 			}
 
 			long myIndex = process.readUnsignedInt(myAddress + m_dwIndex) - 1;
 			if (myIndex < 0 || myIndex >= objectCount) {
 				clearPlayers();
-				Thread.sleep(3000);
+				Thread.sleep(10000);
 				continue;
 			}
 
 			long enginePointer = engineModule.readUnsignedInt(m_dwClientState);
 			if (enginePointer <= 0) {
 				clearPlayers();
-				Thread.sleep(3000);
+				Thread.sleep(10000);
 				continue;
 			}
 
 			long inGame = process.readUnsignedInt(enginePointer + m_dwInGame);
 			if (inGame != 6) {
 				clearPlayers();
-				Thread.sleep(3000);
+				Thread.sleep(10000);
 				continue;
 			}
 
 			if (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0) {
 				clearPlayers();
-				Thread.sleep(3000);
+				Thread.sleep(10000);
 				continue;
 			}
 			break;
@@ -197,15 +201,10 @@ public final class Xena implements NativeKeyListener {
 		long entityCount = clientModule.readUnsignedInt(m_dwGlowObject + 4);
 		long myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer);
 
-		System.out.println(process.findModule("engine.dll").address());
-		System.out.println(process.findModule("client.dll").address());
 		for (int i = 0; i < entityCount; i++) {
 			long entityAddress = clientModule.readUnsignedInt(m_dwEntityList + (i * 0x10));
 			long glowObjectPointer = pointerGlow + (i * 56);
 
-			if (entityAddress == myAddress) {
-				System.out.println("Found my address");
-			}
 			if (entityAddress == 0) {
 				//entityAddress = process.readUnsignedInt(glowObjectPointer);
 			}
@@ -239,7 +238,7 @@ public final class Xena implements NativeKeyListener {
 				}
 				entity.setAddress(entityAddress);
 				game.register(entity);
-				System.out.println("Entity: " + entity + ", " + game.entities().size());
+				//System.out.println("Entity: " + entity + ", " + game.entities().size());
 			}
 			entity.setClassId(type.getId());
 			entity.setGlowPointer(glowObjectPointer);
