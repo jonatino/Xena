@@ -37,7 +37,7 @@ enum class Weapons(val id: Int, val skin: Int = -1, val customSkin: Boolean = (s
     AUG(8, AKIHABARA_ACCEPT),
     AWP(9, DRAGON_LORE),
     FAMAS(10, AFTERIMAGE),
-    M4A1_SILENCER(60, HOWL),
+    M4A1_SILENCER(60, MECHA_INDUSTRIES),
     M4A4(16, HOWL),
     SSG08(40, DETOUR),
 

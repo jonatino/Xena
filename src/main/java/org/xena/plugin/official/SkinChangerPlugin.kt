@@ -36,14 +36,14 @@ class SkinChangerPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
 
 
     override fun pulse(clientState: ClientState, me: Me, entities: Indexer<GameEntity>) {
-        for (weaponData in me.weaponIds) {
+      /*  for (weaponData in me.weaponIds) {
             val weapon = Weapons.byID(weaponData[0].toInt())
             if (weapon != null && weapon.customSkin) {
                 for (i in 0..4) {
                     appySkin(weaponData[1], weapon.skin)
                 }
             }
-        }
+        }*/
         if (NativeKeyUtils.isKeyDown(KeyEvent.VK_F1))
             engine().writeInt(Game.current().clientState().address() + m_dwForceFullUpdate, -1)
     }
