@@ -1,5 +1,5 @@
 @echo off
-title Abendigo
+title Xena
 
 set bat="./build/install/Xena/bin/Xena.bat"
 
