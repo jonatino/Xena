@@ -46,7 +46,6 @@ public final class ForceAimPlugin extends Plugin {
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
 		if (NativeKeyUtils.isLeftAltDown()) {
-
 			Player target = me.getTarget();
 			if (lastTarget != null && target == null) {
 				if (!lastTarget.isDead() && lastTarget.isSpotted()) {
@@ -55,7 +54,7 @@ public final class ForceAimPlugin extends Plugin {
 					lastTarget = null;
 				}
 			}
-
+			
 			if (target == null) {
 				return;
 			}
