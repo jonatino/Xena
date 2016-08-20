@@ -36,13 +36,14 @@ public class Me extends Player {
 	@Override
 	public void update() {
 		super.update();
+
 		long activeWeaponIndex = process().readUnsignedInt(address() + m_hActiveWeapon) & 0xFFF;
 		for (int i = 0; i < weaponIds.length; i++) {
 			long currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04)) & 0xFFF;
 			long weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10);
 
-			if (weaponAddress > 0) {
-				processWeapon(weaponAddress, 0, activeWeaponIndex == currentWeaponIndex);
+			if (weaponAddress > 0 && activeWeaponIndex == currentWeaponIndex) {
+				processWeapon(weaponAddress, i, true);
 			}
 		}
 /*		if (activeWeapon.getWeaponID() == 42 || activeWeapon.getWeaponID() == 516) {
@@ -56,17 +57,18 @@ public class Me extends Player {
 			process().writeInt(weaponAddress + m_iWeaponID, 516);
 		}*/
 
-		crosshair = process().readUnsignedInt(address() + m_iCrossHairID) - 1;
-		GameEntity entity = Game.current().get(clientModule().readUnsignedInt(m_dwEntityList + (crosshair * 0x10)));
-		if (crosshair > -1 && entity != null && entity.isPlayer()) {
-			target = entity.asPlayer();
-		} else {
-			target = null;
+		target = null;
+		crosshair = process().readUnsignedInt(address() + m_iCrossHairID+16) - 1;
+		if (crosshair > -1 && crosshair <= 30) {
+			GameEntity entity = Game.current().get(clientModule().readUnsignedInt(m_dwEntityList + (crosshair * 0x10)));
+			if (entity != null && entity.isPlayer()) {
+				target = entity.asPlayer();
+			}
 		}
 
 		shotsFired = process().readUnsignedInt(address() + m_iShotsFired);
 	}
-
+	
 	@Override
 	public int processWeapon(long weaponAddress, int index, boolean active) {
 		int weaponId = super.processWeapon(weaponAddress, index, active);
