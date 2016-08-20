@@ -48,7 +48,7 @@ allprojects {
 group project_group
 version project_version
 
-mainClassName = "com.github.jonatino.Main"
+mainClassName = "org.xena.Main"
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
