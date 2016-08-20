@@ -16,50 +16,56 @@
 
 package org.xena.keylistener;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by Jonathan on 8/29/2015.
  */
 public final class NativeKeyEvent extends NativeKeyUtils {
-
-    private final int keyCode;
-    private final long time;
-    private boolean swallowed;
-
-    public NativeKeyEvent(int keyCode, long time) {
-        this.keyCode = keyCode;
-        this.time = time;
-    }
-
-    public boolean consumed() {
-        return swallowed;
-    }
-
-    public void consume() {
-        swallowed = true;
-    }
-
-    public int keyCode() {
-        return keyCode;
-    }
-
-    public boolean within(int min, int max) {
-        return keyCode >= min && keyCode <= max;
-    }
-
-    public long time() {
-        return time;
-    }
-
-    public boolean hasModifiers() {
-        return isCtrlDown() || isAltDown() || isShiftDown();
-    }
-
-    public String codeString() {
-        return String.valueOf((char) keyCode);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + ": keycode=" + keyCode + ", key=" + codeString() + ", time=" + time + ", swallowed=" + swallowed;
-    }
+	
+	@Setter
+	@Getter
+	private int keyCode;
+	
+	@Setter
+	@Getter
+	private long time;
+	
+	@Getter
+	private boolean consumed;
+	
+	NativeKeyEvent() {
+	}
+	
+	public boolean consumed() {
+		return consumed;
+	}
+	
+	public void consume() {
+		consumed = true;
+	}
+	
+	public void reset() {
+		consumed = false;
+		keyCode = -1;
+		time = -1;
+	}
+	
+	public boolean within(int min, int max) {
+		return keyCode >= min && keyCode <= max;
+	}
+	
+	public boolean hasModifiers() {
+		return isCtrlDown() || isAltDown() || isShiftDown();
+	}
+	
+	public String codeString() {
+		return String.valueOf((char) keyCode);
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ": keycode=" + keyCode + ", key=" + codeString() + ", time=" + time + ", consumed=" + consumed;
+	}
 }

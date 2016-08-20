@@ -24,111 +24,114 @@ import static com.github.jonatino.OffsetManager.process;
 import static com.github.jonatino.offsets.Offsets.*;
 
 public class GameEntity extends GameObject {
-
-    @Getter
-    @Setter
-    protected int classId;
-
-    @Getter
-    protected long index;
-
+	
+	@Getter
+	@Setter
+	protected int classId;
+	
+	@Getter
+	protected long index;
+	
 	@Setter
 	@Getter
 	protected long glowPointer;
-
-    @Getter
-    protected long model;
-
-    @Getter
-    protected long boneMatrix;
-
-    @Getter
-    protected long team;
-
-    @Getter
-    protected boolean running;
-
-    @Getter
-    protected boolean dormant;
-
-    @Getter
-    private final float[] position = new float[3];
-
+	
+	@Getter
+	protected long model;
+	
+	@Getter
+	protected long boneMatrix;
+	
+	@Getter
+	protected long team;
+	
+	@Getter
+	protected boolean running;
+	
+	@Getter
+	protected boolean dormant;
+	
+	@Getter
+	private final float[] position = new float[3];
+	
 	@Getter
 	protected final float[] velocity = new float[3];
-
+	
 	@Getter
 	protected final float[] viewOffsets = new float[3];
-
+	
 	@Getter
 	protected final float[] viewAngles = new float[3];
-
+	
 	@Getter
 	protected final float[] bones = new float[3];
-
+	
 	@Getter
 	protected final float[] punch = new float[2];
-
-    @Getter
-    protected boolean dead;
-
-    @Getter
-    protected boolean spotted;
-
-    public void update() {
-	    model = process().readUnsignedInt(address() + m_dwModel);
-	    boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
-        team = process().readUnsignedInt(address() + m_iTeamNum);
-        running = process().readBoolean(address() + m_bMoveType);
-        dormant = process().readBoolean(address() + m_bDormant);
-
-        position[0] = process().readFloat(address() + m_vecOrigin);
-        position[1] = process().readFloat(address() + m_vecOrigin + 4);
-        position[2] = process().readFloat(address() + m_vecOrigin + 8);
-
-	    velocity[0] = process().readFloat(address() + m_vecVelocity);
-	    velocity[1] = process().readFloat(address() + m_vecVelocity + 4);
-	    velocity[2] = process().readFloat(address() + m_vecVelocity + 8);
-
-	    viewOffsets[0] = process().readFloat(address() + m_vecViewOffset);
-	    viewOffsets[1] = process().readFloat(address() + m_vecViewOffset + 4);
-	    viewOffsets[2] = process().readFloat(address() + m_vecViewOffset + 8);
-
-	    long anglePointer = engineModule().readUnsignedInt(m_dwClientState);
-	    viewAngles[0] = process().readFloat(anglePointer + m_dwViewAngles);
-	    viewAngles[1] = process().readFloat(anglePointer + m_dwViewAngles + 4);
-	    viewAngles[2] = process().readFloat(anglePointer + m_dwViewAngles + 8);
-
-	    long boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
-	    if (boneMatrix > 0) {
-		    //Bones bone = Bones.roll();
-		    Bones bone = Bones.HEAD;
-		    try {
-			    bones[0] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x0C);
-			    bones[1] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x1C);
-			    bones[2] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x2C);
-		    } catch (Exception e) {
-
-		    }
-	    }
-
-	    punch[0] = process().readFloat(address() + m_vecPunch);
-	    punch[1] = process().readFloat(address() + m_vecPunch + 4);
-
-        dead = process().readByte(address() + m_lifeState) != 0;
-        spotted = process().readUnsignedInt(address() + m_bSpotted) != 0;
-    }
-
-    public Player asPlayer() {
-        return (Player) this;
-    }
-
-    public boolean isPlayer() {
-        return this instanceof Player;
-    }
-
-    public EntityType type() {
-        return EntityType.byId(classId);
-    }
-
+	
+	@Getter
+	protected boolean dead;
+	
+	@Getter
+	protected boolean spotted;
+	
+	@Getter
+	protected boolean bombCarrier;
+	
+	public void update() {
+		model = process().readUnsignedInt(address() + m_dwModel);
+		boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
+		team = process().readUnsignedInt(address() + m_iTeamNum);
+		running = process().readBoolean(address() + m_bMoveType);
+		dormant = process().readBoolean(address() + m_bDormant);
+		
+		position[0] = process().readFloat(address() + m_vecOrigin);
+		position[1] = process().readFloat(address() + m_vecOrigin + 4);
+		position[2] = process().readFloat(address() + m_vecOrigin + 8);
+		
+		velocity[0] = process().readFloat(address() + m_vecVelocity);
+		velocity[1] = process().readFloat(address() + m_vecVelocity + 4);
+		velocity[2] = process().readFloat(address() + m_vecVelocity + 8);
+		
+		viewOffsets[0] = process().readFloat(address() + m_vecViewOffset);
+		viewOffsets[1] = process().readFloat(address() + m_vecViewOffset + 4);
+		viewOffsets[2] = process().readFloat(address() + m_vecViewOffset + 8);
+		
+		long anglePointer = engineModule().readUnsignedInt(m_dwClientState);
+		viewAngles[0] = process().readFloat(anglePointer + m_dwViewAngles);
+		viewAngles[1] = process().readFloat(anglePointer + m_dwViewAngles + 4);
+		viewAngles[2] = process().readFloat(anglePointer + m_dwViewAngles + 8);
+		
+		long boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
+		if (boneMatrix > 0) {
+			//Bones bone = Bones.roll();
+			Bones bone = Bones.HEAD;
+			try {
+				bones[0] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x0C);
+				bones[1] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x1C);
+				bones[2] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x2C);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		punch[0] = process().readFloat(address() + m_vecPunch);
+		punch[1] = process().readFloat(address() + m_vecPunch + 4);
+		
+		dead = process().readByte(address() + m_lifeState) != 0;
+		spotted = process().readUnsignedInt(address() + m_bSpotted) != 0;
+	}
+	
+	public Player asPlayer() {
+		return (Player) this;
+	}
+	
+	public boolean isPlayer() {
+		return this instanceof Player;
+	}
+	
+	public EntityType type() {
+		return EntityType.byId(classId);
+	}
+	
 }

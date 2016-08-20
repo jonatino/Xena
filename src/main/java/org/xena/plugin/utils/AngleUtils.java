@@ -16,6 +16,7 @@
 
 package org.xena.plugin.utils;
 
+import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
 import org.xena.cs.Player;
 import org.xena.plugin.Plugin;
@@ -90,7 +91,7 @@ public final class AngleUtils {
 		return a + (random.nextFloat() * (b - a));
 	}
 
-	public boolean canShoot(Me me, Player target) {
+	public boolean canShoot(Me me, GameEntity target) {
 		long weaponID = me.getActiveWeapon().getWeaponID();
 		if (weaponID == 42) {
 			return false;

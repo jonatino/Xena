@@ -34,7 +34,7 @@ public final class Main {
 	public static void main(String... args) throws InterruptedException {
 		System.out.println(ManagementFactory.getRuntimeMXBean().getName());
 		System.out.println(logo);
-		System.exit(12);
+		
 		OffsetManager.initAll();
 
 		Xena xena = new Xena(process(), clientModule(), engineModule(), new PluginManager());

@@ -45,13 +45,10 @@ public class Player extends GameEntity {
 	@Getter
 	protected boolean gunGameImmunity;
 
-	@Getter
-	protected boolean hasBomb;
-
 	@Override
 	public void update() {
 		super.update();
-		hasBomb = false;
+		bombCarrier = false;
 
 		for (int i = 0; i < weaponIds.length; i++) {
 			long currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04)) & 0xFFF;
@@ -66,7 +63,7 @@ public class Player extends GameEntity {
 	public int processWeapon(long weaponAddress, int index, boolean active) {
 		int weaponId = process().readInt(weaponAddress + m_iItemDefinitionIndex);
 		if (weaponId == Weapons.C4.getId()) {
-			hasBomb = true;
+			bombCarrier = true;
 
 		}
 		weaponIds[index][0] = weaponId;

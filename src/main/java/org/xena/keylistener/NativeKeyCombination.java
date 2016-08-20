@@ -59,7 +59,7 @@ public final class NativeKeyCombination {
             return false;
         }
         for (int i : getKeys()) {
-            if (event.keyCode() == i) {
+            if (event.getKeyCode() == i) {
                 return true;
             }
         }

@@ -58,8 +58,8 @@ public abstract class Plugin {
 
         xena.getKeylistener().registerHotkey(new NativeKeyCombination((e) -> {
             toggle();
-            xena.getOverlay().repaint();
-            e.consume();
+	        xena.getOverlay().repaint();
+	        e.consume();
         }, GlobalKeyboard.ALT, KeyEvent.VK_NUMPAD0 + uid, KeyEvent.VK_0 + uid));
     }
 

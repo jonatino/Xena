@@ -104,6 +104,7 @@ public final class Xena implements NativeKeyListener {
 					updateEntityList();
 					lastRefresh = System.currentTimeMillis();
 				}
+				
 				if (game.entities().size() <=0) {
 					Thread.sleep(1000);
 					continue;
@@ -262,6 +263,7 @@ public final class Xena implements NativeKeyListener {
 			long classId = process.readUnsignedInt(cls + 20);
 			return EntityType.byId(classId);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -269,7 +271,7 @@ public final class Xena implements NativeKeyListener {
 	@Override
 	public boolean onKeyPressed(NativeKeyEvent event) {
 		if (overlay != null && overlay.isVisible()) {
-			if (event.keyCode() == KeyEvent.VK_F9 && !event.hasModifiers()) {
+			if (event.getKeyCode() == KeyEvent.VK_F9 && !event.hasModifiers()) {
 				overlay.minimize();
 				return true;
 			}

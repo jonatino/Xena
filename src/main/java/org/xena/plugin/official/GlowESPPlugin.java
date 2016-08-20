@@ -22,52 +22,58 @@ import org.xena.cs.*;
 import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
+import org.xena.plugin.utils.AngleUtils;
 
 import static com.github.jonatino.offsets.Offsets.m_dwGlowObject;
 
 @PluginManifest(name = "Glow ESP", description = "Make entities glow on your screen.")
 public final class GlowESPPlugin extends Plugin {
-
-	private static final float[] TEAM_CT = {114.0f, 155.0f, 221.0f, 153.0f};
-	private static final float[] TEAM_T = {224.0f, 175.0f, 86.0f, 153.0f};
-	private static final float[] BOMB_CARRY = {255f, 0.0f, 0.0f, 200.0f};
-	private static final float[] BOMB_DROPPED = {133f, 142.0f, 30.0f, 200.0f};
-
+	
+	private final AngleUtils angleUtils;
+	
+	private static final int[] TEAM_CT = {114, 155, 221, 153};
+	private static final int[] TEAM_T = {224, 175, 86, 153};
+	private static final int[] BOMB_CARRY = {255, 0, 0, 200};
+	private static final int[] BOMB_DROPPED = {133, 142, 30, 200};
+	
 	public GlowESPPlugin(Logger logger, Xena xena) {
 		super(logger, xena);
+		angleUtils = new AngleUtils(this, 0f, 0f, 0f, 0f, 0f);
 	}
-
+	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
 		long pointerGlow = client().readUnsignedInt(m_dwGlowObject);
 		long glowObjectCount = client().readUnsignedInt(m_dwGlowObject + 4);
-
+		
 		for (int i = 0; i < glowObjectCount; i++) {
 			long glowObjectPointer = pointerGlow + (i * 56);
 			long entityAddress = process().readUnsignedInt(glowObjectPointer);
-
+			
 			if (entityAddress < 0x200) {
 				continue;
 			}
-
+			
 			GameEntity entity = Game.current().get(entityAddress);
-			if (entity != null) {
+			if (entity != null && angleUtils.canShoot(me, entity)) {
 				try {
-					float[] c = getColor(entity);
+					int[] c = getColor(entity);
 					for (int x = 0; x < 4; x++) {
-						process().writeFloat(glowObjectPointer + (x + 1) * 4, c[x] / 255.0f);
+						process().writeFloat(glowObjectPointer + (x + 1) * 4, c[x] / 255f);
+						process().writeByte(entityAddress + 0x70 + x, c[x]);
 					}
+					
 					process().writeBoolean(glowObjectPointer + 0x24, true);
 					process().writeBoolean(glowObjectPointer + 0x25, false);
+					process().writeBoolean(glowObjectPointer + 0x26, false);
 				} catch (Throwable ignored) {
 					ignored.printStackTrace();
 				}
 			}
 		}
-		sleep(64);
 	}
-
-	private float[] getColor(GameEntity entity) {
+	
+	private int[] getColor(GameEntity entity) {
 		if (entity.getTeam() == 3) {
 			return TEAM_CT;
 		}
@@ -79,5 +85,5 @@ public final class GlowESPPlugin extends Plugin {
 		}
 		return TEAM_T;
 	}
-
+	
 }
