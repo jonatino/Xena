@@ -17,35 +17,38 @@
 package org.xena.cs;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import static com.github.jonatino.OffsetManager.clientModule;
 import static com.github.jonatino.OffsetManager.process;
 import static com.github.jonatino.offsets.Offsets.*;
 
+@ToString
 public class Me extends Player {
-
+	
 	@Getter
 	private long crosshair;
-
+	
 	@Getter
 	private Player target;
-
+	
 	@Getter
 	private long shotsFired;
-
+	
 	@Override
 	public void update() {
-		super.update();
-
-		long activeWeaponIndex = process().readUnsignedInt(address() + m_hActiveWeapon) & 0xFFF;
-		for (int i = 0; i < weaponIds.length; i++) {
-			long currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04)) & 0xFFF;
-			long weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10);
-
-			if (weaponAddress > 0 && activeWeaponIndex == currentWeaponIndex) {
-				processWeapon(weaponAddress, i, true);
+		if (shouldUpdate()) {
+			super.update();
+			
+			long activeWeaponIndex = process().readUnsignedInt(address() + m_hActiveWeapon) & 0xFFF;
+			for (int i = 0; i < weaponIds.length; i++) {
+				long currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04)) & 0xFFF;
+				long weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10);
+				
+				if (weaponAddress > 0 && activeWeaponIndex == currentWeaponIndex) {
+					processWeapon(weaponAddress, i, true);
+				}
 			}
-		}
 /*		if (activeWeapon.getWeaponID() == 42 || activeWeapon.getWeaponID() == 516) {
 			int modelAddress = process().readInt(address() + m_hViewModel) & 0xFFF;
 			long ds = clientModule().readUnsignedInt(m_dwEntityList + (modelAddress - 1) * 0x10);
@@ -56,17 +59,18 @@ public class Me extends Player {
 			process().writeInt(weaponAddress + m_iItemDefinitionIndex, 515);
 			process().writeInt(weaponAddress + m_iWeaponID, 516);
 		}*/
-
-		target = null;
-		crosshair = process().readUnsignedInt(address() + m_iCrossHairID+16) - 1;
-		if (crosshair > -1 && crosshair <= 30) {
-			GameEntity entity = Game.current().get(clientModule().readUnsignedInt(m_dwEntityList + (crosshair * 0x10)));
-			if (entity != null && entity.isPlayer()) {
-				target = entity.asPlayer();
+			
+			target = null;
+			crosshair = process().readUnsignedInt(address() + m_iCrossHairID) - 1;
+			if (crosshair > -1 && crosshair <= 30) {
+				GameEntity entity = Game.current().get(clientModule().readUnsignedInt(m_dwEntityList + (crosshair * 0x10)));
+				if (entity != null) {
+					target = (Player) entity;
+				}
 			}
+			
+			shotsFired = process().readUnsignedInt(address() + m_iShotsFired);
 		}
-
-		shotsFired = process().readUnsignedInt(address() + m_iShotsFired);
 	}
 	
 	@Override

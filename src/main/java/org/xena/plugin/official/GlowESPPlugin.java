@@ -55,7 +55,7 @@ public final class GlowESPPlugin extends Plugin {
 			}
 			
 			GameEntity entity = Game.current().get(entityAddress);
-			if (entity != null && angleUtils.canShoot(me, entity)) {
+			if (entity != null) {
 				try {
 					int[] c = getColor(entity);
 					for (int x = 0; x < 4; x++) {

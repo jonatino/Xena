@@ -17,58 +17,47 @@
 package org.xena.cs;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import static com.github.jonatino.OffsetManager.clientModule;
 import static com.github.jonatino.OffsetManager.process;
 import static com.github.jonatino.offsets.Offsets.*;
 
+@ToString
 public class Player extends GameEntity {
-
-	@Getter
-	protected int lifeState;
-
-	@Getter
-	protected int health;
-
+	
 	@Getter
 	public long[][] weaponIds = new long[8][2];
-
+	
 	@Getter
 	protected Weapon activeWeapon = new Weapon();
-
-	@Getter
-	protected int glowIndex;
-
-	@Getter
-	protected int armor;
-
-	@Getter
-	protected boolean gunGameImmunity;
-
+	
 	@Override
 	public void update() {
-		super.update();
-		bombCarrier = false;
-
-		for (int i = 0; i < weaponIds.length; i++) {
-			long currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04)) & 0xFFF;
-			long weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10);
-
-			if (weaponAddress > 0) {
-				processWeapon(weaponAddress, i, false);
+		if (shouldUpdate()) {
+			super.update();
+			bombCarrier = false;
+			
+			for (int i = 0; i < weaponIds.length; i++) {
+				long currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons + ((i - 1) * 0x04)) & 0xFFF;
+				long weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10);
+				
+				if (weaponAddress > 0) {
+					processWeapon(weaponAddress, i, false);
+				}
 			}
 		}
 	}
-
+	
 	public int processWeapon(long weaponAddress, int index, boolean active) {
 		int weaponId = process().readInt(weaponAddress + m_iItemDefinitionIndex);
 		if (weaponId == Weapons.C4.getId()) {
 			bombCarrier = true;
-
+			
 		}
 		weaponIds[index][0] = weaponId;
 		weaponIds[index][1] = weaponAddress;
 		return weaponId;
 	}
-
+	
 }
