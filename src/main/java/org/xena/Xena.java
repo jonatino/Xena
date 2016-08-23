@@ -99,7 +99,7 @@ public final class Xena implements NativeKeyListener {
 				checkGameStatus();
 
 				updateClientState(game.clientState());
-				if (System.currentTimeMillis() - lastRefresh >= 10_000) {
+				if (System.currentTimeMillis() - lastRefresh >= 2_000) {
 					clearPlayers();
 					updateEntityList();
 					lastRefresh = System.currentTimeMillis();
@@ -109,6 +109,9 @@ public final class Xena implements NativeKeyListener {
 					Thread.sleep(1000);
 					continue;
 				}
+				
+				checkGameStatus();
+				
 				game.entities().forEach(GameEntity::update);
 
 				for (Plugin plugin : pluginManager) {
@@ -214,17 +217,13 @@ public final class Xena implements NativeKeyListener {
 				continue;
 			}
 
-			EntityType type = getEntityType(entityAddress);
+			EntityType type = EntityType.byAddress(entityAddress);
 			if (type == null) {
 				continue;
 			}
 
-			//System.out.println(type);
 			long team = process.readUnsignedInt(entityAddress + m_iTeamNum);
-			if (type == EntityType.CC4 && team != 2) {
-				continue;
-			}
-			if (team != 2 && team != 3 || (type != EntityType.CCSPlayer && type != EntityType.CC4)) {
+			if (team != 2 && team != 3 || type != EntityType.CCSPlayer) {
 				continue;
 			}
 
@@ -235,36 +234,13 @@ public final class Xena implements NativeKeyListener {
 				} else if (type == EntityType.CCSPlayer) {
 					entity = new Player();
 				} else {
-					entity = new GameEntity();
+					throw new RuntimeException("Unknown entity! "+team+", "+type);
 				}
 				entity.setAddress(entityAddress);
 				game.register(entity);
-				//System.out.println("Entity: " + entity + ", " + game.entities().size());
 			}
+			entity.setTeam(team);
 			entity.setClassId(type.getId());
-			entity.setGlowPointer(glowObjectPointer);
-		}
-	}
-
-	public EntityType getEntityType(long address) {
-		try {
-			long vt = process.readUnsignedInt(address + 0x8);
-			if (vt <= 0) {
-				return null;
-			}
-			long fn = process.readUnsignedInt(vt + 0x8);
-			if (fn <= 0) {
-				return null;
-			}
-			long cls = process.readUnsignedInt(fn + 0x1);
-			if (cls <= 0) {
-				return null;
-			}
-			long classId = process.readUnsignedInt(cls + 20);
-			return EntityType.byId(classId);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
 		}
 	}
 

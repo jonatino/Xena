@@ -1,5 +1,7 @@
 package org.xena.cs
 
+import com.github.jonatino.OffsetManager.process
+
 /**
  * Created by Jonathan on 7/12/2016.
  */
@@ -256,6 +258,28 @@ enum class EntityType(val id: Int, val weapon: Boolean = false, val grenade: Boo
 		@JvmStatic private val cachedValues = values()
 		
 		@JvmStatic fun byId(id: Long) = cachedValues[id.toInt()]
+		
+		@JvmStatic fun byAddress(address: Long): EntityType? {
+			try {
+				val vt = process().readUnsignedInt(address + 0x8)
+				if (vt <= 0) {
+					return null
+				}
+				val fn = process().readUnsignedInt(vt + 0x8)
+				if (fn <= 0) {
+					return null
+				}
+				val cls = process().readUnsignedInt(fn + 0x1)
+				if (cls <= 0) {
+					return null
+				}
+				val classId = process().readUnsignedInt(cls + 20)
+				return EntityType.byId(classId)
+			} catch (e: Exception) {
+				e.printStackTrace()
+				return null
+			}
+		}
 		
 	}
 	
