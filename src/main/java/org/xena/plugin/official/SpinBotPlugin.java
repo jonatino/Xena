@@ -27,6 +27,7 @@ import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
+import org.xena.plugin.utils.Vector;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -46,7 +47,7 @@ public final class SpinBotPlugin extends Plugin {
 		}
 	}
 	
-	private final float[] aim = new float[3];
+	private final Vector aim = new Vector();
 	
 	private Player lastTarget = null;
 	private int lastIdx;
@@ -64,7 +65,7 @@ public final class SpinBotPlugin extends Plugin {
 					}
 					GameEntity entity = entities.get(lastIdx++);
 					try {
-						if (aimHelper.delta(me.getPosition(), entity.getBones()) > 3000) {
+						if (aimHelper.delta(me.getViewOffsets(), entity.getBones()) > 3000) {
 							continue;
 						}
 						
@@ -85,7 +86,7 @@ public final class SpinBotPlugin extends Plugin {
 			
 			if (aimHelper.canShoot(me, lastTarget)) {
 				aimHelper.velocityComp(me, lastTarget, lastTarget.getBones());
-				aimHelper.calculateAngle(me, me.getPosition(), lastTarget.getBones(), aim);
+				aimHelper.calculateAngle(me, me.getViewOffsets(), lastTarget.getBones(), aim);
 				aimHelper.setAngleSmooth(aim, lastTarget.getViewAngles());
 				robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 				robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);

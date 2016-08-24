@@ -26,6 +26,7 @@ import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
+import org.xena.plugin.utils.Vector;
 
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class AimAssistPlugin extends Plugin {
@@ -37,7 +38,7 @@ public final class AimAssistPlugin extends Plugin {
 	    aimHelper = new AngleUtils(this, 35.5f, 1.7F, 2.5F, 1.7F, 2.5F);
     }
 
-    private final float[] aim = new float[3];
+    private final Vector aim = new Vector();
 
     private long prevFired = 0;
 
@@ -69,12 +70,12 @@ public final class AimAssistPlugin extends Plugin {
             try {
                 long shots;
                 if (aimHelper.canShoot(me, target) && (shots = me.getShotsFired()) > 1 && shots >= prevFired) {
-                    float delta = aimHelper.delta(me.getPosition(), target.getBones());
+                    float delta = aimHelper.delta(me.getViewOffsets(), target.getBones());
                     if (delta < 190) {
                         return;
                     }
                     aimHelper.velocityComp(me, target, target.getBones());
-                    aimHelper.calculateAngle(me, me.getPosition(), target.getBones(), aim);
+                    aimHelper.calculateAngle(me, me.getViewOffsets(), target.getBones(), aim);
                     aimHelper.setAngleSmooth(aim, target.getViewAngles());
 
                     prevFired = me.getShotsFired();

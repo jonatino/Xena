@@ -25,6 +25,7 @@ import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
+import org.xena.plugin.utils.Vector;
 
 @PluginManifest(name = "RCS", description = "Recoil control system.")
 public final class RCS extends Plugin {
@@ -36,10 +37,10 @@ public final class RCS extends Plugin {
         aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
     }
 
-    private static final float[] oldAng = new float[3];
-    private static final float[] punch = new float[3];
-    private static final float[] angle = new float[3];
-    private static final float[] viewAng = new float[3];
+    private static final Vector oldAng = new Vector();
+    private static final Vector punch = new Vector();
+    private static final Vector angle = new Vector();
+    private static final Vector viewAng = new Vector();
 
     @Override
     public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
@@ -49,20 +50,20 @@ public final class RCS extends Plugin {
             //aimHelper.getPunch(me, punch);
 
 
-            viewAng[0] = viewAng[0] + oldAng[0];
-            viewAng[1] = viewAng[1] + oldAng[1];
+            viewAng.x = viewAng.x + oldAng.x;
+            viewAng.y = viewAng.y + oldAng.y;
 
 
-            angle[0] = viewAng[0] - punch[0] * 2F;
-            angle[1] = viewAng[1] - punch[1] * 2F;
+            angle.x = viewAng.x - punch.x * 2F;
+            angle.y = viewAng.y - punch.y * 2F;
 
             aimHelper.setAngles(angle);
 
-            oldAng[0] = punch[0] * 2F;
-            oldAng[1] = punch[1] * 2F;
+            oldAng.x = punch.x * 2F;
+            oldAng.y = punch.y * 2F;
         } else {
-            oldAng[0] = 0;
-            oldAng[1] = 0;
+            oldAng.x = 0;
+            oldAng.y = 0;
         }
     }
 

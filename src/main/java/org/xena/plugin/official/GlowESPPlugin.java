@@ -19,6 +19,7 @@ package org.xena.plugin.official;
 import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.*;
+import org.xena.cs.bsp.BSPParser;
 import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
@@ -39,6 +40,13 @@ public final class GlowESPPlugin extends Plugin {
 	public GlowESPPlugin(Logger logger, Xena xena) {
 		super(logger, xena);
 		angleUtils = new AngleUtils(this, 0f, 0f, 0f, 0f, 0f);
+	}
+	
+	static BSPParser bsp;
+	
+	static {
+		bsp = new BSPParser("E:\\Games\\Steam\\SteamApps\\common\\Counter-Strike Global Offensive\\csgo\\maps\\de_dust2.bsp");
+		bsp.parse();
 	}
 	
 	@Override
@@ -66,6 +74,9 @@ public final class GlowESPPlugin extends Plugin {
 					process().writeBoolean(glowObjectPointer + 0x24, true);
 					process().writeBoolean(glowObjectPointer + 0x25, false);
 					process().writeBoolean(glowObjectPointer + 0x26, false);
+					if (entity.getTeam() == 3) {
+						System.out.println(bsp.visible(entity.getEyePos(), me.getEyePos()));
+					}
 				} catch (Throwable ignored) {
 					ignored.printStackTrace();
 				}

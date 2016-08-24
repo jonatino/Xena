@@ -27,15 +27,15 @@ import static com.github.jonatino.offsets.Offsets.m_dwClientState;
 import static com.github.jonatino.offsets.Offsets.m_dwViewAngles;
 
 public final class AngleUtils {
-
+	
 	private final Plugin plugin;
-
+	
 	private final float smoothing;
 	private final float lowestPitch;
 	private final float highestPitch;
 	private final float lowestYaw;
 	private final float highestYaw;
-
+	
 	public AngleUtils(Plugin plugin, float smoothing, float lowestPitch, float highestPitch, float lowestYaw, float highestYaw) {
 		this.plugin = plugin;
 		this.smoothing = smoothing;
@@ -44,53 +44,52 @@ public final class AngleUtils {
 		this.lowestYaw = lowestYaw;
 		this.highestYaw = highestYaw;
 	}
-
-	public float[] normalizeAngle(float[] angle) {
-		if (angle[0] > 89.0f && angle[0] <= 180.0f) {
-			angle[0] = 89.0f;
+	
+	public Vector normalizeAngle(Vector vector) {
+		if (vector.x > 89.0f && vector.x <= 180.0f) {
+			vector.x = 89.0f;
 		}
-		if (angle[0] > 180.f) {
-			angle[0] -= 360.f;
+		if (vector.x > 180.f) {
+			vector.x -= 360.f;
 		}
-		if (angle[0] < -89.0f) {
-			angle[0] = -89.0f;
+		if (vector.x < -89.0f) {
+			vector.x = -89.0f;
 		}
-		if (angle[1] > 180.f) {
-			angle[1] -= 360.f;
+		if (vector.y > 180.f) {
+			vector.y -= 360.f;
 		}
-		if (angle[1] < -180.f) {
-			angle[1] += 360.f;
+		if (vector.y < -180.f) {
+			vector.y += 360.f;
 		}
-		if (angle[2] != 0.0f) {
-			angle[2] = 0.0f;
+		if (vector.z != 0.0f) {
+			vector.z = 0.0f;
 		}
-		return angle;
+		return vector;
 	}
-
-	private final float[] delta = new float[3];
-
-	public float[] calculateAngle(Player player, float[] src, float[] dst, float[] angles) {
+	
+	private final Vector delta = new Vector();
+	
+	public void calculateAngle(Player player, Vector src, Vector dst, Vector angles) {
 		float pitchreduction = randomFloat(lowestPitch, highestPitch);
 		float yawreduction = randomFloat(lowestYaw, highestYaw);
-		delta[0] = src[0] - dst[0];
-		delta[1] = src[1] - dst[1];
-		delta[2] = (src[2] + player.getViewOffsets()[2]) - dst[2];
-		double hyp = Math.sqrt(delta[0] * delta[0] + delta[1] * delta[1]);
-		angles[0] = (float) (Math.atan(delta[2] / hyp) * (180 / Math.PI) - player.getPunch()[0] * pitchreduction);
-		angles[1] = (float) (Math.atan(delta[1] / delta[0]) * (180 / Math.PI) - player.getPunch()[1] * yawreduction);
-		angles[2] = 0.0f;
-		if (delta[0] >= 0.0) {
-			angles[1] += 180.0f;
+		delta.x = src.x - dst.x;
+		delta.y = src.y - dst.y;
+		delta.z = (src.z + player.getViewOffsets().z) - dst.z;
+		double hyp = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
+		angles.x = (float) (Math.atan(delta.z / hyp) * (180 / Math.PI) - player.getPunch().x * pitchreduction);
+		angles.y = (float) (Math.atan(delta.y / delta.x) * (180 / Math.PI) - player.getPunch().y * yawreduction);
+		angles.z = 0.0f;
+		if (delta.x >= 0.0) {
+			angles.y += 180.0f;
 		}
-		return angles;
 	}
-
+	
 	private final Random random = new Random();
-
+	
 	public float randomFloat(float a, float b) {
 		return a + (random.nextFloat() * (b - a));
 	}
-
+	
 	public boolean canShoot(Me me, GameEntity target) {
 		long weaponID = me.getActiveWeapon().getWeaponID();
 		if (weaponID == 42) {
@@ -98,48 +97,46 @@ public final class AngleUtils {
 		}
 		return me.getActiveWeapon().getClip1() > 0 && !target.isDead() && !me.isDead() && target.getTeam() != me.getTeam();
 	}
-
-	private static float[] smoothedAngles = new float[3];
-
-	public void setAngleSmooth(float[] dest, float[] orig) {
-		smoothedAngles[0] = dest[0] - orig[0];
-		smoothedAngles[1] = dest[1] - orig[1];
-		smoothedAngles[2] = 0.0f;
+	
+	private static Vector smoothedAngles = new Vector();
+	
+	public void setAngleSmooth(Vector dest, Vector orig) {
+		smoothedAngles.x = dest.x - orig.x;
+		smoothedAngles.y = dest.y - orig.y;
+		smoothedAngles.z = 0.0f;
 		normalizeAngle(smoothedAngles);
-		smoothedAngles[0] = orig[0] + smoothedAngles[0] / 100.0f * smoothing;
-		smoothedAngles[1] = orig[1] + smoothedAngles[1] / 100.0f * smoothing;
-		smoothedAngles[2] = 0.0f;
+		smoothedAngles.x = orig.x + smoothedAngles.x / 100.0f * smoothing;
+		smoothedAngles.y = orig.y + smoothedAngles.y / 100.0f * smoothing;
+		smoothedAngles.z = 0.0f;
 		normalizeAngle(smoothedAngles);
-
+		
 		setAngles(smoothedAngles);
 	}
-
-	public float[] setAngles(float[] angles) {
+	
+	public void setAngles(Vector angles) {
 		normalizeAngle(angles);
-		if (Float.isNaN(angles[0]) || Float.isNaN(angles[1]) || Float.isNaN(angles[2])) {
-			return angles;
+		if (Float.isNaN(angles.x) || Float.isNaN(angles.y) || Float.isNaN(angles.z)) {
+			return;
 		}
 		long anglePointer = plugin.engine().readUnsignedInt(m_dwClientState);
-		plugin.process().writeFloat(anglePointer + m_dwViewAngles, angles[0]);
-		plugin.process().writeFloat(anglePointer + m_dwViewAngles + 4, angles[1]);
-		return angles;
+		plugin.process().writeFloat(anglePointer + m_dwViewAngles, angles.x);
+		plugin.process().writeFloat(anglePointer + m_dwViewAngles + 4, angles.y);
 	}
-
-	public float[] velocityComp(Me me, Player target, float[] enemyPos) {
-		enemyPos[0] = enemyPos[0] + (target.getVelocity()[0] / 100.f) * (40.f / smoothing);
-		enemyPos[1] = enemyPos[1] + (target.getVelocity()[1] / 100.f) * (40.f / smoothing);
-		enemyPos[2] = enemyPos[2] + (target.getVelocity()[2] / 100.f) * (40.f / smoothing);
-		enemyPos[0] = enemyPos[0] - (me.getVelocity()[0] / 100.f) * (40.f / smoothing);
-		enemyPos[1] = enemyPos[1] - (me.getVelocity()[1] / 100.f) * (40.f / smoothing);
-		enemyPos[2] = enemyPos[2] - (me.getVelocity()[2] / 100.f) * (40.f / smoothing);
-		return enemyPos;
+	
+	public void velocityComp(Me me, Player target, Vector enemyPos) {
+		enemyPos.x = enemyPos.x + (target.getVelocity().x / 100.f) * (40.f / smoothing);
+		enemyPos.y = enemyPos.y + (target.getVelocity().y / 100.f) * (40.f / smoothing);
+		enemyPos.z = enemyPos.z + (target.getVelocity().z / 100.f) * (40.f / smoothing);
+		enemyPos.x = enemyPos.x - (me.getVelocity().x / 100.f) * (40.f / smoothing);
+		enemyPos.y = enemyPos.y - (me.getVelocity().y / 100.f) * (40.f / smoothing);
+		enemyPos.z = enemyPos.z - (me.getVelocity().z / 100.f) * (40.f / smoothing);
 	}
-
-	public float delta(float[] me, float[] them) {
+	
+	public float delta(Vector me, Vector them) {
 		float delta = 0F;
-		delta += Math.abs(((me[0] + Short.MAX_VALUE) - (them[0] + Short.MAX_VALUE)));
-		delta += Math.abs((me[1] + Short.MAX_VALUE) - (them[1] + Short.MAX_VALUE));
+		delta += Math.abs(((me.x + Short.MAX_VALUE) - (them.x + Short.MAX_VALUE)));
+		delta += Math.abs((me.y + Short.MAX_VALUE) - (them.y + Short.MAX_VALUE));
 		return delta;
 	}
-
+	
 }

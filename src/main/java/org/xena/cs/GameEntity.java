@@ -19,6 +19,7 @@ package org.xena.cs;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.xena.plugin.utils.Vector;
 
 import static com.github.jonatino.OffsetManager.engineModule;
 import static com.github.jonatino.OffsetManager.process;
@@ -51,22 +52,22 @@ public class GameEntity extends GameObject {
 	protected boolean dormant;
 	
 	@Getter
-	private final float[] position = new float[3];
+	private final Vector viewOrigin = new Vector();
 	
 	@Getter
-	protected final float[] velocity = new float[3];
+	protected final Vector velocity = new Vector();
 	
 	@Getter
-	protected final float[] viewOffsets = new float[3];
+	protected final Vector viewOffsets = new Vector();
 	
 	@Getter
-	protected final float[] viewAngles = new float[3];
+	protected final Vector viewAngles = new Vector();
 	
 	@Getter
-	protected final float[] bones = new float[3];
+	protected final Vector bones = new Vector();
 	
 	@Getter
-	protected final float[] punch = new float[2];
+	protected final Vector punch = new Vector();
 	
 	@Getter
 	protected boolean dead;
@@ -84,42 +85,46 @@ public class GameEntity extends GameObject {
 			running = process().readBoolean(address() + m_bMoveType);
 			dormant = process().readBoolean(address() + m_bDormant);
 			
-			position[0] = process().readFloat(address() + m_vecOrigin);
-			position[1] = process().readFloat(address() + m_vecOrigin + 4);
-			position[2] = process().readFloat(address() + m_vecOrigin + 8);
+			viewOrigin.x = process().readFloat(address() + m_vecOrigin);
+			viewOrigin.y = process().readFloat(address() + m_vecOrigin + 4);
+			viewOrigin.z = process().readFloat(address() + m_vecOrigin + 8);
 			
-			velocity[0] = process().readFloat(address() + m_vecVelocity);
-			velocity[1] = process().readFloat(address() + m_vecVelocity + 4);
-			velocity[2] = process().readFloat(address() + m_vecVelocity + 8);
+			velocity.x = process().readFloat(address() + m_vecVelocity);
+			velocity.y = process().readFloat(address() + m_vecVelocity + 4);
+			velocity.z = process().readFloat(address() + m_vecVelocity + 8);
 			
-			viewOffsets[0] = process().readFloat(address() + m_vecViewOffset);
-			viewOffsets[1] = process().readFloat(address() + m_vecViewOffset + 4);
-			viewOffsets[2] = process().readFloat(address() + m_vecViewOffset + 8);
+			viewOffsets.x = process().readFloat(address() + m_vecViewOffset);
+			viewOffsets.y = process().readFloat(address() + m_vecViewOffset + 4);
+			viewOffsets.z = process().readFloat(address() + m_vecViewOffset + 8);
 			
 			long anglePointer = engineModule().readUnsignedInt(m_dwClientState);
-			viewAngles[0] = process().readFloat(anglePointer + m_dwViewAngles);
-			viewAngles[1] = process().readFloat(anglePointer + m_dwViewAngles + 4);
-			viewAngles[2] = process().readFloat(anglePointer + m_dwViewAngles + 8);
+			viewAngles.x = process().readFloat(anglePointer + m_dwViewAngles);
+			viewAngles.y = process().readFloat(anglePointer + m_dwViewAngles + 4);
+			viewAngles.z = process().readFloat(anglePointer + m_dwViewAngles + 8);
 			
 			long boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix);
 			if (boneMatrix > 0) {
 				//Bones bone = Bones.roll();
 				Bones bone = Bones.HEAD;
 				try {
-					bones[0] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x0C);
-					bones[1] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x1C);
-					bones[2] = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x2C);
+					bones.x = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x0C);
+					bones.y = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x1C);
+					bones.z = process().readFloat(boneMatrix + 0x30 * bone.getId() + 0x2C);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 			
-			punch[0] = process().readFloat(address() + m_vecPunch);
-			punch[1] = process().readFloat(address() + m_vecPunch + 4);
+			punch.x = process().readFloat(address() + m_vecPunch);
+			punch.y = process().readFloat(address() + m_vecPunch + 4);
 			
 			dead = process().readByte(address() + m_lifeState) != 0;
 			spotted = process().readUnsignedInt(address() + m_bSpotted) != 0;
 		}
+	}
+	
+	public Vector getEyePos() {
+		return viewOffsets.plus(viewOrigin);
 	}
 	
 	public EntityType type() {
