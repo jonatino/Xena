@@ -16,8 +16,6 @@
 
 package org.xena.keylistener;
 
-import lombok.Getter;
-
 import java.awt.event.KeyEvent;
 import java.util.function.Consumer;
 
@@ -29,13 +27,10 @@ import static org.xena.keylistener.NativeKeyUtils.*;
  */
 public final class NativeKeyCombination {
 
-    @Getter
     private final int modifiers;
 
-    @Getter
     private final int[] keys;
 
-    @Getter
     private final Consumer<NativeKeyEvent> event;
 
     public NativeKeyCombination(Consumer<NativeKeyEvent> event, int modifiers, int... keys) {
@@ -49,18 +44,18 @@ public final class NativeKeyCombination {
     }
 
     boolean matches(NativeKeyEvent event) {
-        if ((getModifiers() & CONTROL) != CONTROL && isCtrlDown() || (getModifiers() & CONTROL) == CONTROL && !isCtrlDown()) {
-            return false;
-        }
-        if ((getModifiers() & SHIFT) != SHIFT && isShiftDown() || (getModifiers() & SHIFT) == SHIFT && !isShiftDown()) {
-            return false;
-        }
-        if ((getModifiers() & ALT) != ALT && isAltDown() || (getModifiers() & ALT) == ALT && !isAltDown()) {
-            return false;
-        }
-        for (int i : getKeys()) {
-            if (event.getKeyCode() == i) {
-                return true;
+	    if ((modifiers & CONTROL) != CONTROL && isCtrlDown() || (modifiers & CONTROL) == CONTROL && !isCtrlDown()) {
+		    return false;
+	    }
+	    if ((modifiers & SHIFT) != SHIFT && isShiftDown() || (modifiers & SHIFT) == SHIFT && !isShiftDown()) {
+		    return false;
+	    }
+	    if ((modifiers & ALT) != ALT && isAltDown() || (modifiers & ALT) == ALT && !isAltDown()) {
+		    return false;
+	    }
+	    for (int i : keys) {
+		    if (event.getKeyCode() == i) {
+			    return true;
             }
         }
         return false;
@@ -68,22 +63,22 @@ public final class NativeKeyCombination {
 
     @Override
     public String toString() {
-        if (getKeys()[0] == -1) {
-            return "None";
-        }
+	    if (keys[0] == -1) {
+		    return "None";
+	    }
         String s = "";
-        for (int key : getKeys()) {
-            s += KeyEvent.getKeyText(key) + ", ";
-        }
-        if ((getModifiers() & ALT) == ALT) {
-            s = "Alt + [" + s + "]";
-        }
-        if ((getModifiers() & SHIFT) == SHIFT) {
-            s = "Shift + [" + s + "]";
-        }
-        if ((getModifiers() & CONTROL) == CONTROL) {
-            s = "Ctrl + [" + s + "]";
-        }
+	    for (int key : keys) {
+		    s += KeyEvent.getKeyText(key) + ", ";
+	    }
+	    if ((modifiers & ALT) == ALT) {
+		    s = "Alt + [" + s + "]";
+	    }
+	    if ((modifiers & SHIFT) == SHIFT) {
+		    s = "Shift + [" + s + "]";
+	    }
+	    if ((modifiers & CONTROL) == CONTROL) {
+		    s = "Ctrl + [" + s + "]";
+	    }
         return s;
     }
 

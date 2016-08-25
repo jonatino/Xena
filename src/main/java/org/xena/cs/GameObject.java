@@ -16,7 +16,7 @@
 
 package org.xena.cs;
 
-class GameObject implements Addressed {
+public class GameObject implements Addressed {
 
     private long address;
 

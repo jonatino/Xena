@@ -18,8 +18,6 @@ package org.xena.plugin;
 
 import com.github.jonatino.process.Module;
 import com.github.jonatino.process.Process;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.ClientState;
@@ -31,22 +29,20 @@ import org.xena.logging.Logger;
 
 import java.awt.event.KeyEvent;
 
-@AllArgsConstructor
 public abstract class Plugin {
 
     private static int pluginUid;
-
-    private final int uid;
     public final Xena xena;
-    private final Logger logger;
-    private final Process process;
+	private final int uid;
+	private final Logger logger;
+	private final Process process;
     private final Module client;
     private final Module engine;
 
     private long sleep;
-
-    @Getter
-    private boolean enabled = true;
+	
+	
+	private boolean enabled = true;
 
     public Plugin(Logger logger, Xena xena) {
         this.uid = pluginUid++;
@@ -82,7 +78,11 @@ public abstract class Plugin {
     public void disable() {
         enabled = false;
     }
-
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
     public abstract void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities);
 
     protected final Logger logger() {

@@ -31,6 +31,9 @@ public final class Main {
 	
 	private static final Logger logger = Logging.logger(Logging.standardOutputter());
 	
+	private Main() {
+	}
+	
 	public static void main(String... args) throws InterruptedException {
 		System.out.println(ManagementFactory.getRuntimeMXBean().getName());
 		System.out.println(logo);
@@ -38,10 +41,7 @@ public final class Main {
 		OffsetManager.initAll();
 
 		Xena xena = new Xena(process(), clientModule(), engineModule(), new PluginManager());
-		xena.run(logger, Xena.CYCLE_TIME);
-	}
-	
-	private Main() {
+		xena.run(logger, Xena.Companion.getCYCLE_TIME());
 	}
 	
 }

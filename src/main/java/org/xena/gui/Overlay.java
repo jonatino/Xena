@@ -41,9 +41,24 @@ public final class Overlay extends JWindow {
 	private static JLabel status;
 
 	private Xena xena;
+	private boolean minimized;
 
 	private Overlay(Xena xena) {
 		init(xena);
+	}
+	
+	public static Overlay open(Xena xena) {
+		return new Overlay(xena);
+	}
+	
+	public static void main(String[] args) {
+		PluginManager pluginManager = new PluginManager();
+		pluginManager.add(new GlowESPPlugin(null, null));
+		pluginManager.add(new NoFlashPlugin(null, null));
+		pluginManager.add(new AimAssistPlugin(null, null));
+		Xena a = new Xena(null, null, null, pluginManager);
+		open(a);
+		
 	}
 
 	private void init(Xena xena) {
@@ -100,8 +115,8 @@ public final class Overlay extends JWindow {
 		}
 
 		height += 30;
-
-		status = new JLabel("<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + Xena.CYCLE_TIME + ")</html>", SwingConstants.LEFT);
+		
+		status = new JLabel("<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + Xena.Companion.getCYCLE_TIME() + ")</html>", SwingConstants.LEFT);
 		status.setFont(new Font("Sans Serif", Font.BOLD, 12));
 		status.setForeground(Color.WHITE);
 		status.setBounds(3, height, getWidth() - 5, 35);
@@ -114,10 +129,6 @@ public final class Overlay extends JWindow {
 		setVisible(true);
 	}
 
-	public static Overlay open(Xena xena) {
-		return new Overlay(xena);
-	}
-
 	@Override
 	public void repaint() {
 		for (int i = 0; i < plugins.length; i++) {
@@ -128,22 +139,10 @@ public final class Overlay extends JWindow {
 		//status.setText("<html>Status: Running<br>Cycle: " + abendigo.getLastCycle() + "(max=" + CYCLE_TIME + ")</html>");
 	}
 
-	private boolean minimized;
-
 	public void minimize() {
 		minimized = !minimized;
 		setSize(getWidth(), minimized ? 45 : HEIGHT);
 		repaint();
-	}
-
-	public static void main(String[] args) {
-		PluginManager pluginManager = new PluginManager();
-		pluginManager.add(new GlowESPPlugin(null, null));
-		pluginManager.add(new NoFlashPlugin(null, null));
-		pluginManager.add(new AimAssistPlugin(null, null));
-		Xena a = new Xena(null, null, null, pluginManager);
-		open(a);
-
 	}
 
 }

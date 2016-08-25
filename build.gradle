@@ -133,5 +133,4 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile "com.github.jonatino:Abendigo-Offset-Scanner:1.6.5"
-    compile "org.projectlombok:lombok:1.16.10"
 }

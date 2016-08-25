@@ -14,23 +14,19 @@
  *    limitations under the License.
  */
 
-package org.xena.cs;
+package org.xena.cs
 
-import lombok.Getter;
-import lombok.Setter;
 
-public class ClientState extends GameObject {
-
-    @Setter
-    @Getter
-    private long localPlayerIndex;
-
-    @Setter
-    @Getter
-    private long inGame;
-
-    @Setter
-    @Getter
-    private long maxPlayer;
-
+class Weapon : GameObject() {
+	
+	var clip1: Long = 0
+	
+	var clip2: Long = 0
+	
+	var canReload: Boolean = false
+	
+	var ammoType: Long = 0
+	
+	var weaponID: Long = 0
+	
 }

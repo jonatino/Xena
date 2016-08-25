@@ -16,23 +16,15 @@
 
 package org.xena.keylistener;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Created by Jonathan on 8/29/2015.
  */
 public final class NativeKeyEvent extends NativeKeyUtils {
 	
-	@Setter
-	@Getter
 	private int keyCode;
 	
-	@Setter
-	@Getter
 	private long time;
 	
-	@Getter
 	private boolean consumed;
 	
 	NativeKeyEvent() {
@@ -44,6 +36,22 @@ public final class NativeKeyEvent extends NativeKeyUtils {
 	
 	public void consume() {
 		consumed = true;
+	}
+	
+	public int getKeyCode() {
+		return keyCode;
+	}
+	
+	public void setKeyCode(int keyCode) {
+		this.keyCode = keyCode;
+	}
+	
+	public long getTime() {
+		return time;
+	}
+	
+	public void setTime(long time) {
+		this.time = time;
 	}
 	
 	public void reset() {
@@ -68,4 +76,5 @@ public final class NativeKeyEvent extends NativeKeyUtils {
 	public String toString() {
 		return getClass().getSimpleName() + ": keycode=" + keyCode + ", key=" + codeString() + ", time=" + time + ", consumed=" + consumed;
 	}
+	
 }
