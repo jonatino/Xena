@@ -75,6 +75,7 @@ public final class AngleUtils {
 		delta.x = src.x - dst.x;
 		delta.y = src.y - dst.y;
 		delta.z = (src.z + player.getViewOffsets().z) - dst.z;
+		
 		double hyp = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 		angles.x = (float) (Math.atan(delta.z / hyp) * (180 / Math.PI) - player.getPunch().x * pitchreduction);
 		angles.y = (float) (Math.atan(delta.y / delta.x) * (180 / Math.PI) - player.getPunch().y * yawreduction);
@@ -105,6 +106,7 @@ public final class AngleUtils {
 		smoothedAngles.y = dest.y - orig.y;
 		smoothedAngles.z = 0.0f;
 		normalizeAngle(smoothedAngles);
+		
 		smoothedAngles.x = orig.x + smoothedAngles.x / 100.0f * smoothing;
 		smoothedAngles.y = orig.y + smoothedAngles.y / 100.0f * smoothing;
 		smoothedAngles.z = 0.0f;
@@ -124,12 +126,13 @@ public final class AngleUtils {
 	}
 	
 	public void velocityComp(Me me, Player target, Vector enemyPos) {
-		enemyPos.x = enemyPos.x + (target.getVelocity().x / 100.f) * (40.f / smoothing);
-		enemyPos.y = enemyPos.y + (target.getVelocity().y / 100.f) * (40.f / smoothing);
-		enemyPos.z = enemyPos.z + (target.getVelocity().z / 100.f) * (40.f / smoothing);
-		enemyPos.x = enemyPos.x - (me.getVelocity().x / 100.f) * (40.f / smoothing);
-		enemyPos.y = enemyPos.y - (me.getVelocity().y / 100.f) * (40.f / smoothing);
-		enemyPos.z = enemyPos.z - (me.getVelocity().z / 100.f) * (40.f / smoothing);
+		enemyPos.x += (target.getVelocity().x / 100.f) * (40.f / smoothing);
+		enemyPos.y += (target.getVelocity().y / 100.f) * (40.f / smoothing);
+		enemyPos.z += (target.getVelocity().z / 100.f) * (40.f / smoothing);
+		
+		enemyPos.x -= (me.getVelocity().x / 100.f) * (40.f / smoothing);
+		enemyPos.y -= (me.getVelocity().y / 100.f) * (40.f / smoothing);
+		enemyPos.z -= (me.getVelocity().z / 100.f) * (40.f / smoothing);
 	}
 	
 	public float delta(Vector me, Vector them) {

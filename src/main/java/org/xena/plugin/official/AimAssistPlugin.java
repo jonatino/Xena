@@ -70,12 +70,12 @@ public final class AimAssistPlugin extends Plugin {
             try {
                 long shots;
                 if (aimHelper.canShoot(me, target) && (shots = me.getShotsFired()) > 1 && shots >= prevFired) {
-                    float delta = aimHelper.delta(me.getViewOffsets(), target.getBones());
+                    float delta = aimHelper.delta(me.getViewOrigin(), target.getBones());
                     if (delta < 190) {
                         return;
                     }
                     aimHelper.velocityComp(me, target, target.getBones());
-                    aimHelper.calculateAngle(me, me.getViewOffsets(), target.getBones(), aim);
+                    aimHelper.calculateAngle(me, me.getViewOrigin(), target.getBones(), aim);
                     aimHelper.setAngleSmooth(aim, target.getViewAngles());
 
                     prevFired = me.getShotsFired();

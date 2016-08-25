@@ -65,7 +65,7 @@ public final class SpinBotPlugin extends Plugin {
 					}
 					GameEntity entity = entities.get(lastIdx++);
 					try {
-						if (aimHelper.delta(me.getViewOffsets(), entity.getBones()) > 3000) {
+						if (aimHelper.delta(me.getViewOrigin(), entity.getBones()) > 3000) {
 							continue;
 						}
 						
@@ -86,7 +86,7 @@ public final class SpinBotPlugin extends Plugin {
 			
 			if (aimHelper.canShoot(me, lastTarget)) {
 				aimHelper.velocityComp(me, lastTarget, lastTarget.getBones());
-				aimHelper.calculateAngle(me, me.getViewOffsets(), lastTarget.getBones(), aim);
+				aimHelper.calculateAngle(me, me.getViewOrigin(), lastTarget.getBones(), aim);
 				aimHelper.setAngleSmooth(aim, lastTarget.getViewAngles());
 				robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 				robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);

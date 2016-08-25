@@ -51,7 +51,6 @@ public final class ForceAimPlugin extends Plugin {
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
 		if (NativeKeyUtils.isLeftAltDown()) {
-			System.out.println(me.getEyePos());
 			Player target = me.getTarget();
 			if (lastTarget != null && target == null) {
 				if (!lastTarget.isDead() && lastTarget.isSpotted()) {
@@ -59,10 +58,6 @@ public final class ForceAimPlugin extends Plugin {
 				} else {
 					lastTarget = null;
 				}
-			}
-			
-			if (target == null) {
-				return;
 			}
 			
 			if (target == null) {
@@ -74,7 +69,7 @@ public final class ForceAimPlugin extends Plugin {
 			
 			if (aimHelper.canShoot(me, target)) {
 				aimHelper.velocityComp(me, target, target.getBones());
-				aimHelper.calculateAngle(me, me.getViewOffsets(), target.getBones(), aim);
+				aimHelper.calculateAngle(me, me.getViewOrigin(), target.getBones(), aim);
 				aimHelper.setAngleSmooth(aim, target.getViewAngles());
 				//aimang = localViewAngles - aimAng;
 				

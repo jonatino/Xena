@@ -16,6 +16,7 @@
 
 package org.xena.plugin.official;
 
+import com.github.jonatino.netvars.NetVars;
 import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.*;
@@ -49,6 +50,8 @@ public final class GlowESPPlugin extends Plugin {
 		bsp.parse();
 	}
 	
+	public static int m_bSpottedByMask = NetVars.byName("DT_BaseEntity", "m_bSpottedByMask");
+	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
 		long pointerGlow = client().readUnsignedInt(m_dwGlowObject);
@@ -65,6 +68,11 @@ public final class GlowESPPlugin extends Plugin {
 			GameEntity entity = Game.current().get(entityAddress);
 			if (entity != null) {
 				try {
+					long spottedMask = process().readUnsignedInt(entity.address())& ( 1 << (Game.current().clientState().getLocalPlayerIndex()));
+					//System.out.println(spottedMask);
+					if (spottedMask == 0){
+						//continue;
+					}
 					int[] c = getColor(entity);
 					for (int x = 0; x < 4; x++) {
 						process().writeFloat(glowObjectPointer + (x + 1) * 4, c[x] / 255f);
@@ -74,9 +82,6 @@ public final class GlowESPPlugin extends Plugin {
 					process().writeBoolean(glowObjectPointer + 0x24, true);
 					process().writeBoolean(glowObjectPointer + 0x25, false);
 					process().writeBoolean(glowObjectPointer + 0x26, false);
-					if (entity.getTeam() == 3) {
-						System.out.println(bsp.visible(entity.getEyePos(), me.getEyePos()));
-					}
 				} catch (Throwable ignored) {
 					ignored.printStackTrace();
 				}

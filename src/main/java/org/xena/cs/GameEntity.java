@@ -33,9 +33,6 @@ public class GameEntity extends GameObject {
 	protected int classId;
 	
 	@Getter
-	protected long index;
-	
-	@Getter
 	protected long model;
 	
 	@Getter
