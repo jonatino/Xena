@@ -20,7 +20,6 @@ import com.github.jonatino.netvars.NetVars;
 import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.*;
-import org.xena.cs.bsp.BSPParser;
 import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
@@ -31,26 +30,24 @@ import static com.github.jonatino.offsets.Offsets.m_dwGlowObject;
 @PluginManifest(name = "Glow ESP", description = "Make entities glow on your screen.")
 public final class GlowESPPlugin extends Plugin {
 	
-	private final AngleUtils angleUtils;
-	
 	private static final int[] TEAM_CT = {114, 155, 221, 153};
 	private static final int[] TEAM_T = {224, 175, 86, 153};
 	private static final int[] BOMB_CARRY = {255, 0, 0, 200};
 	private static final int[] BOMB_DROPPED = {133, 142, 30, 200};
+	public static int m_bSpottedByMask = NetVars.byName("DT_BaseEntity", "m_bSpottedByMask");
+	private final AngleUtils angleUtils;
+	
+/*	static BSPParser bsp;
+	
+	static {
+		bsp = new BSPParser("E:\\Games\\Steam\\SteamApps\\common\\Counter-Strike Global Offensive\\csgo\\maps\\de_dust2.bsp");
+		bsp.parse();
+	}*/
 	
 	public GlowESPPlugin(Logger logger, Xena xena) {
 		super(logger, xena);
 		angleUtils = new AngleUtils(this, 0f, 0f, 0f, 0f, 0f);
 	}
-	
-	static BSPParser bsp;
-	
-	static {
-		bsp = new BSPParser("E:\\Games\\Steam\\SteamApps\\common\\Counter-Strike Global Offensive\\csgo\\maps\\de_dust2.bsp");
-		bsp.parse();
-	}
-	
-	public static int m_bSpottedByMask = NetVars.byName("DT_BaseEntity", "m_bSpottedByMask");
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {

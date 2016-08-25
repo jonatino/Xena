@@ -70,18 +70,19 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 				checkGameStatus()
 				
 				updateClientState(game.clientState())
-				if (System.currentTimeMillis() - lastRefresh >= 2000) {
-					clearPlayers()
-					updateEntityList()
-					lastRefresh = System.currentTimeMillis()
-				}
-				
+				/*			if (System.currentTimeMillis() - lastRefresh >= 2000) {
+								clearPlayers()
+								updateEntityList()
+								lastRefresh = System.currentTimeMillis()
+							}*/
+				updateEntityList()
 				if (game.entities().size() <= 0) {
 					Thread.sleep(1000)
 					continue
 				}
 				
-				checkGameStatus()
+				
+				
 				
 				game.entities().forEach(Consumer<GameEntity> { it.update() })
 				
@@ -189,7 +190,6 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 			}
 			
 			val type = EntityType.byAddress(entityAddress) ?: continue
-			
 			val team = process.readUnsignedInt(entityAddress + m_iTeamNum).toInt()
 			if (team != 2 && team != 3 || type !== EntityType.CCSPlayer) {
 				continue
@@ -206,6 +206,7 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 				}
 				entity!!.setAddress(entityAddress)
 				game.register(entity)
+				println(entity)
 			}
 			entity.team = team
 			entity.classId = type.id
