@@ -26,60 +26,61 @@ import static org.xena.keylistener.NativeKeyUtils.*;
  * Created by Jonathan on 9/20/2015.
  */
 public final class NativeKeyCombination {
-
-    private final int modifiers;
-
-    private final int[] keys;
-
-    private final Consumer<NativeKeyEvent> event;
-
-    public NativeKeyCombination(Consumer<NativeKeyEvent> event, int modifiers, int... keys) {
-        this.modifiers = modifiers;
-        this.keys = keys;
-        this.event = event;
-    }
-
-    void exec(NativeKeyEvent e) {
-        event.accept(e);
-    }
-
-    boolean matches(NativeKeyEvent event) {
-	    if ((modifiers & CONTROL) != CONTROL && isCtrlDown() || (modifiers & CONTROL) == CONTROL && !isCtrlDown()) {
-		    return false;
-	    }
-	    if ((modifiers & SHIFT) != SHIFT && isShiftDown() || (modifiers & SHIFT) == SHIFT && !isShiftDown()) {
-		    return false;
-	    }
-	    if ((modifiers & ALT) != ALT && isAltDown() || (modifiers & ALT) == ALT && !isAltDown()) {
-		    return false;
-	    }
-	    for (int i : keys) {
-		    if (event.getKeyCode() == i) {
-			    return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public String toString() {
-	    if (keys[0] == -1) {
-		    return "None";
-	    }
-        String s = "";
-	    for (int key : keys) {
-		    s += KeyEvent.getKeyText(key) + ", ";
-	    }
-	    if ((modifiers & ALT) == ALT) {
-		    s = "Alt + [" + s + "]";
-	    }
-	    if ((modifiers & SHIFT) == SHIFT) {
-		    s = "Shift + [" + s + "]";
-	    }
-	    if ((modifiers & CONTROL) == CONTROL) {
-		    s = "Ctrl + [" + s + "]";
-	    }
-        return s;
-    }
-
+	
+	private final int modifiers;
+	
+	private final int[] keys;
+	
+	private final Consumer<NativeKeyEvent> event;
+	
+	public NativeKeyCombination(Consumer<NativeKeyEvent> event, int modifiers, int... keys) {
+		this.modifiers = modifiers;
+		this.keys = keys;
+		this.event = event;
+	}
+	
+	void exec(NativeKeyEvent e) {
+		event.accept(e);
+	}
+	
+	boolean matches(NativeKeyEvent event) {
+		if ((modifiers & CONTROL) != CONTROL && isCtrlDown() || (modifiers & CONTROL) == CONTROL && !isCtrlDown()) {
+			return false;
+		}
+		if ((modifiers & SHIFT) != SHIFT && isShiftDown() || (modifiers & SHIFT) == SHIFT && !isShiftDown()) {
+			return false;
+		}
+		if ((modifiers & ALT) != ALT && isAltDown() || (modifiers & ALT) == ALT && !isAltDown()) {
+			return false;
+		}
+		for (int i : keys) {
+			if (event.getKeyCode() == i) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		if (keys[0] == -1) {
+			return "None";
+		}
+		StringBuilder builder = new StringBuilder();
+		for (int key : keys) {
+			builder.append(KeyEvent.getKeyText(key)).append(", ");
+		}
+		String s = builder.toString();
+		if ((modifiers & ALT) == ALT) {
+			s = "Alt + [" + s + "]";
+		}
+		if ((modifiers & SHIFT) == SHIFT) {
+			s = "Shift + [" + s + "]";
+		}
+		if ((modifiers & CONTROL) == CONTROL) {
+			s = "Ctrl + [" + s + "]";
+		}
+		return s;
+	}
+	
 }

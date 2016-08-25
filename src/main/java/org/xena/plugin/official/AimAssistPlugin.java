@@ -32,18 +32,14 @@ import org.xena.plugin.utils.Vector;
 public final class AimAssistPlugin extends Plugin {
 
     private final AngleUtils aimHelper;
+	private final Vector aim = new Vector();
+	private long prevFired = 0;
+	private Player lastTarget = null;
 
     public AimAssistPlugin(Logger logger, Xena xena) {
         super(logger, xena);
 	    aimHelper = new AngleUtils(this, 35.5f, 1.7F, 2.5F, 1.7F, 2.5F);
     }
-
-    private final Vector aim = new Vector();
-
-    private long prevFired = 0;
-
-	private Player lastTarget = null;
-
 
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
@@ -79,6 +75,7 @@ public final class AimAssistPlugin extends Plugin {
                     aimHelper.setAngleSmooth(aim, target.getViewAngles());
 
                     prevFired = me.getShotsFired();
+	                lastTarget = target;
                 } else {
 	                lastTarget = null;
                 }

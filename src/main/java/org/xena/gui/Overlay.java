@@ -19,10 +19,6 @@ package org.xena.gui;
 
 import org.xena.Xena;
 import org.xena.plugin.Plugin;
-import org.xena.plugin.PluginManager;
-import org.xena.plugin.official.AimAssistPlugin;
-import org.xena.plugin.official.GlowESPPlugin;
-import org.xena.plugin.official.NoFlashPlugin;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,9 +32,9 @@ public final class Overlay extends JWindow {
 	private static int HEIGHT = 400;
 
 	private static Point mouseDownPoint;
-
-	private static JLabel[] plugins = null;
-	private static JLabel status;
+	
+	private JLabel[] plugins = null;
+	private JLabel status;
 
 	private Xena xena;
 	private boolean minimized;
@@ -49,16 +45,6 @@ public final class Overlay extends JWindow {
 	
 	public static Overlay open(Xena xena) {
 		return new Overlay(xena);
-	}
-	
-	public static void main(String[] args) {
-		PluginManager pluginManager = new PluginManager();
-		pluginManager.add(new GlowESPPlugin(null, null));
-		pluginManager.add(new NoFlashPlugin(null, null));
-		pluginManager.add(new AimAssistPlugin(null, null));
-		Xena a = new Xena(null, null, null, pluginManager);
-		open(a);
-		
 	}
 
 	private void init(Xena xena) {

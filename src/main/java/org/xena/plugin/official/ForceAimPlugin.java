@@ -32,17 +32,24 @@ import org.xena.plugin.utils.Vector;
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class ForceAimPlugin extends Plugin {
 	
+	public static final int MOUSEEVENTF_MOVE = 0x0001;
+	public static final int MOUSEEVENTF_ABSOLUTE = 0x8000;
 	private final AngleUtils aimHelper;
+	private final Vector aim = new Vector();
+	private final Vector lastaim = new Vector();
+	private Player lastTarget = null;
 	
 	public ForceAimPlugin(Logger logger, Xena xena) {
 		super(logger, xena);
 		aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
 	}
 	
-	private final Vector aim = new Vector();
-	private final Vector lastaim = new Vector();
-	
-	private Player lastTarget = null;
+	public static void mouseMove(float delta_x, float delta_y) {
+		int mouse_move_x = (int) delta_x;
+		int mouse_move_y = (int) delta_y;
+		
+		org.xena.natives.User32.mouse_event(MOUSEEVENTF_MOVE, mouse_move_x, mouse_move_y, 0, null);
+	}
 	
 	//TSpawn = [-980.0, -754.0, 129.66235]
 	//TSpawn plat upper = [-1607.2352, -341.18152, 131.07503]
@@ -73,11 +80,11 @@ public final class ForceAimPlugin extends Plugin {
 				aimHelper.setAngleSmooth(aim, target.getViewAngles());
 				//aimang = localViewAngles - aimAng;
 				
-				float deltax = aim.x - lastaim.x;
-				float deltay = lastaim.y - aim.y;
+				//float deltax = aim.x - lastaim.x;
+				//float deltay = lastaim.y - aim.y;
 				
-				float x = deltax / (0.022f * 2.0f * 1.0f); // your formula. I have 2 sens in-game, using 6/11 windows sensitivity
-				float y = deltay / (0.022f * 2.0f * 1.0f);
+				//float x = deltax / (0.022f * 2.0f * 1.0f); // your formula. I have 2 sens in-game, using 6/11 windows sensitivity
+				//float y = deltay / (0.022f * 2.0f * 1.0f);
 				
 				//System.out.println(deltax+", "+deltay+", "+ x +", "+ y);
 				//MouseMove(x, y);
@@ -88,16 +95,6 @@ public final class ForceAimPlugin extends Plugin {
 		} else {
 			lastTarget = null;
 		}
-	}
-	
-	public static final int MOUSEEVENTF_MOVE = 0x0001;
-	public static final int MOUSEEVENTF_ABSOLUTE = 0x8000;
-	
-	public static void MouseMove(float delta_x, float delta_y) {
-		int mouse_move_x = (int) delta_x;
-		int mouse_move_y = (int) delta_y;
-		
-		org.xena.natives.User32.mouse_event(MOUSEEVENTF_MOVE, mouse_move_x, mouse_move_y, 0, null);
 	}
 	
 }

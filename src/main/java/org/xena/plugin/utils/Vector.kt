@@ -3,9 +3,7 @@ package org.xena.plugin.utils
 /**
  * Created by Jonathan on 8/23/2016.
  */
-public data class Vector(@JvmField var x: Float = 0f, @JvmField var y: Float = 0f, @JvmField var z: Float = 0f) {
-	
-	@JvmField val g = 0
+data class Vector(@JvmField var x: Float = 0f, @JvmField var y: Float = 0f, @JvmField var z: Float = 0f) {
 	
 	infix operator fun plus(v: Vector) = Vector(x + v.x, y + v.y, z + v.z)
 	

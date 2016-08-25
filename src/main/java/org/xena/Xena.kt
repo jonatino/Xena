@@ -61,6 +61,8 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 		logger.info("We're all set. Welcome to the new Xena platform!")
 		logger.info("Use numpad or ALT+nums to toggle corresponding plugins.")
 		
+		overlay.repaint()
+		
 		while (!Thread.interrupted()) {
 			try {
 				val stamp = currentTimeMillis()
@@ -176,7 +178,7 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 		
 		for (i in 0..entityCount - 1) {
 			val entityAddress = clientModule.readUnsignedInt((m_dwEntityList + i * 0x10).toLong())
-			val glowObjectPointer = pointerGlow + i * 56
+			//val glowObjectPointer = pointerGlow + i * 56
 			
 			if (entityAddress == 0.toLong()) {
 				//entityAddress = process.readUnsignedInt(glowObjectPointer);

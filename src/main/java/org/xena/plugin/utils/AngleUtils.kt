@@ -59,7 +59,7 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 	
 	fun canShoot(me: Me, target: GameEntity): Boolean {
 		val weaponID = me.activeWeapon.weaponID.toInt()
-		return weaponID != Weapons.KNIFE_T.id && weaponID != Weapons.KNIFE_CT.id && me.activeWeapon.clip1 > 0 && !target.isDead && !me.isDead
+		return weaponID != Weapons.KNIFE_T.id && weaponID != Weapons.KNIFE_CT.id && me.activeWeapon.clip1 > 0 && !target.isDead && !me.isDead && target.team != me.team
 	}
 	
 	@JvmOverloads fun setAngleSmooth(from: Vector, to: Vector, percent: Float = 0f) {
