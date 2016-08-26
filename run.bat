@@ -1,5 +1,5 @@
 @echo off
-cd "%~dp0"
+cd /d "%~dp0"
 title Xena
 
 set bat="./build/install/Xena/bin/Xena.bat"
