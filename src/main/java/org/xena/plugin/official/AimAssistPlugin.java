@@ -38,7 +38,7 @@ public final class AimAssistPlugin extends Plugin {
 
     public AimAssistPlugin(Logger logger, Xena xena) {
         super(logger, xena);
-	    aimHelper = new AngleUtils(this, 35.5f, 1.7F, 2.5F, 1.7F, 2.5F);
+	    aimHelper = new AngleUtils(this, 30.5f, 1.7F, 2.5F, 1.7F, 2.5F);
     }
 
 	@Override

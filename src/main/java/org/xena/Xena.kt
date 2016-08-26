@@ -29,14 +29,10 @@ import org.xena.plugin.PluginManager
 import org.xena.plugin.official.AimAssistPlugin
 import org.xena.plugin.official.ForceAimPlugin
 import org.xena.plugin.official.GlowESPPlugin
-import org.xena.plugin.official.SkinChangerPlugin
 import java.awt.event.KeyEvent
 import java.lang.System.currentTimeMillis
-import java.util.function.Consumer
 
 class Xena(val process: Process, val clientModule: Module, val engineModule: Module, val pluginManager: PluginManager) : NativeKeyListener {
-	
-	val game = Game.current()
 	
 	val paused: Boolean = false
 	
@@ -53,8 +49,8 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 		pluginManager.add(GlowESPPlugin(logger, this))
 		//pluginManager.add(new RCS(logger, this));
 		pluginManager.add(ForceAimPlugin(logger, this))
-		pluginManager.add(SkinChangerPlugin(logger, this))
-		//pluginManager.add(new SpinBotPlugin(logger, this));
+		//pluginManager.add(SkinChangerPlugin(logger, this))
+		//pluginManager.add(SpinBotPlugin(logger, this))
 		//pluginManager.add(new NoFlashPlugin(logger, this));
 		pluginManager.add(AimAssistPlugin(logger, this))
 		
@@ -69,26 +65,24 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 				
 				checkGameStatus()
 				
-				updateClientState(game.clientState())
-				/*			if (System.currentTimeMillis() - lastRefresh >= 2000) {
-								clearPlayers()
-								updateEntityList()
-								lastRefresh = System.currentTimeMillis()
-							}*/
+				updateClientState(clientState)
+				if (System.currentTimeMillis() - lastRefresh >= 1000) {
+					clearPlayers()
+					lastRefresh = System.currentTimeMillis()
+				}
+				
 				updateEntityList()
-				if (game.entities().size() <= 0) {
+				
+				if (entities.size() <= 0) {
 					Thread.sleep(1000)
 					continue
 				}
 				
-				
-				
-				
-				game.entities().forEach(Consumer<GameEntity> { it.update() })
+				entities.forEach({ it?.update() })
 				
 				for (plugin in pluginManager) {
 					if (plugin.canPulse()) {
-						plugin.pulse(game.clientState(), game.me(), game.entities())
+						plugin.pulse(clientState, me, entities)
 					}
 				}
 				
@@ -170,7 +164,7 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 		clientState.localPlayerIndex = process.readUnsignedInt(address + m_dwLocalPlayerIndex)
 	}
 	
-	fun clearPlayers() = game.removePlayers()
+	fun clearPlayers() = removePlayers()
 	
 	private fun updateEntityList() {
 		val pointerGlow = clientModule.readUnsignedInt(m_dwGlowObject.toLong())
@@ -195,21 +189,19 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 				continue
 			}
 			
-			var entity = game.get(entityAddress)
+			var entity = entities[entityAddress]
 			if (entity == null) {
 				if (myAddress == entityAddress) {
-					entity = Game.current().me()
+					entity = me
 				} else if (type === EntityType.CCSPlayer) {
 					entity = Player()
 				} else {
 					throw RuntimeException("Unknown entity! $team, $type")
 				}
-				entity!!.setAddress(entityAddress)
-				game.register(entity)
-				println(entity)
+				entity.setAddress(entityAddress)
+				register(entity)
+				//println(entity)
 			}
-			entity.team = team
-			entity.classId = type.id
 		}
 	}
 	

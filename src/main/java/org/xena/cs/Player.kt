@@ -22,23 +22,18 @@ import com.github.jonatino.offsets.Offsets.*
 
 open class Player : GameEntity() {
 	
-	var weaponIds = Array(8) { LongArray(2) }
-	
-	var activeWeapon = Weapon()
-		protected set
+	val weaponIds = Array(8) { LongArray(2) }
 	
 	override fun update() {
-		if (shouldUpdate()) {
-			super.update()
-			isBombCarrier = false
+		super.update()
+		isBombCarrier = false
+		
+		for (i in weaponIds.indices) {
+			val currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons.toLong() + ((i - 1) * 0x04).toLong()) and 0xFFF
+			val weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10)
 			
-			for (i in weaponIds.indices) {
-				val currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons.toLong() + ((i - 1) * 0x04).toLong()) and 0xFFF
-				val weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10)
-				
-				if (weaponAddress > 0) {
-					processWeapon(weaponAddress, i, false)
-				}
+			if (weaponAddress > 0) {
+				processWeapon(weaponAddress, i, false)
 			}
 		}
 	}

@@ -72,7 +72,7 @@ public final class ForceAimPlugin extends Plugin {
 				return;
 			}
 			
-			//System.out.println(target + ", " + target.address());
+			System.out.println(target + ", " + target.getTeam() + ", " + target.isDead());
 			
 			if (aimHelper.canShoot(me, target)) {
 				aimHelper.velocityComp(me, target, target.getBones());

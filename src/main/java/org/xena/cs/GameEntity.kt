@@ -23,8 +23,6 @@ import org.xena.plugin.utils.Vector
 
 open class GameEntity : GameObject() {
 	
-	var classId: Int = 0
-	
 	var model: Long = 0
 		protected set
 	
@@ -32,6 +30,7 @@ open class GameEntity : GameObject() {
 		protected set
 	
 	var team: Int = 0
+		protected set
 	
 	var isRunning: Boolean = false
 		protected set
@@ -61,60 +60,52 @@ open class GameEntity : GameObject() {
 		protected set
 	
 	open fun update() {
-		if (shouldUpdate()) {
-			model = process().readUnsignedInt(address() + m_dwModel)
-			boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix)
-			isRunning = process().readBoolean(address() + m_bMoveType)
-			isDormant = process().readBoolean(address() + m_bDormant)
-			
-			viewOrigin.x = process().readFloat(address() + m_vecOrigin)
-			viewOrigin.y = process().readFloat(address() + m_vecOrigin.toLong() + 4)
-			viewOrigin.z = process().readFloat(address() + m_vecOrigin.toLong() + 8)
-			
-			velocity.x = process().readFloat(address() + m_vecVelocity)
-			velocity.y = process().readFloat(address() + m_vecVelocity.toLong() + 4)
-			velocity.z = process().readFloat(address() + m_vecVelocity.toLong() + 8)
-			
-			viewOffsets.x = process().readFloat(address() + m_vecViewOffset)
-			viewOffsets.y = process().readFloat(address() + m_vecViewOffset.toLong() + 4)
-			viewOffsets.z = process().readFloat(address() + m_vecViewOffset.toLong() + 8)
-			
-			val anglePointer = engineModule().readUnsignedInt(m_dwClientState.toLong())
-			viewAngles.x = process().readFloat(anglePointer + m_dwViewAngles)
-			viewAngles.y = process().readFloat(anglePointer + m_dwViewAngles.toLong() + 4)
-			viewAngles.z = process().readFloat(anglePointer + m_dwViewAngles.toLong() + 8)
-			
-			val boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix)
-			if (boneMatrix > 0) {
-				//Bones bone = Bones.roll();
-				val bone = Bones.HEAD
-				try {
-					bones.x = process().readFloat(boneMatrix + (0x30 * bone.id).toLong() + 0x0C)
-					bones.y = process().readFloat(boneMatrix + (0x30 * bone.id).toLong() + 0x1C)
-					bones.z = process().readFloat(boneMatrix + (0x30 * bone.id).toLong() + 0x2C)
-				} catch (e: Exception) {
-					e.printStackTrace()
-				}
-				
+		model = process().readUnsignedInt(address() + m_dwModel)
+		boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix)
+		isRunning = process().readBoolean(address() + m_bMoveType)
+		isDormant = process().readBoolean(address() + m_bDormant)
+		team = process().readInt(address() + m_iTeamNum)
+		
+		viewOrigin.x = process().readFloat(address() + m_vecOrigin)
+		viewOrigin.y = process().readFloat(address() + m_vecOrigin + 4)
+		viewOrigin.z = process().readFloat(address() + m_vecOrigin + 8)
+		
+		velocity.x = process().readFloat(address() + m_vecVelocity)
+		velocity.y = process().readFloat(address() + m_vecVelocity + 4)
+		velocity.z = process().readFloat(address() + m_vecVelocity + 8)
+		
+		viewOffsets.x = process().readFloat(address() + m_vecViewOffset)
+		viewOffsets.y = process().readFloat(address() + m_vecViewOffset + 4)
+		viewOffsets.z = process().readFloat(address() + m_vecViewOffset + 8)
+		
+		val anglePointer = engineModule().readUnsignedInt(m_dwClientState.toLong())
+		viewAngles.x = process().readFloat(anglePointer + m_dwViewAngles)
+		viewAngles.y = process().readFloat(anglePointer + m_dwViewAngles + 4)
+		viewAngles.z = process().readFloat(anglePointer + m_dwViewAngles + 8)
+		
+		val boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix)
+		if (boneMatrix > 0) {
+			//Bones bone = Bones.roll();
+			val bone = Bones.HEAD
+			try {
+				bones.x = process().readFloat(boneMatrix + (0x30 * bone.id) + 0x0C)
+				bones.y = process().readFloat(boneMatrix + (0x30 * bone.id) + 0x1C)
+				bones.z = process().readFloat(boneMatrix + (0x30 * bone.id) + 0x2C)
+			} catch (e: Exception) {
+				e.printStackTrace()
 			}
 			
-			punch.x = process().readFloat(address() + m_vecPunch)
-			punch.y = process().readFloat(address() + m_vecPunch.toLong() + 4)
-			
-			isDead = process().readByte(address() + m_lifeState) != 0
-			isSpotted = process().readUnsignedInt(address() + m_bSpotted).toInt() != 0
 		}
+		
+		punch.x = process().readFloat(address() + m_vecPunch)
+		punch.y = process().readFloat(address() + m_vecPunch + 4)
+		
+		isDead = process().readByte(address() + m_lifeState) != 0
+		isSpotted = process().readUnsignedInt(address() + m_bSpotted).toInt() != 0
 	}
 	
-	val eyePos: Vector
-		get() = viewOffsets.plus(viewOrigin)
+	val eyePos = viewOffsets.plus(viewOrigin)
 	
-	fun type(): EntityType {
-		return EntityType.byId(classId.toLong())
-	}
-	
-	fun shouldUpdate(): Boolean {
-		return team == 2 || team == 3 && !isDead
-	}
+	val type by lazy { EntityType.byAddress(address()) }
 	
 }

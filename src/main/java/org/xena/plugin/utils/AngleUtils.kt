@@ -55,11 +55,10 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 		if (vector.y < -180f) {
 			vector.y += 360f
 		}
-		if (vector.z !== 0.0f) {
-			vector.z = 0.0f
-		}
+		vector.z = 0.0f
 		return vector
 	}
+	
 	private val delta by lazy { Vector() }
 	
 	fun calculateAngle(player: Player, src: Vector, dst: Vector, angles: Vector) {

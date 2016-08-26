@@ -19,7 +19,9 @@ package org.xena.plugin.official
 import com.github.jonatino.offsets.Offsets.*
 import org.xena.Indexer
 import org.xena.Xena
-import org.xena.cs.*
+import org.xena.cs.ClientState
+import org.xena.cs.GameEntity
+import org.xena.cs.Me
 import org.xena.keylistener.NativeKeyUtils
 import org.xena.logging.Logger
 import org.xena.plugin.Plugin
@@ -45,7 +47,7 @@ class SkinChangerPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
             }
         }*/
         if (NativeKeyUtils.isKeyDown(KeyEvent.VK_F1))
-            engine().writeInt(Game.current().clientState().address() + m_dwForceFullUpdate, -1)
+	        engine().writeInt(clientState.address() + m_dwForceFullUpdate, -1)
     }
 
     private fun appySkin(weaponAddress: Long, skinID: Int, skinSeed: Int = DEFAULT_SKIN_SEED, statTrak: Int = DEFAULT_STATTRAK, wear: Float = DEFAULT_WEAR, quality: Int = DEFAULT_QUALITY) {

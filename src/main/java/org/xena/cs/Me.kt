@@ -22,7 +22,8 @@ import com.github.jonatino.offsets.Offsets.*
 
 class Me : Player() {
 	
-	private var crosshair: Long = 0
+	var activeWeapon = Weapon()
+		private set
 	
 	var target: Player? = null
 		private set
@@ -31,41 +32,41 @@ class Me : Player() {
 		private set
 	
 	override fun update() {
-		if (shouldUpdate()) {
-			super.update()
+		setAddress(clientModule().readUnsignedInt(m_dwLocalPlayer.toLong()))
+		super.update()
+		
+		val activeWeaponIndex = process().readUnsignedInt(address() + m_hActiveWeapon) and 0xFFF
+		for (i in 0..weaponIds.size - 1) {
+			val currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons.toLong() + ((i - 1) * 0x04).toLong()) and 0xFFF
+			val weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10)
 			
-			val activeWeaponIndex = process().readUnsignedInt(address() + m_hActiveWeapon) and 0xFFF
-			for (i in 0..weaponIds.size - 1) {
-				val currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons.toLong() + ((i - 1) * 0x04).toLong()) and 0xFFF
-				val weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10)
-				
-				if (weaponAddress > 0 && activeWeaponIndex == currentWeaponIndex) {
-					processWeapon(weaponAddress, i, true)
-				}
+			if (weaponAddress > 0 && activeWeaponIndex == currentWeaponIndex) {
+				processWeapon(weaponAddress, i, true)
 			}
-			/*		if (activeWeapon.getWeaponID() == 42 || activeWeapon.getWeaponID() == 516) {
-			int modelAddress = process().readInt(address() + m_hViewModel) & 0xFFF;
-			long ds = clientModule().readUnsignedInt(m_dwEntityList + (modelAddress - 1) * 0x10);
-			process().writeInt(ds + m_nModelIndex, 403);
-			process().writeInt(weaponAddress + iViewModelIndex, 403);
-			process().writeInt(weaponAddress + iWorldModelIndex, 404);
-			process().writeInt(weaponAddress + m_iWorldDroppedModelIndex, 405);
-			process().writeInt(weaponAddress + m_iItemDefinitionIndex, 515);
-			process().writeInt(weaponAddress + m_iWeaponID, 516);
-		}*/
-			
-			target = null
-			crosshair = process().readUnsignedInt(address() + m_iCrossHairID) - 1
-			//println(crosshair)
-			if (crosshair > -1 && crosshair <= 30) {
-				val entity = Game.current().get(clientModule().readUnsignedInt(m_dwEntityList + crosshair * 0x10))
-				if (entity != null) {
-					target = entity as Player
-				}
-			}
-			
-			shotsFired = process().readUnsignedInt(address() + m_iShotsFired)
 		}
+		/*		if (activeWeapon.getWeaponID() == 42 || activeWeapon.getWeaponID() == 516) {
+		int modelAddress = process().readInt(address() + m_hViewModel) & 0xFFF;
+		long ds = clientModule().readUnsignedInt(m_dwEntityList + (modelAddress - 1) * 0x10);
+		process().writeInt(ds + m_nModelIndex, 403);
+		process().writeInt(weaponAddress + iViewModelIndex, 403);
+		process().writeInt(weaponAddress + iWorldModelIndex, 404);
+		process().writeInt(weaponAddress + m_iWorldDroppedModelIndex, 405);
+		process().writeInt(weaponAddress + m_iItemDefinitionIndex, 515);
+		process().writeInt(weaponAddress + m_iWeaponID, 516);
+	}*/
+		
+		target = null
+		val crosshair = process().readUnsignedInt(address() + m_iCrossHairID) - 1
+		/*if (crosshair != -1.toLong())
+			println(crosshair)*/
+		if (crosshair > -1 && crosshair <= 1024) {
+			val entity = entities[clientModule().readUnsignedInt(m_dwEntityList + crosshair * 0x10)]
+			if (entity != null) {
+				target = entity as Player
+			}
+		}
+		
+		shotsFired = process().readUnsignedInt(address() + m_iShotsFired)
 	}
 	
 	override fun processWeapon(weaponAddress: Long, index: Int, active: Boolean): Int {
