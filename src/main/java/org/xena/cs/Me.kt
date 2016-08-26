@@ -57,7 +57,7 @@ class Me : Player() {
 		
 		target = null
 		val crosshair = process().readUnsignedInt(address() + m_iCrossHairID) - 1
-		/*if (crosshair != -1.toLong())
+/*		if (crosshair != -1.toLong())
 			println(crosshair)*/
 		if (crosshair > -1 && crosshair <= 1024) {
 			val entity = entities[clientModule().readUnsignedInt(m_dwEntityList + crosshair * 0x10)]

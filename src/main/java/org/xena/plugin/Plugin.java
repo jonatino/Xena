@@ -30,84 +30,84 @@ import org.xena.logging.Logger;
 import java.awt.event.KeyEvent;
 
 public abstract class Plugin {
-
-    private static int pluginUid;
-    public final Xena xena;
+	
+	private static int pluginUid;
+	public final Xena xena;
 	private final int uid;
 	private final Logger logger;
 	private final Process process;
-    private final Module client;
-    private final Module engine;
-
-    private long sleep;
+	private final Module client;
+	private final Module engine;
+	
+	private long sleep;
 	
 	
 	private boolean enabled = true;
-
-    public Plugin(Logger logger, Xena xena) {
-        this.uid = pluginUid++;
-        this.logger = logger;
-        this.xena = xena;
-        this.process = xena.getProcess();
-        this.client = xena.getClientModule();
-        this.engine = xena.getEngineModule();
-
-        xena.getKeylistener().registerHotkey(new NativeKeyCombination((e) -> {
-            toggle();
-	        xena.getOverlay().repaint();
-	        e.consume();
-        }, GlobalKeyboard.ALT, KeyEvent.VK_NUMPAD0 + uid, KeyEvent.VK_0 + uid));
-    }
-
-    public void toggle() {
-        enabled = !enabled;
-    }
-
-    public boolean canPulse() {
-        return enabled && System.currentTimeMillis() >= sleep;
-    }
-
-    protected void sleep(long ms) {
-        sleep = System.currentTimeMillis() + ms;
-    }
-
-    public void enable() {
-        enabled = true;
-    }
-
-    public void disable() {
-        enabled = false;
-    }
+	
+	public Plugin(Logger logger, Xena xena) {
+		this.uid = pluginUid++;
+		this.logger = logger;
+		this.xena = xena;
+		this.process = xena.getProcess();
+		this.client = xena.getClientModule();
+		this.engine = xena.getEngineModule();
+		
+		xena.getKeylistener().registerHotkey(new NativeKeyCombination((e) -> {
+			toggle();
+			xena.getOverlay().repaint();
+			e.consume();
+		}, GlobalKeyboard.ALT, KeyEvent.VK_NUMPAD0 + uid, KeyEvent.VK_0 + uid));
+	}
+	
+	public void toggle() {
+		enabled = !enabled;
+	}
+	
+	public boolean canPulse() {
+		return enabled && System.currentTimeMillis() >= sleep;
+	}
+	
+	protected void sleep(long ms) {
+		sleep = System.currentTimeMillis() + ms;
+	}
+	
+	public void enable() {
+		enabled = true;
+	}
+	
+	public void disable() {
+		enabled = false;
+	}
 	
 	public boolean isEnabled() {
 		return enabled;
 	}
 	
-    public abstract void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities);
-
-    protected final Logger logger() {
-        return logger;
-    }
-
-    public final Process process() {
-        return process;
-    }
-
-    public final Module client() {
-        return client;
-    }
-
-    public final Module engine() {
-        return engine;
-    }
-
-    public int uid() {
-        return uid;
-    }
-
-    @Override
-    public String toString() {
-        return uid + ": " + getClass().getSimpleName();
-    }
-
+	public abstract void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities);
+	
+	protected final Logger logger() {
+		return logger;
+	}
+	
+	public final Process process() {
+		return process;
+	}
+	
+	public final Module client() {
+		return client;
+	}
+	
+	public final Module engine() {
+		return engine;
+	}
+	
+	public int uid() {
+		return uid;
+	}
+	
+	@Override
+	public String toString() {
+		return uid + ": " + getClass().getSimpleName();
+	}
+	
 }

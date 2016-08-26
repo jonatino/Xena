@@ -104,7 +104,7 @@ open class GameEntity : GameObject() {
 		isSpotted = process().readUnsignedInt(address() + m_bSpotted).toInt() != 0
 	}
 	
-	val eyePos = viewOffsets.plus(viewOrigin)
+	val eyePos by lazy { viewOffsets.plus(viewOrigin) }
 	
 	val type by lazy { EntityType.byAddress(address()) }
 	

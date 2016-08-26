@@ -13,28 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@file:JvmName("GameKT")
 
 package org.xena.cs
 
+import it.unimi.dsi.fastutil.longs.Long2IntArrayMap
 import org.xena.Indexer
-import java.util.*
 
 @JvmField val me = Me()
-private val entityMap = HashMap<Long, Int>(256)
+@JvmField val entityMap = Long2IntArrayMap(256)
 @JvmField val entities = Indexer<GameEntity>(128)
 @JvmField val clientState = ClientState()
 
 operator fun Indexer<GameEntity>.get(address: Long): GameEntity? {
-	val index = entityMap.getOrDefault(address, -1)
+	var index = -1
+	if (entityMap.containsKey(address)) index = entityMap.get(address)
 	if (index == -1) {
 		return null
 	}
 	return entities.get(index)
-}
-
-fun register(entity: GameEntity) {
-	val index = entities.add(entity)
-	entityMap.put(entity.address(), index)
 }
 
 fun removePlayers() {

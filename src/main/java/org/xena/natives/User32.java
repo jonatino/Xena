@@ -29,14 +29,10 @@ public class User32 {
 	static {
 		Native.register("user32");
 	}
-
-	public static native int GetMessageW(WinUser.MSG var1, WinDef.HWND var2, int var3, int var4);
+	
+	public static native int PeekMessageW(WinUser.MSG var1, WinDef.HWND var2, int var3, int var4, int var5);
 
 	public static native short GetKeyState(int vKey);
-
-	public static native WinDef.HWND GetForegroundWindow();
-
-	public static native int GetWindowTextW(WinDef.HWND hWnd, char[] lpString, int nMaxCount);
 
 	public static native boolean UnhookWindowsHookEx(WinUser.HHOOK var1);
 

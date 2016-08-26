@@ -19,31 +19,24 @@ package org.xena.keylistener;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.xena.natives.User32;
 
-import java.util.*;
+import java.util.EventListener;
+import java.util.List;
 import java.util.function.Consumer;
 
 public final class GlobalKeyboard extends NativeKeyUtils implements EventListener {
 	
-	private final Map<Integer, NativeKeyEvent> keysDown = new HashMap<>();
-	
 	private static final WinDef.LRESULT CONSUMED = new WinDef.LRESULT(1);
 	private static final WinDef.LRESULT OKAY = new WinDef.LRESULT(0);
-	
 	private static WinUser.HHOOK hook;
 	private static WinUser.LowLevelKeyboardProc keyboardHook;
-	
+	private final Int2ObjectArrayMap<NativeKeyEvent> keysDown = new Int2ObjectArrayMap<>();
 	private final NativeKeyListener listener;
 	private final ThreadLocal<NativeKeyEvent> currentEvent = ThreadLocal.withInitial(NativeKeyEvent::new);
-	
-	public static GlobalKeyboard register(NativeKeyListener listener) {
-		return new GlobalKeyboard(listener);
-	}
-	
-	public boolean unhook() {
-		return User32.UnhookWindowsHookEx(hook);
-	}
+	private final List<NativeKeyCombination> keyMaps = new ObjectArrayList<>(5);
 	
 	private GlobalKeyboard(NativeKeyListener listener) {
 		this.listener = listener;
@@ -75,9 +68,11 @@ public final class GlobalKeyboard extends NativeKeyUtils implements EventListene
 						return OKAY;
 					};
 					hook = User32.SetWindowsHookExW(WinUser.WH_KEYBOARD_LL, keyboardHook, Kernel32.INSTANCE.GetModuleHandle(null), 0);//We have to store it in a static object to prevent GC
-					while (User32.GetMessageW(null, null, 0, 0) != 0) {
+					WinUser.MSG msg = new WinUser.MSG();
+					while (true) {
 						try {
-							Thread.sleep(10);
+							User32.PeekMessageW(msg, null, 0, 0, 0);
+							Thread.sleep(100);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -89,7 +84,13 @@ public final class GlobalKeyboard extends NativeKeyUtils implements EventListene
 		}
 	}
 	
-	private final List<NativeKeyCombination> keyMaps = new ArrayList<>(5);
+	public static GlobalKeyboard register(NativeKeyListener listener) {
+		return new GlobalKeyboard(listener);
+	}
+	
+	public boolean unhook() {
+		return User32.UnhookWindowsHookEx(hook);
+	}
 	
 	public NativeKeyCombination registerHotkey(int modifiers, int key, Consumer<NativeKeyEvent> c) {
 		return registerHotkey(new NativeKeyCombination(c, modifiers, key));
@@ -125,7 +126,7 @@ public final class GlobalKeyboard extends NativeKeyUtils implements EventListene
 		}
 	}
 	
-	public Map<Integer, NativeKeyEvent> keys() {
+	public Int2ObjectArrayMap keys() {
 		return keysDown;
 	}
 	

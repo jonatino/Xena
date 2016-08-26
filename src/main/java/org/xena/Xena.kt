@@ -59,6 +59,8 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 		
 		overlay.repaint()
 		
+		System.gc()
+		
 		while (!Thread.interrupted()) {
 			try {
 				val stamp = currentTimeMillis()
@@ -66,7 +68,7 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 				checkGameStatus()
 				
 				updateClientState(clientState)
-				if (System.currentTimeMillis() - lastRefresh >= 1000) {
+				if (System.currentTimeMillis() - lastRefresh >= 10000) {
 					clearPlayers()
 					lastRefresh = System.currentTimeMillis()
 				}
@@ -199,7 +201,7 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 					throw RuntimeException("Unknown entity! $team, $type")
 				}
 				entity.setAddress(entityAddress)
-				register(entity)
+				Game.register(entity)
 				//println(entity)
 			}
 		}
