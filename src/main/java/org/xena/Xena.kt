@@ -16,15 +16,13 @@
 
 package org.xena
 
+import com.github.jonatino.OffsetManager
 import com.github.jonatino.offsets.Offsets.*
-import com.github.jonatino.process.Module
-import com.github.jonatino.process.Process
 import org.xena.cs.*
 import org.xena.gui.Overlay
 import org.xena.keylistener.GlobalKeyboard
 import org.xena.keylistener.NativeKeyEvent
 import org.xena.keylistener.NativeKeyListener
-import org.xena.logging.Logger
 import org.xena.plugin.PluginManager
 import org.xena.plugin.official.AimAssistPlugin
 import org.xena.plugin.official.ForceAimPlugin
@@ -32,30 +30,38 @@ import org.xena.plugin.official.GlowESPPlugin
 import java.awt.event.KeyEvent
 import java.lang.System.currentTimeMillis
 
-class Xena(val process: Process, val clientModule: Module, val engineModule: Module, val pluginManager: PluginManager) : NativeKeyListener {
+
+@JvmField val process = OffsetManager.process()
+@JvmField val engineModule = OffsetManager.engineModule()
+@JvmField val clientModule = OffsetManager.clientModule()
+
+object Xena : NativeKeyListener {
 	
-	val paused: Boolean = false
+	const val CYCLE_TIME = 8
 	
-	var lastCycle: Long = 0
-	var lastRefresh: Long = 0
+	val pluginManager = PluginManager()
 	
-	val overlay: Overlay by lazy { Overlay.open(this) }
+	var lastCycle = 0L
+	var lastRefresh = 0L
 	
-	val keylistener: GlobalKeyboard by lazy { GlobalKeyboard.register(this) }
+	val overlay by lazy { Overlay.open(this) }
 	
+	val keylistener by lazy { GlobalKeyboard.register(this) }
+	
+	@JvmStatic
 	@Throws(InterruptedException::class)
-	fun run(logger: Logger, cycleMS: Int) {
-		//pluginManager.enable(new RadarPlugin(logger, this));
-		pluginManager.add(GlowESPPlugin(logger, this))
-		//pluginManager.add(new RCS(logger, this));
-		pluginManager.add(ForceAimPlugin(logger, this))
-		//pluginManager.add(SkinChangerPlugin(logger, this))
-		//pluginManager.add(SpinBotPlugin(logger, this))
-		//pluginManager.add(new NoFlashPlugin(logger, this));
-		pluginManager.add(AimAssistPlugin(logger, this))
+	fun run(cycleMS: Int) {
+		//pluginManager.enable(new RadarPlugin());
+		pluginManager.add(GlowESPPlugin())
+		//pluginManager.add(new RCS(l));
+		pluginManager.add(ForceAimPlugin())
+		//pluginManager.add(SkinChangerPlugin())
+		//pluginManager.add(SpinBotPlugin())
+		//pluginManager.add(new NoFlashPlugin());
+		pluginManager.add(AimAssistPlugin())
 		
-		logger.info("We're all set. Welcome to the new Xena platform!")
-		logger.info("Use numpad or ALT+nums to toggle corresponding plugins.")
+		println("We're all set. Welcome to the new Xena platform!")
+		println("Use numpad or ALT+nums to toggle corresponding plugins.")
 		
 		overlay.repaint()
 		
@@ -173,14 +179,13 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 		val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
 		
 		for (i in 0..entityCount - 1) {
-			val entityAddress = clientModule.readUnsignedInt((m_dwEntityList + i * 0x10).toLong())
+			val entityAddress = clientModule.readUnsignedInt(m_dwEntityList + i * 0x10)
 			
-			if (entityAddress < 0x200) {
-				continue
-			}
+			if (entityAddress < 0x200) continue
 			
 			val type = EntityType.byAddress(entityAddress) ?: continue
-			val team = process.readUnsignedInt(entityAddress + m_iTeamNum).toInt()
+			
+			val team = process.readInt(entityAddress + m_iTeamNum)
 			if (team != 2 && team != 3 || type !== EntityType.CCSPlayer) {
 				continue
 			}
@@ -189,10 +194,8 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 			if (entity == null) {
 				if (myAddress == entityAddress) {
 					entity = me
-				} else if (type === EntityType.CCSPlayer) {
-					entity = Player()
 				} else {
-					throw RuntimeException("Unknown entity! $team, $type")
+					entity = Player()
 				}
 				entity.setAddress(entityAddress)
 				Game.register(entity)
@@ -212,11 +215,5 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 	}
 	
 	override fun onKeyReleased(event: NativeKeyEvent) = false
-	
-	companion object {
-		
-		val CYCLE_TIME = 8
-		
-	}
 	
 }

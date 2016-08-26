@@ -17,28 +17,23 @@
 package org.xena.plugin.official;
 
 import org.xena.Indexer;
-import org.xena.Xena;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
-import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 
 import static com.github.jonatino.offsets.Offsets.m_bSpotted;
+import static org.xena.XenaKt.process;
 
 @PluginManifest(name = "Radar", description = "Pinpoints enemies on the minimap.")
 public final class RadarPlugin extends Plugin {
-
-    public RadarPlugin(Logger logger, Xena xena) {
-        super(logger, xena);
-    }
 
     @Override
     public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
         for (GameEntity entity : entities) {
             if (entity != null) {
-                process().writeBoolean(entity.address() + m_bSpotted, true);
+	            process.writeBoolean(entity.address() + m_bSpotted, true);
             }
         }
     }

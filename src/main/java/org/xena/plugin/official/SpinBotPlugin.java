@@ -17,13 +17,11 @@
 package org.xena.plugin.official;
 
 import org.xena.Indexer;
-import org.xena.Xena;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
 import org.xena.cs.Player;
 import org.xena.keylistener.NativeKeyUtils;
-import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
@@ -36,9 +34,12 @@ import java.awt.event.InputEvent;
 public final class SpinBotPlugin extends Plugin {
 	
 	private final AngleUtils aimHelper;
+	private final Vector aim = new Vector();
+	private Player lastTarget = null;
+	private int lastIdx;
+	private Robot robot;
 	
-	public SpinBotPlugin(Logger logger, Xena xena) {
-		super(logger, xena);
+	public SpinBotPlugin() {
 		aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
 		try {
 			robot = new Robot();
@@ -46,13 +47,6 @@ public final class SpinBotPlugin extends Plugin {
 			e.printStackTrace();
 		}
 	}
-	
-	private final Vector aim = new Vector();
-	
-	private Player lastTarget = null;
-	private int lastIdx;
-	
-	private Robot robot;
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {

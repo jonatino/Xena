@@ -17,11 +17,9 @@
 package org.xena.plugin.official;
 
 import org.xena.Indexer;
-import org.xena.Xena;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
-import org.xena.logging.Logger;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
@@ -30,17 +28,15 @@ import org.xena.plugin.utils.Vector;
 @PluginManifest(name = "RCS", description = "Recoil control system.")
 public final class RCS extends Plugin {
 
-    private final AngleUtils aimHelper;
-
-    public RCS(Logger logger, Xena xena) {
-        super(logger, xena);
-        aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
-    }
-
     private static final Vector oldAng = new Vector();
     private static final Vector punch = new Vector();
     private static final Vector angle = new Vector();
     private static final Vector viewAng = new Vector();
+	private final AngleUtils aimHelper;
+	
+	public RCS() {
+		aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
+	}
 
     @Override
     public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {

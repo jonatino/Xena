@@ -18,34 +18,34 @@ package org.xena.plugin.official
 
 import com.github.jonatino.offsets.Offsets.m_dwGlowObject
 import org.xena.Indexer
-import org.xena.Xena
+import org.xena.clientModule
 import org.xena.cs.ClientState
 import org.xena.cs.GameEntity
 import org.xena.cs.Me
 import org.xena.cs.get
-import org.xena.logging.Logger
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
+import org.xena.process
 
 @PluginManifest(name = "Glow ESP", description = "Make entities glow on your screen.")
-class GlowESPPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
+class GlowESPPlugin : Plugin() {
 	
 	override fun pulse(clientState: ClientState, me: Me, entities: Indexer<GameEntity>) {
-		val pointerGlow = client().readUnsignedInt(m_dwGlowObject.toLong())
-		val glowObjectCount = client().readUnsignedInt((m_dwGlowObject + 4).toLong())
+		val pointerGlow = clientModule.readUnsignedInt(m_dwGlowObject.toLong())
+		val glowObjectCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
 		
 		for (i in 0..glowObjectCount - 1) {
 			val glowObjectPointer = pointerGlow + i * 56
-			val entityAddress = process().readUnsignedInt(glowObjectPointer)
+			val entityAddress = process.readUnsignedInt(glowObjectPointer)
 			
 			val entity = entities[entityAddress] ?: continue
 			
 			val color = getColor(entity)
 			for (x in 0..3) {
-				process().writeFloat(glowObjectPointer + (x + 1) * 4, color[x] / 255f)
-				process().writeByte(entityAddress + 0x70 + x.toLong(), color[x])
+				process.writeFloat(glowObjectPointer + (x + 1) * 4, color[x] / 255f)
+				process.writeByte(entityAddress + 0x70 + x, color[x])
 			}
-			process().writeBoolean(glowObjectPointer + 0x24, true)
+			process.writeBoolean(glowObjectPointer + 0x24, true)
 		}
 	}
 	
@@ -55,8 +55,8 @@ class GlowESPPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
 		return TEAM_T
 	}
 	
-	private val TEAM_CT by lazy { intArrayOf(114, 155, 221, 153) }
-	private val TEAM_T by lazy { intArrayOf(224, 175, 86, 153) }
-	private val BOMB_CARRY by lazy { intArrayOf(255, 0, 0, 200) }
+	private val TEAM_CT = intArrayOf(114, 155, 221, 153)
+	private val TEAM_T = intArrayOf(224, 175, 86, 153)
+	private val BOMB_CARRY = intArrayOf(255, 0, 0, 200)
 	
 }

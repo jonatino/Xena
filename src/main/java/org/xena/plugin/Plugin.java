@@ -16,8 +16,6 @@
 
 package org.xena.plugin;
 
-import com.github.jonatino.process.Module;
-import com.github.jonatino.process.Process;
 import org.xena.Indexer;
 import org.xena.Xena;
 import org.xena.cs.ClientState;
@@ -25,36 +23,24 @@ import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
 import org.xena.keylistener.GlobalKeyboard;
 import org.xena.keylistener.NativeKeyCombination;
-import org.xena.logging.Logger;
 
 import java.awt.event.KeyEvent;
 
 public abstract class Plugin {
 	
 	private static int pluginUid;
-	public final Xena xena;
 	private final int uid;
-	private final Logger logger;
-	private final Process process;
-	private final Module client;
-	private final Module engine;
 	
 	private long sleep;
 	
-	
 	private boolean enabled = true;
 	
-	public Plugin(Logger logger, Xena xena) {
+	public Plugin() {
 		this.uid = pluginUid++;
-		this.logger = logger;
-		this.xena = xena;
-		this.process = xena.getProcess();
-		this.client = xena.getClientModule();
-		this.engine = xena.getEngineModule();
 		
-		xena.getKeylistener().registerHotkey(new NativeKeyCombination((e) -> {
+		Xena.INSTANCE.getKeylistener().registerHotkey(new NativeKeyCombination((e) -> {
 			toggle();
-			xena.getOverlay().repaint();
+			Xena.INSTANCE.getOverlay().repaint();
 			e.consume();
 		}, GlobalKeyboard.ALT, KeyEvent.VK_NUMPAD0 + uid, KeyEvent.VK_0 + uid));
 	}
@@ -84,22 +70,6 @@ public abstract class Plugin {
 	}
 	
 	public abstract void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities);
-	
-	protected final Logger logger() {
-		return logger;
-	}
-	
-	public final Process process() {
-		return process;
-	}
-	
-	public final Module client() {
-		return client;
-	}
-	
-	public final Module engine() {
-		return engine;
-	}
 	
 	public int uid() {
 		return uid;

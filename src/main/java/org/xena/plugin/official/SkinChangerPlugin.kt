@@ -22,20 +22,21 @@ import org.xena.Xena
 import org.xena.cs.ClientState
 import org.xena.cs.GameEntity
 import org.xena.cs.Me
+import org.xena.engineModule
 import org.xena.keylistener.NativeKeyUtils
 import org.xena.logging.Logger
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
+import org.xena.process
 import java.awt.event.KeyEvent
 
 @PluginManifest(name = "Skin Changer", description = "Skin changer plugin.")
-class SkinChangerPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
+class SkinChangerPlugin(logger: Logger, xena: Xena) : Plugin() {
 
     private val DEFAULT_SKIN_SEED = 0
     private val DEFAULT_STATTRAK = -1 // -1 for no StatTrak, 0+ for StatTrak amount
     private val DEFAULT_WEAR = 0.0001f // lower = less wear, higher = more wear
     private val DEFAULT_QUALITY = 1
-
 
     override fun pulse(clientState: ClientState, me: Me, entities: Indexer<GameEntity>) {
       /*  for (weaponData in me.weaponIds) {
@@ -47,16 +48,16 @@ class SkinChangerPlugin(logger: Logger, xena: Xena) : Plugin(logger, xena) {
             }
         }*/
         if (NativeKeyUtils.isKeyDown(KeyEvent.VK_F1))
-	        engine().writeInt(clientState.address() + m_dwForceFullUpdate, -1)
+	        engineModule.writeInt(clientState.address() + m_dwForceFullUpdate, -1)
     }
 
     private fun appySkin(weaponAddress: Long, skinID: Int, skinSeed: Int = DEFAULT_SKIN_SEED, statTrak: Int = DEFAULT_STATTRAK, wear: Float = DEFAULT_WEAR, quality: Int = DEFAULT_QUALITY) {
-        process().writeInt(weaponAddress + m_iItemIDHigh, 1)
-        process().writeInt(weaponAddress + m_nFallbackPaintKit, skinID)
-        process().writeInt(weaponAddress + m_nFallbackSeed, skinSeed)
-        process().writeInt(weaponAddress + m_nFallbackStatTrak, statTrak)
-        process().writeInt(weaponAddress + m_iEntityQuality, quality)
-        process().writeFloat(weaponAddress + m_flFallbackWear, wear)
+	    process.writeInt(weaponAddress + m_iItemIDHigh, 1)
+	    process.writeInt(weaponAddress + m_nFallbackPaintKit, skinID)
+	    process.writeInt(weaponAddress + m_nFallbackSeed, skinSeed)
+	    process.writeInt(weaponAddress + m_nFallbackStatTrak, statTrak)
+	    process.writeInt(weaponAddress + m_iEntityQuality, quality)
+	    process.writeFloat(weaponAddress + m_flFallbackWear, wear)
     }
 
 }
