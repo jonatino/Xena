@@ -47,6 +47,13 @@ data class Vector(@JvmField var x: Float = 0f, @JvmField var y: Float = 0f, @Jvm
 	
 	fun copy() = Vector(x, y, z)
 	
+	fun copyOf(vector: Vector): Vector {
+		x = vector.x
+		y = vector.y
+		z = vector.z
+		return this
+	}
+	
 	fun reset() {
 		x = 0f
 		y = 0f

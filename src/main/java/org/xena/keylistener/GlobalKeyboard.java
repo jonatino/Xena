@@ -72,7 +72,7 @@ public final class GlobalKeyboard extends NativeKeyUtils implements EventListene
 					while (true) {
 						try {
 							User32.PeekMessageW(msg, null, 0, 0, 0);
-							Thread.sleep(100);
+							Thread.sleep(10);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}

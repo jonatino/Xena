@@ -22,6 +22,7 @@ import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
 import org.xena.cs.Player;
 import org.xena.keylistener.NativeKeyUtils;
+import org.xena.natives.User32;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
@@ -41,17 +42,6 @@ public final class ForceAimPlugin extends Plugin {
 		aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
 	}
 	
-	public static void mouseMove(float delta_x, float delta_y) {
-		int mouse_move_x = (int) delta_x;
-		int mouse_move_y = (int) delta_y;
-		
-		org.xena.natives.User32.mouse_event(MOUSEEVENTF_MOVE, mouse_move_x, mouse_move_y, 0, null);
-	}
-	
-	//TSpawn = [-980.0, -754.0, 129.66235]
-	//TSpawn plat upper = [-1607.2352, -341.18152, 131.07503]
-	//TSpawn plat lower = [-1709.0222, -111.96875, 26.268158]
-	//Bsite = [-1833.6796, 1989.9803, 10.96743]
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
 		if (NativeKeyUtils.isLeftAltDown()) {
@@ -69,22 +59,11 @@ public final class ForceAimPlugin extends Plugin {
 				return;
 			}
 			
-			System.out.println(target + ", " + target.getTeam() + ", " + target.isDead());
-			
 			if (aimHelper.canShoot(me, target)) {
 				aimHelper.velocityComp(me, target, target.getBones());
 				aimHelper.calculateAngle(me, me.getViewOrigin(), target.getBones(), aim);
 				aimHelper.setAngleSmooth(aim, target.getViewAngles());
-				//aimang = localViewAngles - aimAng;
-				
-				//float deltax = aim.x - lastaim.x;
-				//float deltay = lastaim.y - aim.y;
-				
-				//float x = deltax / (0.022f * 2.0f * 1.0f); // your formula. I have 2 sens in-game, using 6/11 windows sensitivity
-				//float y = deltay / (0.022f * 2.0f * 1.0f);
-				
-				//System.out.println(deltax+", "+deltay+", "+ x +", "+ y);
-				//MouseMove(x, y);
+
 				lastTarget = target;
 			} else {
 				lastTarget = null;
@@ -92,6 +71,13 @@ public final class ForceAimPlugin extends Plugin {
 		} else {
 			lastTarget = null;
 		}
+	}
+	
+	public void mouseMove(float delta_x, float delta_y) {
+		int mouse_move_x = (int) delta_x;
+		int mouse_move_y = (int) delta_y;
+		
+		User32.mouse_event(MOUSEEVENTF_MOVE, mouse_move_x, mouse_move_y, 0, null);
 	}
 	
 }

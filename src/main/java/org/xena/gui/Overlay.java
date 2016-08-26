@@ -102,7 +102,7 @@ public final class Overlay extends JWindow {
 
 		height += 30;
 		
-		status = new JLabel("<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + Xena.Companion.getCYCLE_TIME() + ")</html>", SwingConstants.LEFT);
+		status = new JLabel("<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + Xena.CYCLE_TIME + ")</html>", SwingConstants.LEFT);
 		status.setFont(new Font("Sans Serif", Font.BOLD, 12));
 		status.setForeground(Color.WHITE);
 		status.setBounds(3, height, getWidth() - 5, 35);
