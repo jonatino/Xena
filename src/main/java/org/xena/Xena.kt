@@ -169,17 +169,11 @@ class Xena(val process: Process, val clientModule: Module, val engineModule: Mod
 	fun clearPlayers() = removePlayers()
 	
 	private fun updateEntityList() {
-		val pointerGlow = clientModule.readUnsignedInt(m_dwGlowObject.toLong())
 		val entityCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
 		val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
 		
 		for (i in 0..entityCount - 1) {
 			val entityAddress = clientModule.readUnsignedInt((m_dwEntityList + i * 0x10).toLong())
-			//val glowObjectPointer = pointerGlow + i * 56
-			
-			if (entityAddress == 0.toLong()) {
-				//entityAddress = process.readUnsignedInt(glowObjectPointer);
-			}
 			
 			if (entityAddress < 0x200) {
 				continue
