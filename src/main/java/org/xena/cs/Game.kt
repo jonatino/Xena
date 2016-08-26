@@ -25,7 +25,7 @@ private val entityMap = HashMap<Long, Int>(256)
 @JvmField val clientState = ClientState()
 
 operator fun Indexer<GameEntity>.get(address: Long): GameEntity? {
-	val index = (entityMap as Map<Long, Int>).getOrDefault(address, -1)
+	val index = entityMap.getOrDefault(address, -1)
 	if (index == -1) {
 		return null
 	}
