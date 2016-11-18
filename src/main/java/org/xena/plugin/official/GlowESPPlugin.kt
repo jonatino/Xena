@@ -41,6 +41,7 @@ class GlowESPPlugin : Plugin() {
 			val entity = entities[entityAddress] ?: continue
 			
 			val color = getColor(entity)
+			
 			for (x in 0..3) {
 				process.writeFloat(glowObjectPointer + (x + 1) * 4, color[x] / 255f)
 				process.writeByte(entityAddress + 0x70 + x, color[x])

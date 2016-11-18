@@ -276,7 +276,7 @@ enum class EntityType(val id: Int, val weapon: Boolean = false, val grenade: Boo
 				val classId = process().readUnsignedInt(cls + 20)
 				return EntityType.byId(classId)
 			} catch (e: Exception) {
-				e.printStackTrace()
+				//e.printStackTrace()
 				return null
 			}
 		}

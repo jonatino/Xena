@@ -23,27 +23,32 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public final class Indexer<E> implements Iterable<E> {
-
+	
 	private final int minIndex;
 	private final Object[] arr;
-
+	private final IndexerIterator iterator = new IndexerIterator();
 	private int size = 0;
 	private int highest;
-
+	
 	public Indexer(int minIndex, int capacity) {
 		this.minIndex = highest = minIndex;
 		arr = new Object[capacity];
 	}
-
+	
 	public Indexer(int capacity) {
 		this(0, capacity);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public E get(int index) {
 		return (E) arr[index];
 	}
-
+	
+	public E get(E element) {
+		int index = indexOf(element);
+		return index == -1 ? null : (E) arr[index];
+	}
+	
 	@SuppressWarnings("unchecked")
 	public E set(int index, E element) {
 		Object previous = arr[index];
@@ -61,13 +66,13 @@ public final class Indexer<E> implements Iterable<E> {
 		}
 		return (E) previous;
 	}
-
+	
 	public int add(E element) {
 		int index = nextIndex();
 		set(index, element);
 		return index;
 	}
-
+	
 	public void remove(E element) {
 		for (int i = minIndex; i <= highest; i++) {
 			if (element.equals(arr[i])) {
@@ -76,31 +81,31 @@ public final class Indexer<E> implements Iterable<E> {
 			}
 		}
 	}
-
+	
 	public boolean contains(E element) {
 		if (element == null) {
 			return false;
 		}
-
+		
 		for (E e : this) {
 			if (element.equals(e)) {
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
+	
 	public void clear() {
 		for (int i = minIndex; i < arr.length; i++)
 			arr[i] = null;
 		size = 0;
 	}
-
+	
 	public int size() {
 		return size;
 	}
-
+	
 	public int nextIndex() {
 		for (int i = minIndex; i < arr.length; i++) {
 			if (null == arr[i]) {
@@ -109,7 +114,16 @@ public final class Indexer<E> implements Iterable<E> {
 		}
 		throw new IllegalStateException("Out of indices!");
 	}
-
+	
+	public int indexOf(E element) {
+		for (int i = minIndex; i < arr.length; i++) {
+			if (element == arr[i]) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	@Override
 	public void forEach(Consumer<? super E> action) {
 		Objects.requireNonNull(action);
@@ -118,24 +132,26 @@ public final class Indexer<E> implements Iterable<E> {
 				action.accept(e);
 		}
 	}
-
+	
 	@Override
 	public Iterator<E> iterator() {
 		iterator.pointer = minIndex;
 		return iterator;
 	}
-
-	private final IndexerIterator iterator = new IndexerIterator();
-
+	
+	public Stream<E> stream() {
+		return StreamSupport.stream(spliterator(), false);
+	}
+	
 	private final class IndexerIterator implements Iterator<E> {
-
+		
 		private int pointer;
-
+		
 		@Override
 		public boolean hasNext() {
 			return size > 0 && pointer <= highest;
 		}
-
+		
 		@Override
 		@SuppressWarnings("unchecked")
 		public E next() {
@@ -145,16 +161,12 @@ public final class Indexer<E> implements Iterable<E> {
 			}
 			return (E) o;
 		}
-
+		
 		@Override
 		public void remove() {
 			set(pointer, null);
 		}
-
+		
 	}
-
-	public Stream<E> stream() {
-		return StreamSupport.stream(spliterator(), false);
-	}
-
+	
 }
