@@ -30,31 +30,20 @@ import java.util.*
 
 class AngleUtils(private val plugin: Plugin, private val smoothing: Float, private val lowestPitch: Float, private val highestPitch: Float, private val lowestYaw: Float, private val highestYaw: Float) {
 
-/*	private fun normalizeAngle(angle: Vector) {
-		while (angle.x <= -Math.PI)
-			angle.x += (2 * Math.PI).toFloat()
-		while (angle.x > Math.PI)
-			angle.x -= (2 * Math.PI).toFloat()
-		while (angle.y <= -Math.PI)
-			angle.y += (2 * Math.PI).toFloat()
-		while (angle.y > Math.PI)
-			angle.y -= (2 * Math.PI).toFloat()
-	}*/
-	
 	fun normalizeAngle(vector: Vector): Vector {
 		if (vector.x > 89.0f && vector.x <= 180.0f) {
 			vector.x = 89.0f
 		}
-		if (vector.x > 180f) {
+		while (vector.x > 180f) {
 			vector.x -= 360f
 		}
 		if (vector.x < -89.0f) {
 			vector.x = -89.0f
 		}
-		if (vector.y > 180f) {
+		while (vector.y > 180f) {
 			vector.y -= 360f
 		}
-		if (vector.y < -180f) {
+		while (vector.y < -180f) {
 			vector.y += 360f
 		}
 		vector.z = 0.0f
@@ -84,14 +73,6 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 		return weaponID != Weapons.KNIFE_T.id && weaponID != Weapons.KNIFE_CT.id && me.activeWeapon.clip1 > 0 && !target.isDead && !me.isDead && target.team != me.team
 	}
 
-/*	@JvmOverloads fun setAngleSmooth(from: Vector, to: Vector, percent: Float = 0f) {
-		val vecDelta = from.minus(to)
-		normalizeAngle(vecDelta)
-		vecDelta.x *= percent
-		vecDelta.y *= percent
-		setAngles(from.minus(vecDelta))
-	}*/
-	
 	private val smoothedAngles = Vector()
 	
 	fun setAngleSmooth(dest: Vector, orig: Vector) {

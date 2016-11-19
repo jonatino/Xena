@@ -16,9 +16,8 @@
 
 package org.xena.cs
 
-import com.github.jonatino.OffsetManager.clientModule
 import com.github.jonatino.OffsetManager.process
-import com.github.jonatino.offsets.Offsets.*
+import com.github.jonatino.offsets.Offsets.m_iItemDefinitionIndex
 
 open class Player : GameEntity() {
 	
@@ -28,14 +27,14 @@ open class Player : GameEntity() {
 		super.update()
 		isBombCarrier = false
 		
-		for (i in weaponIds.indices) {
+		/*for (i in weaponIds.indices) {
 			val currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons.toLong() + ((i - 1) * 0x04).toLong()) and 0xFFF
 			val weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10)
 			
 			if (weaponAddress > 0) {
 				processWeapon(weaponAddress, i, false)
 			}
-		}
+		}*/
 	}
 	
 	open fun processWeapon(weaponAddress: Long, index: Int, active: Boolean): Int {

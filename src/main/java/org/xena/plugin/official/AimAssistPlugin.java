@@ -17,6 +17,7 @@
 package org.xena.plugin.official;
 
 import org.xena.Indexer;
+import org.xena.Settings;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
@@ -35,8 +36,8 @@ public final class AimAssistPlugin extends Plugin {
 	private Player lastTarget = null;
 	
 	public AimAssistPlugin() {
-	    aimHelper = new AngleUtils(this, 30.5f, 1.7F, 2.5F, 1.7F, 2.5F);
-    }
+		aimHelper = new AngleUtils(this, Settings.AIM_ASSIST_STRENGTH, 1.7F, 2.5F, 1.7F, 2.5F);
+	}
 
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {

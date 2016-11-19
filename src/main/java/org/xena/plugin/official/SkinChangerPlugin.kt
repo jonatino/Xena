@@ -21,12 +21,9 @@ import org.xena.Indexer
 import org.xena.cs.ClientState
 import org.xena.cs.GameEntity
 import org.xena.cs.Me
-import org.xena.engineModule
-import org.xena.keylistener.NativeKeyUtils
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
 import org.xena.process
-import java.awt.event.KeyEvent
 
 @PluginManifest(name = "Skin Changer", description = "Skin changer plugin.")
 class SkinChangerPlugin : Plugin() {
@@ -45,8 +42,8 @@ class SkinChangerPlugin : Plugin() {
 				  }
 			  }
 		  }*/
-		if (NativeKeyUtils.isKeyDown(KeyEvent.VK_F1))
-			engineModule.writeInt(clientState.address() + m_dwForceFullUpdate, -1)
+		//if (NativeKeyUtils.isKeyDown(KeyEvent.VK_F1))
+		//engineModule.writeInt(clientState.address() + m_dwForceFullUpdate, -1)
 	}
 	
 	private fun appySkin(weaponAddress: Long, skinID: Int, skinSeed: Int = DEFAULT_SKIN_SEED, statTrak: Int = DEFAULT_STATTRAK, wear: Float = DEFAULT_WEAR, quality: Int = DEFAULT_QUALITY) {

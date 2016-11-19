@@ -27,7 +27,7 @@ import org.xena.plugin.PluginManager
 import org.xena.plugin.official.AimAssistPlugin
 import org.xena.plugin.official.ForceAimPlugin
 import org.xena.plugin.official.GlowESPPlugin
-import java.awt.event.KeyEvent
+import org.xena.plugin.official.NoFlashPlugin
 import java.lang.System.currentTimeMillis
 
 
@@ -53,11 +53,10 @@ object Xena : NativeKeyListener {
 	fun run(cycleMS: Int) {
 		//pluginManager.enable(new RadarPlugin());
 		pluginManager.add(GlowESPPlugin())
-		//pluginManager.add(new RCS(l));
 		pluginManager.add(ForceAimPlugin())
 		//pluginManager.add(SkinChangerPlugin())
 		//pluginManager.add(SpinBotPlugin())
-		//pluginManager.add(new NoFlashPlugin());
+		pluginManager.add(NoFlashPlugin());
 		pluginManager.add(AimAssistPlugin())
 		
 		println("We're all set. Welcome to the new Xena platform!")
@@ -199,14 +198,14 @@ object Xena : NativeKeyListener {
 				}
 				entity.setAddress(entityAddress)
 				Game.register(entity)
-				//println(entity)
 			}
+			entity.team = team
 		}
 	}
 	
 	override fun onKeyPressed(event: NativeKeyEvent): Boolean {
 		if (overlay.isVisible) {
-			if (event.keyCode == KeyEvent.VK_F9 && !event.hasModifiers()) {
+			if (event.keyCode == Settings.HIDE_GUI_KEY && !event.hasModifiers()) {
 				overlay.minimize()
 				return true
 			}

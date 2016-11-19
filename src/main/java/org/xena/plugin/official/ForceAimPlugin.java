@@ -17,12 +17,12 @@
 package org.xena.plugin.official;
 
 import org.xena.Indexer;
+import org.xena.Settings;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
 import org.xena.cs.Player;
 import org.xena.keylistener.NativeKeyUtils;
-import org.xena.natives.User32;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
@@ -31,20 +31,18 @@ import org.xena.plugin.utils.Vector;
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class ForceAimPlugin extends Plugin {
 	
-	public static final int MOUSEEVENTF_MOVE = 0x0001;
-	public static final int MOUSEEVENTF_ABSOLUTE = 0x8000;
 	private final AngleUtils aimHelper;
 	private final Vector aim = new Vector();
 	private final Vector lastaim = new Vector();
 	private Player lastTarget = null;
 	
 	public ForceAimPlugin() {
-		aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
+		aimHelper = new AngleUtils(this, Settings.FORCE_AIM_STRENGTH, 1.7F, 2.5F, 1.7F, 2.5F);
 	}
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
-		if (NativeKeyUtils.isLeftAltDown()) {
+		if (NativeKeyUtils.isKeyDown(Settings.FORCE_AIM_TOGGLE)) {
 			Player target = me.getTarget();
 			if (lastTarget != null && target == null) {
 				if (!lastTarget.isDead() && lastTarget.isSpotted()) {
@@ -63,7 +61,7 @@ public final class ForceAimPlugin extends Plugin {
 				aimHelper.velocityComp(me, target, target.getBones());
 				aimHelper.calculateAngle(me, me.getViewOrigin(), target.getBones(), aim);
 				aimHelper.setAngleSmooth(aim, target.getViewAngles());
-
+				
 				lastTarget = target;
 			} else {
 				lastTarget = null;
@@ -71,13 +69,6 @@ public final class ForceAimPlugin extends Plugin {
 		} else {
 			lastTarget = null;
 		}
-	}
-	
-	public void mouseMove(float delta_x, float delta_y) {
-		int mouse_move_x = (int) delta_x;
-		int mouse_move_y = (int) delta_y;
-		
-		User32.mouse_event(MOUSEEVENTF_MOVE, mouse_move_x, mouse_move_y, 0, null);
 	}
 	
 }

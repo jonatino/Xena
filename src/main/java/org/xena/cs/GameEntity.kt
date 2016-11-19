@@ -30,7 +30,6 @@ open class GameEntity : GameObject() {
 		protected set
 	
 	var team: Int = 0
-		protected set
 	
 	var isRunning: Boolean = false
 		protected set

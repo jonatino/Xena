@@ -17,7 +17,6 @@
 package org.xena.natives;
 
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
 
@@ -35,8 +34,6 @@ public class User32 {
 	public static native short GetKeyState(int vKey);
 
 	public static native boolean UnhookWindowsHookEx(WinUser.HHOOK var1);
-
-	public static native void mouse_event(int dwFlags, int dx, int dy, int dwData, Pointer dwExtraInfo);
 
 	public static native WinUser.HHOOK SetWindowsHookExW(int var1, WinUser.HOOKPROC var2, WinDef.HINSTANCE var3, int var4);
 

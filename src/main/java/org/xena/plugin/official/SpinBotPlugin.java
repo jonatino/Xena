@@ -17,6 +17,7 @@
 package org.xena.plugin.official;
 
 import org.xena.Indexer;
+import org.xena.Settings;
 import org.xena.cs.ClientState;
 import org.xena.cs.GameEntity;
 import org.xena.cs.Me;
@@ -40,7 +41,7 @@ public final class SpinBotPlugin extends Plugin {
 	private Robot robot;
 	
 	public SpinBotPlugin() {
-		aimHelper = new AngleUtils(this, 40.5F, 1.7F, 2.5F, 1.7F, 2.5F);
+		aimHelper = new AngleUtils(this, Settings.SPIN_BOT_STRENGTH, 1.7F, 2.5F, 1.7F, 2.5F);
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
@@ -50,7 +51,7 @@ public final class SpinBotPlugin extends Plugin {
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
-		if (NativeKeyUtils.isLeftCtrlDown()) {
+		if (NativeKeyUtils.isKeyDown(Settings.SPIN_BOT_TOGGLE)) {
 			if (lastTarget == null) {
 				while (lastTarget == null) {
 					if (lastIdx + 1 >= entities.size()) {
