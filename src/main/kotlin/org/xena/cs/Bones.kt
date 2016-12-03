@@ -20,9 +20,9 @@ package org.xena.cs
  * Created by Jonathan on 7/22/2016.
  */
 enum class Bones(val id: Int, val percentage: Double) {
-
-    HEAD(6, 0.75),
-    NECK(5, 0.45),
+	
+	HEAD(8, 0.75),
+	NECK(7, 0.45),
     UPPER_CHEST(4, 0.30),
     LOWER_CHEST(3, -0.00),
     LEGS(2, -1.0),
