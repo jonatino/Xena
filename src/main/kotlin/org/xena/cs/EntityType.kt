@@ -257,9 +257,11 @@ enum class EntityType(val id: Int, val weapon: Boolean = false, val grenade: Boo
 		
 		@JvmStatic private val cachedValues = values()
 		
-		@JvmStatic fun byId(id: Long) = cachedValues[id.toInt()]
+		@JvmStatic
+		fun byId(id: Long) = cachedValues[id.toInt()]
 		
-		@JvmStatic fun byAddress(address: Long): EntityType? {
+		@JvmStatic
+		fun byAddress(address: Long): EntityType? {
 			try {
 				val vt = process().readUnsignedInt(address + 0x8)
 				if (vt <= 0) {

@@ -31,9 +31,12 @@ import org.xena.plugin.official.NoFlashPlugin
 import java.lang.System.currentTimeMillis
 
 
-@JvmField val process = OffsetManager.process()
-@JvmField val engineModule = OffsetManager.engineModule()
-@JvmField val clientModule = OffsetManager.clientModule()
+@JvmField
+val process = OffsetManager.process()
+@JvmField
+val engineModule = OffsetManager.engineModule()
+@JvmField
+val clientModule = OffsetManager.clientModule()
 
 object Xena : NativeKeyListener {
 	

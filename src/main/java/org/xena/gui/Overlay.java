@@ -27,18 +27,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
 public final class Overlay extends JWindow {
-
+	
 	private static final int WIDTH = 200;
 	private static int HEIGHT = 400;
-
+	
 	private static Point mouseDownPoint;
 	
 	private JLabel[] plugins = null;
 	private JLabel status;
-
+	
 	private Xena xena;
 	private boolean minimized;
-
+	
 	private Overlay(Xena xena) {
 		init(xena);
 	}
@@ -46,24 +46,24 @@ public final class Overlay extends JWindow {
 	public static Overlay open(Xena xena) {
 		return new Overlay(xena);
 	}
-
+	
 	private void init(Xena xena) {
 		this.xena = xena;
-
+		
 		plugins = new JLabel[xena.getPluginManager().size()];
-
+		
 		setAlwaysOnTop(true);
 		setLayout(null);
 		setBackground(new Color(71, 71, 71, 253));
 		setBounds(350, 0, WIDTH, HEIGHT);
-
+		
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				mouseDownPoint = e.getPoint();
 			}
 		});
-
+		
 		addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
@@ -72,7 +72,7 @@ public final class Overlay extends JWindow {
 				repaint();
 			}
 		});
-
+		
 		int height = 0;
 		JLabel title = new JLabel("Xena", SwingConstants.CENTER);
 		title.setFont(new Font("Sans Serif", Font.BOLD, 16));
@@ -81,14 +81,14 @@ public final class Overlay extends JWindow {
 		title.setForeground(Color.WHITE);
 		title.setBounds(0, height, getWidth(), 40);
 		add(title);
-
+		
 		height += 40;
 		JLabel splitter = new JLabel("", SwingConstants.CENTER);
 		splitter.setOpaque(true);
 		splitter.setBackground(new Color(232, 76, 61));
 		splitter.setBounds(0, height, getWidth(), 5);
 		add(splitter);
-
+		
 		JLabel label;
 		for (Plugin plugin : xena.getPluginManager()) {
 			height += 20;
@@ -99,7 +99,7 @@ public final class Overlay extends JWindow {
 			add(label);
 			plugins[plugin.uid()] = label;
 		}
-
+		
 		height += 30;
 		
 		status = new JLabel("<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + Xena.CYCLE_TIME + ")</html>", SwingConstants.LEFT);
@@ -107,14 +107,14 @@ public final class Overlay extends JWindow {
 		status.setForeground(Color.WHITE);
 		status.setBounds(3, height, getWidth() - 5, 35);
 		add(status);
-
+		
 		height += 35;
 		setSize(getWidth(), height);
-
+		
 		HEIGHT = height;
 		setVisible(true);
 	}
-
+	
 	@Override
 	public void repaint() {
 		for (int i = 0; i < plugins.length; i++) {
@@ -124,11 +124,11 @@ public final class Overlay extends JWindow {
 		}
 		//status.setText("<html>Status: Running<br>Cycle: " + abendigo.getLastCycle() + "(max=" + CYCLE_TIME + ")</html>");
 	}
-
+	
 	public void minimize() {
 		minimized = !minimized;
 		setSize(getWidth(), minimized ? 45 : HEIGHT);
 		repaint();
 	}
-
+	
 }

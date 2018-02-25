@@ -24,17 +24,17 @@ import com.sun.jna.platform.win32.WinUser;
  * Created by Jonathan on 7/18/2016.
  */
 public class User32 {
-
+	
 	static {
 		Native.register("user32");
 	}
 	
 	public static native int PeekMessageW(WinUser.MSG var1, WinDef.HWND var2, int var3, int var4, int var5);
-
+	
 	public static native short GetKeyState(int vKey);
-
+	
 	public static native boolean UnhookWindowsHookEx(WinUser.HHOOK var1);
-
+	
 	public static native WinUser.HHOOK SetWindowsHookExW(int var1, WinUser.HOOKPROC var2, WinDef.HINSTANCE var3, int var4);
-
+	
 }

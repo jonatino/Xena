@@ -29,8 +29,8 @@ import org.xena.plugin.utils.Vector;
 
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class AimAssistPlugin extends Plugin {
-
-    private final AngleUtils aimHelper;
+	
+	private final AngleUtils aimHelper;
 	private final Vector aim = new Vector();
 	private long prevFired = 0;
 	private Player lastTarget = null;
@@ -41,11 +41,11 @@ public final class AimAssistPlugin extends Plugin {
 
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
-        long shotsFired = me.getShotsFired();
-        if (shotsFired < 1 || shotsFired < prevFired) {
-            prevFired = 0;
-            return;
-        }
+		long shotsFired = me.getShotsFired();
+		if (shotsFired < 1 || shotsFired < prevFired) {
+			prevFired = 0;
+			return;
+		}
 
 		Player target = me.getTarget();
 		if (lastTarget != null && target == null) {
@@ -59,31 +59,31 @@ public final class AimAssistPlugin extends Plugin {
 		if (target == null) {
 			return;
 		}
-
-        if (shotsFired > 1 && shotsFired >= prevFired) {
-            try {
-                long shots;
-                if (aimHelper.canShoot(me, target) && (shots = me.getShotsFired()) > 1 && shots >= prevFired) {
-                    float delta = aimHelper.delta(me.getViewOrigin(), target.getBones());
-                    if (delta < 190) {
-                        return;
-                    }
-                    aimHelper.velocityComp(me, target, target.getBones());
-                    aimHelper.calculateAngle(me, me.getViewOrigin(), target.getBones(), aim);
-                    aimHelper.setAngleSmooth(aim, target.getViewAngles());
-
-                    prevFired = me.getShotsFired();
-	                lastTarget = target;
-                } else {
-	                lastTarget = null;
-                }
-            } catch (Throwable e) {
-                e.printStackTrace();
-            }
-        } else {
-            prevFired = 0;
-	        lastTarget = null;
-        }
-    }
+		
+		if (shotsFired > 1 && shotsFired >= prevFired) {
+			try {
+				long shots;
+				if (aimHelper.canShoot(me, target) && (shots = me.getShotsFired()) > 1 && shots >= prevFired) {
+					float delta = aimHelper.delta(me.getViewOrigin(), target.getBones());
+					if (delta < 190) {
+						return;
+					}
+					aimHelper.velocityComp(me, target, target.getBones());
+					aimHelper.calculateAngle(me, me.getViewOrigin(), target.getBones(), aim);
+					aimHelper.setAngleSmooth(aim, target.getViewAngles());
+					
+					prevFired = me.getShotsFired();
+					lastTarget = target;
+				} else {
+					lastTarget = null;
+				}
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		} else {
+			prevFired = 0;
+			lastTarget = null;
+		}
+	}
 
 }

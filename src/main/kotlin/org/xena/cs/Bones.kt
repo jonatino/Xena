@@ -23,25 +23,26 @@ enum class Bones(val id: Int, val percentage: Double) {
 	
 	HEAD(8, 0.75),
 	NECK(7, 0.45),
-    UPPER_CHEST(4, 0.30),
-    LOWER_CHEST(3, -0.00),
-    LEGS(2, -1.0),
-    FEET(1, -1.0);
-
-
-    companion object {
-
-        @JvmStatic private val cachedValues = values().sortedByDescending { it.percentage }
-
-        @JvmStatic fun roll(): Bones {
-            for (bone in cachedValues) {
-                if (bone.percentage < Math.random()) {
-                    return bone
-                }
-            }
-            return HEAD
-        }
-
-    }
-
+	UPPER_CHEST(4, 0.30),
+	LOWER_CHEST(3, -0.00),
+	LEGS(2, -1.0),
+	FEET(1, -1.0);
+	
+	
+	companion object {
+		
+		@JvmStatic private val cachedValues = values().sortedByDescending { it.percentage }
+		
+		@JvmStatic
+		fun roll(): Bones {
+			for (bone in cachedValues) {
+				if (bone.percentage < Math.random()) {
+					return bone
+				}
+			}
+			return HEAD
+		}
+		
+	}
+	
 }

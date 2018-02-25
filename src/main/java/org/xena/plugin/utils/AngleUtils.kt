@@ -29,7 +29,7 @@ import java.lang.Float.isNaN
 import java.util.*
 
 class AngleUtils(private val plugin: Plugin, private val smoothing: Float, private val lowestPitch: Float, private val highestPitch: Float, private val lowestYaw: Float, private val highestYaw: Float) {
-
+	
 	fun normalizeAngle(vector: Vector): Vector {
 		if (vector.x > 89.0f && vector.x <= 180.0f) {
 			vector.x = 89.0f
@@ -72,7 +72,7 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 		val weaponID = me.activeWeapon.weaponID.toInt()
 		return weaponID != Weapons.KNIFE_T.id && weaponID != Weapons.KNIFE_CT.id && me.activeWeapon.clip1 > 0 && !target.isDead && !me.isDead && target.team != me.team
 	}
-
+	
 	private val smoothedAngles = Vector()
 	
 	fun setAngleSmooth(dest: Vector, orig: Vector) {

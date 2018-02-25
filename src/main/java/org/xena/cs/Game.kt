@@ -20,10 +20,14 @@ package org.xena.cs
 import it.unimi.dsi.fastutil.longs.Long2IntArrayMap
 import org.xena.Indexer
 
-@JvmField val me = Me()
-@JvmField val entityMap = Long2IntArrayMap(256)
-@JvmField val entities = Indexer<GameEntity>(128)
-@JvmField val clientState = ClientState()
+@JvmField
+val me = Me()
+@JvmField
+val entityMap = Long2IntArrayMap(256)
+@JvmField
+val entities = Indexer<GameEntity>(128)
+@JvmField
+val clientState = ClientState()
 
 operator fun Indexer<GameEntity>.get(address: Long): GameEntity? {
 	var index = -1

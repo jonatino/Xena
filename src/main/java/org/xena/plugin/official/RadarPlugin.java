@@ -28,14 +28,14 @@ import static org.xena.XenaKt.process;
 
 @PluginManifest(name = "Radar", description = "Pinpoints enemies on the minimap.")
 public final class RadarPlugin extends Plugin {
-
-    @Override
-    public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
-        for (GameEntity entity : entities) {
-            if (entity != null) {
-	            process.writeBoolean(entity.address() + m_bSpotted, true);
-            }
-        }
-    }
-
+	
+	@Override
+	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
+		for (GameEntity entity : entities) {
+			if (entity != null) {
+				process.writeBoolean(entity.address() + m_bSpotted, true);
+			}
+		}
+	}
+	
 }

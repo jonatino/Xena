@@ -151,7 +151,8 @@ class BSPParser(val fileName: String) {
 	
 	companion object {
 		
-		@JvmStatic fun main(args: Array<String>) {
+		@JvmStatic
+		fun main(args: Array<String>) {
 			val tspawn = Vector(744.60254f, -604.03125f, 220.09381f)
 			val tspawn2 = Vector(743.60254f, -604.03125f, 220.09381f)
 			val upperTunnels = Vector(-1406.858f, 1254.9688f, 96.09381f)
