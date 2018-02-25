@@ -14,11 +14,23 @@
  *    limitations under the License.
  */
 
-package org.xena.logging;
+package org.xena.offsets;
 
-@FunctionalInterface
-interface Outputter {
+
+import org.xena.offsets.netvars.NetVars;
+import org.xena.offsets.offsets.Offsets;
+
+/**
+ * Created by Jonathan on 12/22/2015.
+ */
+public final class Main {
 	
-	void showLog(Level level, Object message);
+	public static void main(String... args) {
+		System.setProperty("jna.nosys", "true");
+		OffsetManager.initAll();
+		
+		NetVars.dump();
+		Offsets.dump();
+	}
 	
 }

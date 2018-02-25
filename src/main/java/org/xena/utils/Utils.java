@@ -17,11 +17,11 @@
 package org.xena.utils;
 
 import com.github.jonatino.misc.MemoryBuffer;
-import com.github.jonatino.offsets.Offsets;
 
 import java.awt.*;
 
-import static com.github.jonatino.OffsetManager.clientModule;
+import static org.xena.offsets.OffsetManager.clientModule;
+import static org.xena.offsets.offsets.Offsets.m_dwViewMatrix;
 
 public final class Utils {
 	
@@ -30,7 +30,7 @@ public final class Utils {
 	private static boolean screenTransform(float[] from, float[] to) {
 		float[][] flMatrix = new float[4][4];
 		
-		MemoryBuffer buffer = clientModule().read(Offsets.m_dwViewMatrix, 64);
+		MemoryBuffer buffer = clientModule().read(m_dwViewMatrix, 64);
 		for (int row = 0; row < 4; row++) {
 			for (int c = 0; c < 4; c++) {
 				flMatrix[row][c] = buffer.getFloat();

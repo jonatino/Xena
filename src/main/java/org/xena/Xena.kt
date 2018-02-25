@@ -16,13 +16,23 @@
 
 package org.xena
 
-import com.github.jonatino.OffsetManager
-import com.github.jonatino.offsets.Offsets.*
 import org.xena.cs.*
 import org.xena.gui.Overlay
 import org.xena.keylistener.GlobalKeyboard
 import org.xena.keylistener.NativeKeyEvent
 import org.xena.keylistener.NativeKeyListener
+import org.xena.offsets.OffsetManager
+import org.xena.offsets.misc.PatternScanner
+import org.xena.offsets.misc.PatternScanner.getAddressForPattern
+import org.xena.offsets.offsets.Offsets.m_dwClientState
+import org.xena.offsets.offsets.Offsets.m_dwEntityList
+import org.xena.offsets.offsets.Offsets.m_dwGlowObject
+import org.xena.offsets.offsets.Offsets.m_dwInGame
+import org.xena.offsets.offsets.Offsets.m_dwIndex
+import org.xena.offsets.offsets.Offsets.m_dwLocalPlayer
+import org.xena.offsets.offsets.Offsets.m_dwLocalPlayerIndex
+import org.xena.offsets.offsets.Offsets.m_dwMaxPlayer
+import org.xena.offsets.offsets.Offsets.m_iTeamNum
 import org.xena.plugin.PluginManager
 import org.xena.plugin.official.AimAssistPlugin
 import org.xena.plugin.official.ForceAimPlugin
@@ -76,6 +86,7 @@ object Xena : NativeKeyListener {
 				checkGameStatus()
 				
 				updateClientState(clientState)
+				
 				if (System.currentTimeMillis() - lastRefresh >= 10000) {
 					clearPlayers()
 					lastRefresh = System.currentTimeMillis()
@@ -107,12 +118,16 @@ object Xena : NativeKeyListener {
 			}
 			
 		}
+		
+		println("Shes gone")
 	}
 	
 	@Throws(InterruptedException::class)
 	private fun checkGameStatus() {
 		while (true) {
+			
 			val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
+			
 			if (myAddress < 0x200) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -120,6 +135,7 @@ object Xena : NativeKeyListener {
 			}
 			
 			val myTeam = process.readUnsignedInt(myAddress + m_iTeamNum).toInt()
+			
 			if (myTeam != 2 && myTeam != 3) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -127,6 +143,7 @@ object Xena : NativeKeyListener {
 			}
 			
 			val objectCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
+			
 			if (objectCount <= 0) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -134,13 +151,16 @@ object Xena : NativeKeyListener {
 			}
 			
 			val myIndex = process.readUnsignedInt(myAddress + m_dwIndex) - 1
+			
 			if (myIndex < 0 || myIndex >= objectCount) {
 				clearPlayers()
 				Thread.sleep(10000)
 				continue
 			}
 			
+			
 			val enginePointer = engineModule.readUnsignedInt(m_dwClientState.toLong())
+			
 			if (enginePointer <= 0) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -148,11 +168,12 @@ object Xena : NativeKeyListener {
 			}
 			
 			val inGame = process.readUnsignedInt(enginePointer + m_dwInGame).toInt()
-			if (inGame != 6) {
+			
+			/*if (inGame != 6) {
 				clearPlayers()
 				Thread.sleep(10000)
 				continue
-			}
+			}*/
 			
 			if (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0) {
 				clearPlayers()
@@ -178,10 +199,11 @@ object Xena : NativeKeyListener {
 	
 	private fun updateEntityList() {
 		val entityCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
+		
 		val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
 		
-		for (i in 0..entityCount - 1) {
-			val entityAddress = clientModule.readUnsignedInt(m_dwEntityList + i * 0x10)
+		for (i in 0 until entityCount) {
+			val entityAddress = clientModule.readUnsignedInt(m_dwEntityList + (i - 1) * 0x10)
 			
 			if (entityAddress < 0x200) continue
 			

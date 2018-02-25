@@ -29,5 +29,5 @@ public interface Logger {
 	Level level();
 	
 	Logger setLevel(Level level);
-
+	
 }

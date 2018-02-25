@@ -16,13 +16,13 @@
 
 package org.xena.plugin.utils
 
-import com.github.jonatino.offsets.Offsets.m_dwClientState
-import com.github.jonatino.offsets.Offsets.m_dwViewAngles
 import org.xena.cs.GameEntity
 import org.xena.cs.Me
 import org.xena.cs.Player
 import org.xena.cs.Weapons
 import org.xena.engineModule
+import org.xena.offsets.offsets.Offsets.m_dwClientState
+import org.xena.offsets.offsets.Offsets.m_dwViewAngles
 import org.xena.plugin.Plugin
 import org.xena.process
 import java.lang.Float.isNaN

@@ -16,13 +16,13 @@
 
 package org.xena.plugin.official
 
-import com.github.jonatino.offsets.Offsets.m_dwGlowObject
 import org.xena.Indexer
 import org.xena.clientModule
 import org.xena.cs.ClientState
 import org.xena.cs.GameEntity
 import org.xena.cs.Me
 import org.xena.cs.get
+import org.xena.offsets.offsets.Offsets.m_dwGlowObject
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
 import org.xena.process

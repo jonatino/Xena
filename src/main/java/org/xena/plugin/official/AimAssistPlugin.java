@@ -38,7 +38,7 @@ public final class AimAssistPlugin extends Plugin {
 	public AimAssistPlugin() {
 		aimHelper = new AngleUtils(this, Settings.AIM_ASSIST_STRENGTH, 1.7F, 2.5F, 1.7F, 2.5F);
 	}
-
+	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
 		long shotsFired = me.getShotsFired();
@@ -46,7 +46,7 @@ public final class AimAssistPlugin extends Plugin {
 			prevFired = 0;
 			return;
 		}
-
+		
 		Player target = me.getTarget();
 		if (lastTarget != null && target == null) {
 			if (!lastTarget.isDead() && lastTarget.isSpotted()) {
@@ -55,7 +55,7 @@ public final class AimAssistPlugin extends Plugin {
 				lastTarget = null;
 			}
 		}
-
+		
 		if (target == null) {
 			return;
 		}
@@ -85,5 +85,5 @@ public final class AimAssistPlugin extends Plugin {
 			lastTarget = null;
 		}
 	}
-
+	
 }

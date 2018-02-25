@@ -1,6 +1,6 @@
 package org.xena.cs
 
-import com.github.jonatino.OffsetManager.process
+import org.xena.offsets.OffsetManager.process
 
 /**
  * Created by Jonathan on 7/12/2016.

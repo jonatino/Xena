@@ -81,5 +81,5 @@ public class NativeKeyUtils {
 	public static int stateOf(int keycode) {
 		return User32.GetKeyState(keycode);
 	}
-
+	
 }

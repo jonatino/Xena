@@ -16,8 +16,8 @@
 
 package org.xena.cs
 
-import com.github.jonatino.OffsetManager.process
-import com.github.jonatino.offsets.Offsets.m_iItemDefinitionIndex
+import org.xena.offsets.OffsetManager.process
+import org.xena.offsets.offsets.Offsets.m_iItemDefinitionIndex
 
 open class Player : GameEntity() {
 	

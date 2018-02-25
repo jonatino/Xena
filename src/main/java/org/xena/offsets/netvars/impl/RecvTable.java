@@ -14,24 +14,37 @@
  *    limitations under the License.
  */
 
-package org.xena;
+package org.xena.offsets.netvars.impl;
 
 import org.xena.offsets.OffsetManager;
 
-import java.lang.management.ManagementFactory;
-
-public final class Main {
+/**
+ * Created by Jonathan on 11/16/2015.
+ */
+public final class RecvTable {
 	
-	private static final String logo = "__  __                \n" + "\\ \\/ /___ _ __   __ _ \n" + " \\  // _ \\ '_ \\ / _` |\n" + " /  \\  __/ | | | (_| |\n" + "/_/\\_\\___|_| |_|\\__,_|\n" + "A free, open-source CS:GO cheating platform\n";
+	private int base;
 	
-	public static void main(String... args) throws InterruptedException {
-		System.setProperty("jna.nosys", "true");
-		System.out.println(ManagementFactory.getRuntimeMXBean().getName());
-		System.out.println(logo);
-		
-		OffsetManager.initAll();
-		
-		Xena.run(Xena.CYCLE_TIME);
+	public RecvTable setBase(int base) {
+		this.base = base;
+		return this;
 	}
+	
+	public int propForId(int id) {
+		return OffsetManager.process().readInt(base) + (id * 0x3C);
+	}
+	
+	public String tableName() {
+		return OffsetManager.process().readString(OffsetManager.process().readInt(base + 0xC), 32);
+	}
+	
+	public int propCount() {
+		return OffsetManager.process().readInt(base + 0x4);
+	}
+	
+	public boolean readable() {
+		return OffsetManager.process().canRead(base, 0x10);
+	}
+	
 	
 }

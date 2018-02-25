@@ -39,5 +39,5 @@ public class GameObject implements Addressed {
 	public boolean equals(Object o) {
 		return o instanceof GameObject && hashCode() == o.hashCode();
 	}
-
+	
 }

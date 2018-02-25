@@ -16,9 +16,21 @@
 
 package org.xena.cs
 
-import com.github.jonatino.OffsetManager.engineModule
-import com.github.jonatino.OffsetManager.process
-import com.github.jonatino.offsets.Offsets.*
+import org.xena.offsets.OffsetManager.engineModule
+import org.xena.offsets.OffsetManager.process
+import org.xena.offsets.offsets.Offsets.m_bDormant
+import org.xena.offsets.offsets.Offsets.m_bMoveType
+import org.xena.offsets.offsets.Offsets.m_bSpotted
+import org.xena.offsets.offsets.Offsets.m_dwBoneMatrix
+import org.xena.offsets.offsets.Offsets.m_dwClientState
+import org.xena.offsets.offsets.Offsets.m_dwModel
+import org.xena.offsets.offsets.Offsets.m_dwViewAngles
+import org.xena.offsets.offsets.Offsets.m_iTeamNum
+import org.xena.offsets.offsets.Offsets.m_lifeState
+import org.xena.offsets.offsets.Offsets.m_vecOrigin
+import org.xena.offsets.offsets.Offsets.m_vecPunch
+import org.xena.offsets.offsets.Offsets.m_vecVelocity
+import org.xena.offsets.offsets.Offsets.m_vecViewOffset
 import org.xena.plugin.utils.Vector
 
 open class GameEntity : GameObject() {

@@ -16,9 +16,17 @@
 
 package org.xena.cs
 
-import com.github.jonatino.OffsetManager.clientModule
-import com.github.jonatino.OffsetManager.process
-import com.github.jonatino.offsets.Offsets.*
+import org.xena.offsets.OffsetManager.clientModule
+import org.xena.offsets.OffsetManager.process
+import org.xena.offsets.offsets.Offsets.m_bCanReload
+import org.xena.offsets.offsets.Offsets.m_dwEntityList
+import org.xena.offsets.offsets.Offsets.m_dwLocalPlayer
+import org.xena.offsets.offsets.Offsets.m_hActiveWeapon
+import org.xena.offsets.offsets.Offsets.m_hMyWeapons
+import org.xena.offsets.offsets.Offsets.m_iClip1
+import org.xena.offsets.offsets.Offsets.m_iClip2
+import org.xena.offsets.offsets.Offsets.m_iCrossHairID
+import org.xena.offsets.offsets.Offsets.m_iShotsFired
 
 class Me : Player() {
 	
@@ -57,8 +65,6 @@ class Me : Player() {
 		
 		target = null
 		val crosshair = process().readUnsignedInt(address() + m_iCrossHairID) - 1
-/*		if (crosshair != -1.toLong())
-			println(crosshair)*/
 		if (crosshair > -1 && crosshair <= 1024) {
 			val entity = entities[clientModule().readUnsignedInt(m_dwEntityList + crosshair * 0x10)]
 			if (entity != null) {

@@ -89,5 +89,5 @@ enum class Weapons(val id: Int, val skin: Int = -1, val customSkin: Boolean = (s
 		fun byID(id: Int) = cachedValues.firstOrNull { it.id == id }
 		
 	}
-
+	
 }

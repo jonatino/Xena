@@ -23,8 +23,8 @@ import org.xena.cs.Me;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 
-import static com.github.jonatino.offsets.Offsets.m_flFlashMaxAlpha;
 import static org.xena.XenaKt.process;
+import static org.xena.offsets.offsets.Offsets.m_flFlashMaxAlpha;
 
 @PluginManifest(name = "No Flash", description = "Disables the flash bang effect on your screen.")
 public final class NoFlashPlugin extends Plugin {

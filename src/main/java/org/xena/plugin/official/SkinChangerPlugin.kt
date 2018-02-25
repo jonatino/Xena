@@ -16,11 +16,16 @@
 
 package org.xena.plugin.official
 
-import com.github.jonatino.offsets.Offsets.*
 import org.xena.Indexer
 import org.xena.cs.ClientState
 import org.xena.cs.GameEntity
 import org.xena.cs.Me
+import org.xena.offsets.offsets.Offsets.m_flFallbackWear
+import org.xena.offsets.offsets.Offsets.m_iEntityQuality
+import org.xena.offsets.offsets.Offsets.m_iItemIDHigh
+import org.xena.offsets.offsets.Offsets.m_nFallbackPaintKit
+import org.xena.offsets.offsets.Offsets.m_nFallbackSeed
+import org.xena.offsets.offsets.Offsets.m_nFallbackStatTrak
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
 import org.xena.process

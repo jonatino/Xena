@@ -23,8 +23,8 @@ import org.xena.cs.Me;
 import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 
-import static com.github.jonatino.offsets.Offsets.m_bSpotted;
 import static org.xena.XenaKt.process;
+import static org.xena.offsets.offsets.Offsets.m_bSpotted;
 
 @PluginManifest(name = "Radar", description = "Pinpoints enemies on the minimap.")
 public final class RadarPlugin extends Plugin {
