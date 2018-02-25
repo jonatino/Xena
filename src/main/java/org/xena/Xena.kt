@@ -22,8 +22,6 @@ import org.xena.keylistener.GlobalKeyboard
 import org.xena.keylistener.NativeKeyEvent
 import org.xena.keylistener.NativeKeyListener
 import org.xena.offsets.OffsetManager
-import org.xena.offsets.misc.PatternScanner
-import org.xena.offsets.misc.PatternScanner.getAddressForPattern
 import org.xena.offsets.offsets.Offsets.m_dwClientState
 import org.xena.offsets.offsets.Offsets.m_dwEntityList
 import org.xena.offsets.offsets.Offsets.m_dwGlowObject
@@ -34,10 +32,7 @@ import org.xena.offsets.offsets.Offsets.m_dwLocalPlayerIndex
 import org.xena.offsets.offsets.Offsets.m_dwMaxPlayer
 import org.xena.offsets.offsets.Offsets.m_iTeamNum
 import org.xena.plugin.PluginManager
-import org.xena.plugin.official.AimAssistPlugin
-import org.xena.plugin.official.ForceAimPlugin
-import org.xena.plugin.official.GlowESPPlugin
-import org.xena.plugin.official.NoFlashPlugin
+import org.xena.plugin.official.*
 import java.lang.System.currentTimeMillis
 
 
@@ -64,12 +59,12 @@ object Xena : NativeKeyListener {
 	@JvmStatic
 	@Throws(InterruptedException::class)
 	fun run(cycleMS: Int) {
-		//pluginManager.enable(new RadarPlugin());
+		//pluginManager.add(RadarPlugin()); //This may cause bans be careful
 		pluginManager.add(GlowESPPlugin())
 		pluginManager.add(ForceAimPlugin())
 		//pluginManager.add(SkinChangerPlugin())
 		//pluginManager.add(SpinBotPlugin())
-		pluginManager.add(NoFlashPlugin());
+		pluginManager.add(NoFlashPlugin())
 		pluginManager.add(AimAssistPlugin())
 		
 		println("We're all set. Welcome to the new Xena platform!")
@@ -118,8 +113,6 @@ object Xena : NativeKeyListener {
 			}
 			
 		}
-		
-		println("Shes gone")
 	}
 	
 	@Throws(InterruptedException::class)

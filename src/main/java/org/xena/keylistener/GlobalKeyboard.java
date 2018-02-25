@@ -69,9 +69,10 @@ public final class GlobalKeyboard extends NativeKeyUtils implements EventListene
 					};
 					hook = User32.SetWindowsHookExW(WinUser.WH_KEYBOARD_LL, keyboardHook, Kernel32.INSTANCE.GetModuleHandle(null), 0);//We have to store it in a static object to prevent GC
 					WinUser.MSG msg = new WinUser.MSG();
+					WinUser.HWND hwnd = new WinUser.HWND();
 					while (true) {
 						try {
-							User32.PeekMessageW(msg, null, 0, 0, 0);
+							User32.PeekMessageW(msg, hwnd, 0, 0, 0);
 							Thread.sleep(10);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
@@ -110,7 +111,9 @@ public final class GlobalKeyboard extends NativeKeyUtils implements EventListene
 		switch (type) {
 			case KEY_DOWN:
 				keysDown.put(event.getKeyCode(), event);
-				for (NativeKeyCombination key : keyMaps) {
+				for (int i = 0; i < keyMaps.size(); i++) {
+					NativeKeyCombination key = keyMaps.get(i);
+					
 					if (!key.matches(event)) {
 						continue;
 					}
