@@ -22,17 +22,20 @@ import org.xena.keylistener.GlobalKeyboard
 import org.xena.keylistener.NativeKeyEvent
 import org.xena.keylistener.NativeKeyListener
 import org.xena.offsets.OffsetManager
-import org.xena.offsets.offsets.EngineOffsets.m_dwClientState
 import org.xena.offsets.offsets.ClientOffsets.m_dwEntityList
 import org.xena.offsets.offsets.ClientOffsets.m_dwGlowObject
+import org.xena.offsets.offsets.ClientOffsets.m_dwLocalPlayer
+import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
 import org.xena.offsets.offsets.EngineOffsets.m_dwInGame
 import org.xena.offsets.offsets.EngineOffsets.m_dwIndex
-import org.xena.offsets.offsets.ClientOffsets.m_dwLocalPlayer
 import org.xena.offsets.offsets.EngineOffsets.m_dwLocalPlayerIndex
 import org.xena.offsets.offsets.EngineOffsets.m_dwMaxPlayer
 import org.xena.offsets.offsets.EngineOffsets.m_iTeamNum
 import org.xena.plugin.PluginManager
-import org.xena.plugin.official.*
+import org.xena.plugin.official.AimAssistPlugin
+import org.xena.plugin.official.ForceAimPlugin
+import org.xena.plugin.official.GlowESPPlugin
+import org.xena.plugin.official.NoFlashPlugin
 import java.lang.System.currentTimeMillis
 
 
@@ -119,7 +122,6 @@ object Xena : NativeKeyListener {
 	private fun checkGameStatus() {
 		while (true) {
 			val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
-			
 			if (myAddress < 0x200) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -127,7 +129,6 @@ object Xena : NativeKeyListener {
 			}
 			
 			val myTeam = process.readUnsignedInt(myAddress + m_iTeamNum).toInt()
-			
 			if (myTeam != 2 && myTeam != 3) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -135,7 +136,6 @@ object Xena : NativeKeyListener {
 			}
 			
 			val objectCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
-			
 			if (objectCount <= 0) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -143,16 +143,13 @@ object Xena : NativeKeyListener {
 			}
 			
 			val myIndex = process.readUnsignedInt(myAddress + m_dwIndex) - 1
-			
 			if (myIndex < 0 || myIndex >= objectCount) {
 				clearPlayers()
 				Thread.sleep(10000)
 				continue
 			}
 			
-			
-			val enginePointer = engineModule.readUnsignedInt(m_dwClientState.toLong())
-			
+			val enginePointer = engineModule.readUnsignedInt(dwClientState_State.toLong())
 			if (enginePointer <= 0) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -160,12 +157,11 @@ object Xena : NativeKeyListener {
 			}
 			
 			val inGame = process.readUnsignedInt(enginePointer + m_dwInGame).toInt()
-			
-			/*if (inGame != 6) {
+			if (inGame != 6) {
 				clearPlayers()
 				Thread.sleep(10000)
 				continue
-			}*/
+			}
 			
 			if (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0) {
 				clearPlayers()
@@ -177,7 +173,7 @@ object Xena : NativeKeyListener {
 	}
 	
 	private fun updateClientState(clientState: ClientState) {
-		val address = engineModule.readUnsignedInt(m_dwClientState.toLong())
+		val address = engineModule.readUnsignedInt(dwClientState_State.toLong())
 		if (address < 0) {
 			throw IllegalStateException("Could not find client state")
 		}

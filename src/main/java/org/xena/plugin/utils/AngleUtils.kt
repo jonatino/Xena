@@ -21,7 +21,7 @@ import org.xena.cs.Me
 import org.xena.cs.Player
 import org.xena.cs.Weapons
 import org.xena.engineModule
-import org.xena.offsets.offsets.EngineOffsets.m_dwClientState
+import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
 import org.xena.offsets.offsets.EngineOffsets.m_dwViewAngles
 import org.xena.plugin.Plugin
 import org.xena.process
@@ -72,7 +72,7 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 	
 	fun canShoot(me: Me, target: GameEntity): Boolean {
 		val weaponID = me.activeWeapon.weaponID.toInt()
-		return weaponID != Weapons.KNIFE_T.id && weaponID != Weapons.KNIFE_CT.id && me.activeWeapon.clip1 > 0 && !target.isDead && !me.isDead && target.team != me.team
+		return weaponID != Weapons.KNIFE_T.id && weaponID != Weapons.KNIFE_CT.id && me.activeWeapon.clip1 > 0 && !target.isDead && !me.isDead && target.team != me.team && target.isSpotted && !target.isDormant
 	}
 	
 	private val smoothedAngles = Vector()
@@ -95,7 +95,7 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 		if (isNaN(angles.x) || isNaN(angles.y) || isNaN(angles.z)) {
 			return
 		}
-		val anglePointer = engineModule.readUnsignedInt(m_dwClientState.toLong())
+		val anglePointer = engineModule.readUnsignedInt(dwClientState_State.toLong())
 		process.writeFloat(anglePointer + m_dwViewAngles, angles.x)
 		process.writeFloat(anglePointer + m_dwViewAngles.toLong() + 4, angles.y)
 	}

@@ -103,11 +103,9 @@ class Me : Player() {
 		val angle = clientState.angle()
 		
 		var lastIdx = 0
-		while (true) {
-			if (lastIdx + 1 >= entities.size()) {
-				break
-			}
+		while (lastIdx + 1 <= entities.size()) {
 			val entity = entities.get(lastIdx++)
+			
 			try {
 				if (/*aimHelper.delta(viewOrigin, entity.bones) > 3000 || */!aimHelper.canShoot(me, entity)) {
 					continue
@@ -123,7 +121,7 @@ class Me : Player() {
 				val delta = Math.abs(Math.sin(Math.toRadians(yawDiff)) * distance)
 				val fovDelta = Math.abs((Math.sin(Math.toRadians(pitchDiff)) + Math.sin(Math.toRadians(yawDiff))) * distance)
 				
-				if (fovDelta <= fov && delta < closestDelta) {
+				if (fovDelta <= fov && delta < closestDelta && closestDelta >= 0) {
 					closestDelta = delta
 					closestPlayer = entity as Player?
 				}

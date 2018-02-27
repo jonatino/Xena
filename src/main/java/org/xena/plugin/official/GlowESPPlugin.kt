@@ -19,10 +19,7 @@ package org.xena.plugin.official
 import org.xena.Indexer
 import org.xena.Settings.*
 import org.xena.clientModule
-import org.xena.cs.ClientState
-import org.xena.cs.GameEntity
-import org.xena.cs.Me
-import org.xena.cs.get
+import org.xena.cs.*
 import org.xena.offsets.offsets.ClientOffsets.m_dwGlowObject
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
@@ -52,9 +49,11 @@ class GlowESPPlugin : Plugin() {
 	}
 	
 	private fun getColor(entity: GameEntity): IntArray {
-		if (entity.team == 3) return ESP_TEAM_CT
-		if (entity.isBombCarrier) return ESP_BOMB_CARRY
-		return ESP_TEAM_T
+		return when {
+			entity.team == 2 -> ESP_T
+			entity.isBombCarrier -> ESP_BOMB_CARRY
+			else -> ESP_CT
+		}
 	}
 	
 }

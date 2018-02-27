@@ -22,10 +22,9 @@ import org.xena.offsets.offsets.ClientOffsets.m_bDormant
 import org.xena.offsets.offsets.EngineOffsets.m_bMoveType
 import org.xena.offsets.offsets.EngineOffsets.m_bSpotted
 import org.xena.offsets.offsets.EngineOffsets.m_dwBoneMatrix
-import org.xena.offsets.offsets.EngineOffsets.m_dwClientState
+import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
 import org.xena.offsets.offsets.EngineOffsets.m_dwModel
 import org.xena.offsets.offsets.EngineOffsets.m_dwViewAngles
-import org.xena.offsets.offsets.EngineOffsets.m_iTeamNum
 import org.xena.offsets.offsets.EngineOffsets.m_lifeState
 import org.xena.offsets.offsets.EngineOffsets.m_vecOrigin
 import org.xena.offsets.offsets.EngineOffsets.m_vecPunch
@@ -76,7 +75,6 @@ open class GameEntity : GameObject() {
 		boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix)
 		isRunning = process().readBoolean(address() + m_bMoveType)
 		isDormant = process().readBoolean(address() + m_bDormant)
-		team = process().readInt(address() + m_iTeamNum)
 		
 		viewOrigin.x = process().readFloat(address() + m_vecOrigin)
 		viewOrigin.y = process().readFloat(address() + m_vecOrigin + 4)
@@ -90,7 +88,7 @@ open class GameEntity : GameObject() {
 		viewOffsets.y = process().readFloat(address() + m_vecViewOffset + 4)
 		viewOffsets.z = process().readFloat(address() + m_vecViewOffset + 8)
 		
-		val anglePointer = engineModule().readUnsignedInt(m_dwClientState.toLong())
+		val anglePointer = engineModule().readUnsignedInt(dwClientState_State.toLong())
 		viewAngles.x = process().readFloat(anglePointer + m_dwViewAngles)
 		viewAngles.y = process().readFloat(anglePointer + m_dwViewAngles + 4)
 		viewAngles.z = process().readFloat(anglePointer + m_dwViewAngles + 8)
