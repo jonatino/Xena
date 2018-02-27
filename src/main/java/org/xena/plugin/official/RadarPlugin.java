@@ -24,7 +24,7 @@ import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 
 import static org.xena.XenaKt.process;
-import static org.xena.offsets.offsets.EngineOffsets.m_bSpotted;
+import static org.xena.offsets.offsets.NetVarOffsets.bSpotted;
 
 @PluginManifest(name = "Radar", description = "Pinpoints enemies on the minimap.")
 public final class RadarPlugin extends Plugin {
@@ -33,7 +33,7 @@ public final class RadarPlugin extends Plugin {
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
 		for (GameEntity entity : entities) {
 			if (entity != null) {
-				process.writeBoolean(entity.address() + m_bSpotted, true);
+				process.writeBoolean(entity.address() + bSpotted, true);
 			}
 		}
 	}

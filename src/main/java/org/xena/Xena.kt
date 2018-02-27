@@ -22,15 +22,15 @@ import org.xena.keylistener.GlobalKeyboard
 import org.xena.keylistener.NativeKeyEvent
 import org.xena.keylistener.NativeKeyListener
 import org.xena.offsets.OffsetManager
-import org.xena.offsets.offsets.ClientOffsets.m_dwEntityList
-import org.xena.offsets.offsets.ClientOffsets.m_dwGlowObject
-import org.xena.offsets.offsets.ClientOffsets.m_dwLocalPlayer
+import org.xena.offsets.offsets.ClientOffsets.dwEntityList
+import org.xena.offsets.offsets.ClientOffsets.dwGlowObject
+import org.xena.offsets.offsets.ClientOffsets.dwLocalPlayer
 import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
-import org.xena.offsets.offsets.EngineOffsets.m_dwInGame
-import org.xena.offsets.offsets.EngineOffsets.m_dwIndex
-import org.xena.offsets.offsets.EngineOffsets.m_dwLocalPlayerIndex
-import org.xena.offsets.offsets.EngineOffsets.m_dwMaxPlayer
-import org.xena.offsets.offsets.EngineOffsets.m_iTeamNum
+import org.xena.offsets.offsets.EngineOffsets.dwInGame
+import org.xena.offsets.offsets.EngineOffsets.dwLocalPlayerIndex
+import org.xena.offsets.offsets.EngineOffsets.dwMaxPlayer
+import org.xena.offsets.offsets.NetVarOffsets.dwIndex
+import org.xena.offsets.offsets.NetVarOffsets.iTeamNum
 import org.xena.plugin.PluginManager
 import org.xena.plugin.official.AimAssistPlugin
 import org.xena.plugin.official.ForceAimPlugin
@@ -121,28 +121,28 @@ object Xena : NativeKeyListener {
 	@Throws(InterruptedException::class)
 	private fun checkGameStatus() {
 		while (true) {
-			val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
+			val myAddress = clientModule.readUnsignedInt(dwLocalPlayer.toLong())
 			if (myAddress < 0x200) {
 				clearPlayers()
 				Thread.sleep(10000)
 				continue
 			}
 			
-			val myTeam = process.readUnsignedInt(myAddress + m_iTeamNum).toInt()
+			val myTeam = process.readUnsignedInt(myAddress + iTeamNum).toInt()
 			if (myTeam != 2 && myTeam != 3) {
 				clearPlayers()
 				Thread.sleep(10000)
 				continue
 			}
 			
-			val objectCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
+			val objectCount = clientModule.readUnsignedInt((dwGlowObject + 4).toLong())
 			if (objectCount <= 0) {
 				clearPlayers()
 				Thread.sleep(10000)
 				continue
 			}
 			
-			val myIndex = process.readUnsignedInt(myAddress + m_dwIndex) - 1
+			val myIndex = process.readUnsignedInt(myAddress + dwIndex) - 1
 			if (myIndex < 0 || myIndex >= objectCount) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -156,7 +156,7 @@ object Xena : NativeKeyListener {
 				continue
 			}
 			
-			val inGame = process.readUnsignedInt(enginePointer + m_dwInGame).toInt()
+			val inGame = process.readUnsignedInt(enginePointer + dwInGame).toInt()
 			if (inGame != 6) {
 				clearPlayers()
 				Thread.sleep(10000)
@@ -178,25 +178,25 @@ object Xena : NativeKeyListener {
 			throw IllegalStateException("Could not find client state")
 		}
 		clientState.setAddress(address)
-		clientState.inGame = process.readUnsignedInt(address + m_dwInGame)
-		clientState.maxPlayer = process.readUnsignedInt(address + m_dwMaxPlayer)
-		clientState.localPlayerIndex = process.readUnsignedInt(address + m_dwLocalPlayerIndex)
+		clientState.inGame = process.readUnsignedInt(address + dwInGame)
+		clientState.maxPlayer = process.readUnsignedInt(address + dwMaxPlayer)
+		clientState.localPlayerIndex = process.readUnsignedInt(address + dwLocalPlayerIndex)
 	}
 	
 	fun clearPlayers() = removePlayers()
 	
 	private fun updateEntityList() {
-		val entityCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
-		val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
+		val entityCount = clientModule.readUnsignedInt((dwGlowObject + 4).toLong())
+		val myAddress = clientModule.readUnsignedInt(dwLocalPlayer.toLong())
 		
 		for (i in 0 until entityCount) {
-			val entityAddress = clientModule.readUnsignedInt(m_dwEntityList + (i - 1) * 0x10)
+			val entityAddress = clientModule.readUnsignedInt(dwEntityList + (i - 1) * 0x10)
 			
 			if (entityAddress < 0x200) continue
 			
 			val type = EntityType.byAddress(entityAddress) ?: continue
 			
-			val team = process.readInt(entityAddress + m_iTeamNum)
+			val team = process.readInt(entityAddress + iTeamNum)
 			
 			if (team != 2 && team != 3 || type !== EntityType.CCSPlayer) {
 				continue

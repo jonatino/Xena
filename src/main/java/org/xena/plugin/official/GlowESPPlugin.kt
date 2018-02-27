@@ -20,7 +20,7 @@ import org.xena.Indexer
 import org.xena.Settings.*
 import org.xena.clientModule
 import org.xena.cs.*
-import org.xena.offsets.offsets.ClientOffsets.m_dwGlowObject
+import org.xena.offsets.offsets.ClientOffsets.dwGlowObject
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
 import org.xena.process
@@ -29,8 +29,8 @@ import org.xena.process
 class GlowESPPlugin : Plugin() {
 	
 	override fun pulse(clientState: ClientState, me: Me, entities: Indexer<GameEntity>) {
-		val pointerGlow = clientModule.readUnsignedInt(m_dwGlowObject.toLong())
-		val glowObjectCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
+		val pointerGlow = clientModule.readUnsignedInt(dwGlowObject.toLong())
+		val glowObjectCount = clientModule.readUnsignedInt((dwGlowObject + 4).toLong())
 		
 		for (i in 0 until glowObjectCount) {
 			val glowObjectPointer = pointerGlow + i * 56

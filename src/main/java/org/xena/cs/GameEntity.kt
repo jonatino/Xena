@@ -18,18 +18,18 @@ package org.xena.cs
 
 import org.xena.offsets.OffsetManager.engineModule
 import org.xena.offsets.OffsetManager.process
-import org.xena.offsets.offsets.ClientOffsets.m_bDormant
-import org.xena.offsets.offsets.EngineOffsets.m_bMoveType
-import org.xena.offsets.offsets.EngineOffsets.m_bSpotted
-import org.xena.offsets.offsets.EngineOffsets.m_dwBoneMatrix
+import org.xena.offsets.offsets.ClientOffsets.bDormant
 import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
-import org.xena.offsets.offsets.EngineOffsets.m_dwModel
-import org.xena.offsets.offsets.EngineOffsets.m_dwViewAngles
-import org.xena.offsets.offsets.EngineOffsets.m_lifeState
-import org.xena.offsets.offsets.EngineOffsets.m_vecOrigin
-import org.xena.offsets.offsets.EngineOffsets.m_vecPunch
-import org.xena.offsets.offsets.EngineOffsets.m_vecVelocity
-import org.xena.offsets.offsets.EngineOffsets.m_vecViewOffset
+import org.xena.offsets.offsets.EngineOffsets.dwViewAngles
+import org.xena.offsets.offsets.NetVarOffsets.bMoveType
+import org.xena.offsets.offsets.NetVarOffsets.bSpotted
+import org.xena.offsets.offsets.NetVarOffsets.dwBoneMatrix
+import org.xena.offsets.offsets.NetVarOffsets.dwModel
+import org.xena.offsets.offsets.NetVarOffsets.lifeState
+import org.xena.offsets.offsets.NetVarOffsets.vecOrigin
+import org.xena.offsets.offsets.NetVarOffsets.vecPunch
+import org.xena.offsets.offsets.NetVarOffsets.vecVelocity
+import org.xena.offsets.offsets.NetVarOffsets.vecViewOffset
 import org.xena.plugin.utils.Vector
 import java.lang.Math.abs
 
@@ -71,29 +71,29 @@ open class GameEntity : GameObject() {
 		protected set
 	
 	open fun update() {
-		model = process().readUnsignedInt(address() + m_dwModel)
-		boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix)
-		isRunning = process().readBoolean(address() + m_bMoveType)
-		isDormant = process().readBoolean(address() + m_bDormant)
+		model = process().readUnsignedInt(address() + dwModel)
+		boneMatrix = process().readUnsignedInt(address() + dwBoneMatrix)
+		isRunning = process().readBoolean(address() + bMoveType)
+		isDormant = process().readBoolean(address() + bDormant)
 		
-		viewOrigin.x = process().readFloat(address() + m_vecOrigin)
-		viewOrigin.y = process().readFloat(address() + m_vecOrigin + 4)
-		viewOrigin.z = process().readFloat(address() + m_vecOrigin + 8)
+		viewOrigin.x = process().readFloat(address() + vecOrigin)
+		viewOrigin.y = process().readFloat(address() + vecOrigin + 4)
+		viewOrigin.z = process().readFloat(address() + vecOrigin + 8)
 		
-		velocity.x = process().readFloat(address() + m_vecVelocity)
-		velocity.y = process().readFloat(address() + m_vecVelocity + 4)
-		velocity.z = process().readFloat(address() + m_vecVelocity + 8)
+		velocity.x = process().readFloat(address() + vecVelocity)
+		velocity.y = process().readFloat(address() + vecVelocity + 4)
+		velocity.z = process().readFloat(address() + vecVelocity + 8)
 		
-		viewOffsets.x = process().readFloat(address() + m_vecViewOffset)
-		viewOffsets.y = process().readFloat(address() + m_vecViewOffset + 4)
-		viewOffsets.z = process().readFloat(address() + m_vecViewOffset + 8)
+		viewOffsets.x = process().readFloat(address() + vecViewOffset)
+		viewOffsets.y = process().readFloat(address() + vecViewOffset + 4)
+		viewOffsets.z = process().readFloat(address() + vecViewOffset + 8)
 		
 		val anglePointer = engineModule().readUnsignedInt(dwClientState_State.toLong())
-		viewAngles.x = process().readFloat(anglePointer + m_dwViewAngles)
-		viewAngles.y = process().readFloat(anglePointer + m_dwViewAngles + 4)
-		viewAngles.z = process().readFloat(anglePointer + m_dwViewAngles + 8)
+		viewAngles.x = process().readFloat(anglePointer + dwViewAngles)
+		viewAngles.y = process().readFloat(anglePointer + dwViewAngles + 4)
+		viewAngles.z = process().readFloat(anglePointer + dwViewAngles + 8)
 		
-		val boneMatrix = process().readUnsignedInt(address() + m_dwBoneMatrix)
+		val boneMatrix = process().readUnsignedInt(address() + dwBoneMatrix)
 		if (boneMatrix > 0) {
 			//Bones bone = Bones.roll();
 			val bone = Bones.HEAD
@@ -107,11 +107,11 @@ open class GameEntity : GameObject() {
 			
 		}
 		
-		punch.x = process().readFloat(address() + m_vecPunch)
-		punch.y = process().readFloat(address() + m_vecPunch + 4)
+		punch.x = process().readFloat(address() + vecPunch)
+		punch.y = process().readFloat(address() + vecPunch + 4)
 		
-		isDead = process().readByte(address() + m_lifeState) != 0
-		isSpotted = process().readUnsignedInt(address() + m_bSpotted).toInt() != 0
+		isDead = process().readByte(address() + lifeState) != 0
+		isSpotted = process().readUnsignedInt(address() + bSpotted).toInt() != 0
 	}
 	
 	fun distanceTo(vector: Vector, target: Vector) = abs(vector.x - target.x) + abs(vector.y - target.y) + abs(vector.z - target.z)

@@ -19,15 +19,15 @@ package org.xena.cs
 import org.xena.Settings
 import org.xena.offsets.OffsetManager.clientModule
 import org.xena.offsets.OffsetManager.process
-import org.xena.offsets.offsets.ClientOffsets.m_dwEntityList
-import org.xena.offsets.offsets.ClientOffsets.m_dwLocalPlayer
+import org.xena.offsets.offsets.ClientOffsets.dwEntityList
+import org.xena.offsets.offsets.ClientOffsets.dwLocalPlayer
 import org.xena.offsets.offsets.EngineOffsets.m_bCanReload
-import org.xena.offsets.offsets.EngineOffsets.m_hActiveWeapon
-import org.xena.offsets.offsets.EngineOffsets.m_hMyWeapons
-import org.xena.offsets.offsets.EngineOffsets.m_iClip1
-import org.xena.offsets.offsets.EngineOffsets.m_iClip2
-import org.xena.offsets.offsets.EngineOffsets.m_iCrossHairID
-import org.xena.offsets.offsets.EngineOffsets.m_iShotsFired
+import org.xena.offsets.offsets.NetVarOffsets.hActiveWeapon
+import org.xena.offsets.offsets.NetVarOffsets.hMyWeapons
+import org.xena.offsets.offsets.NetVarOffsets.iClip1
+import org.xena.offsets.offsets.NetVarOffsets.iClip2
+import org.xena.offsets.offsets.NetVarOffsets.iCrossHairID
+import org.xena.offsets.offsets.NetVarOffsets.iShotsFired
 import org.xena.plugin.utils.AngleUtils
 import org.xena.plugin.utils.Vector
 
@@ -43,13 +43,13 @@ class Me : Player() {
 		private set
 	
 	override fun update() {
-		setAddress(clientModule().readUnsignedInt(m_dwLocalPlayer.toLong()))
+		setAddress(clientModule().readUnsignedInt(dwLocalPlayer.toLong()))
 		super.update()
 		
-		val activeWeaponIndex = process().readUnsignedInt(address() + m_hActiveWeapon) and 0xFFF
+		val activeWeaponIndex = process().readUnsignedInt(address() + hActiveWeapon) and 0xFFF
 		for (i in 0 until weaponIds.size) {
-			val currentWeaponIndex = process().readUnsignedInt(address() + m_hMyWeapons.toLong() + ((i - 1) * 0x04).toLong()) and 0xFFF
-			val weaponAddress = clientModule().readUnsignedInt(m_dwEntityList + (currentWeaponIndex - 1) * 0x10)
+			val currentWeaponIndex = process().readUnsignedInt(address() + hMyWeapons.toLong() + ((i - 1) * 0x04).toLong()) and 0xFFF
+			val weaponAddress = clientModule().readUnsignedInt(dwEntityList + (currentWeaponIndex - 1) * 0x10)
 			
 			if (weaponAddress > 0 && activeWeaponIndex == currentWeaponIndex) {
 				processWeapon(weaponAddress, i, true)
@@ -67,15 +67,15 @@ class Me : Player() {
 	}*/
 		
 		target = null
-		val crosshair = process().readUnsignedInt(address() + m_iCrossHairID) - 1
+		val crosshair = process().readUnsignedInt(address() + iCrossHairID) - 1
 		if (crosshair > -1 && crosshair <= 1024) {
-			val entity = entities[clientModule().readUnsignedInt(m_dwEntityList + crosshair * 0x10)]
+			val entity = entities[clientModule().readUnsignedInt(dwEntityList + crosshair * 0x10)]
 			if (entity != null) {
 				target = entity as Player
 			}
 		}
 		
-		shotsFired = process().readUnsignedInt(address() + m_iShotsFired)
+		shotsFired = process().readUnsignedInt(address() + iShotsFired)
 	}
 	
 	override fun processWeapon(weaponAddress: Long, index: Int, active: Boolean): Int {
@@ -83,8 +83,8 @@ class Me : Player() {
 		if (active) {
 			activeWeapon.weaponID = weaponId.toLong()
 			activeWeapon.canReload = process().readBoolean(weaponAddress + m_bCanReload)
-			activeWeapon.clip1 = process().readUnsignedInt(weaponAddress + m_iClip1)
-			activeWeapon.clip2 = process().readUnsignedInt(weaponAddress + m_iClip2)
+			activeWeapon.clip1 = process().readUnsignedInt(weaponAddress + iClip1)
+			activeWeapon.clip2 = process().readUnsignedInt(weaponAddress + iClip2)
 		}
 		return weaponId
 	}

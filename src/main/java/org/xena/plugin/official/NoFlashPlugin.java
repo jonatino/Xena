@@ -24,17 +24,17 @@ import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 
 import static org.xena.XenaKt.process;
-import static org.xena.offsets.offsets.EngineOffsets.m_flFlashMaxAlpha;
+import static org.xena.offsets.offsets.NetVarOffsets.flFlashMaxAlpha;
 
 @PluginManifest(name = "No Flash", description = "Disables the flash bang effect on your screen.")
 public final class NoFlashPlugin extends Plugin {
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
-		if (process.readFloat(me.address() + m_flFlashMaxAlpha) > 0.0f) {
-			process.writeFloat(me.address() + m_flFlashMaxAlpha, 85.0f);
-		} else if (process.readFloat(me.address() + m_flFlashMaxAlpha) == 0.0f) {
-			process.writeFloat(me.address() + m_flFlashMaxAlpha, 255.0f);
+		if (process.readFloat(me.address() + flFlashMaxAlpha) > 0.0f) {
+			process.writeFloat(me.address() + flFlashMaxAlpha, 85.0f);
+		} else if (process.readFloat(me.address() + flFlashMaxAlpha) == 0.0f) {
+			process.writeFloat(me.address() + flFlashMaxAlpha, 255.0f);
 		}
 	}
 	

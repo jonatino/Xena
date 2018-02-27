@@ -24,6 +24,7 @@ import com.sun.xml.internal.ws.api.pipe.Engine;
 import org.xena.offsets.netvars.NetVars;
 import org.xena.offsets.offsets.ClientOffsets;
 import org.xena.offsets.offsets.EngineOffsets;
+import org.xena.offsets.offsets.NetVarOffsets;
 
 /**
  * Created by Jonathan on 12/22/2015.
@@ -81,6 +82,7 @@ public final class OffsetManager {
 	public static void loadOffsets() {
 		ClientOffsets.load();
 		EngineOffsets.load();
+		NetVarOffsets.load();
 	}
 	
 	public static Process process() {

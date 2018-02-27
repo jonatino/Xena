@@ -20,12 +20,12 @@ import org.xena.Indexer
 import org.xena.cs.ClientState
 import org.xena.cs.GameEntity
 import org.xena.cs.Me
-import org.xena.offsets.offsets.ClientOffsets.m_flFallbackWear
-import org.xena.offsets.offsets.ClientOffsets.m_iEntityQuality
-import org.xena.offsets.offsets.ClientOffsets.m_iItemIDHigh
-import org.xena.offsets.offsets.ClientOffsets.m_nFallbackPaintKit
-import org.xena.offsets.offsets.ClientOffsets.m_nFallbackSeed
-import org.xena.offsets.offsets.ClientOffsets.m_nFallbackStatTrak
+import org.xena.offsets.offsets.ClientOffsets.flFallbackWear
+import org.xena.offsets.offsets.ClientOffsets.iEntityQuality
+import org.xena.offsets.offsets.ClientOffsets.iItemIDHigh
+import org.xena.offsets.offsets.ClientOffsets.nFallbackPaintKit
+import org.xena.offsets.offsets.ClientOffsets.nFallbackSeed
+import org.xena.offsets.offsets.ClientOffsets.nFallbackStatTrak
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
 import org.xena.process
@@ -52,12 +52,12 @@ class SkinChangerPlugin : Plugin() {
 	}
 	
 	private fun appySkin(weaponAddress: Long, skinID: Int, skinSeed: Int = DEFAULT_SKIN_SEED, statTrak: Int = DEFAULT_STATTRAK, wear: Float = DEFAULT_WEAR, quality: Int = DEFAULT_QUALITY) {
-		process.writeInt(weaponAddress + m_iItemIDHigh, 1)
-		process.writeInt(weaponAddress + m_nFallbackPaintKit, skinID)
-		process.writeInt(weaponAddress + m_nFallbackSeed, skinSeed)
-		process.writeInt(weaponAddress + m_nFallbackStatTrak, statTrak)
-		process.writeInt(weaponAddress + m_iEntityQuality, quality)
-		process.writeFloat(weaponAddress + m_flFallbackWear, wear)
+		process.writeInt(weaponAddress + iItemIDHigh, 1)
+		process.writeInt(weaponAddress + nFallbackPaintKit, skinID)
+		process.writeInt(weaponAddress + nFallbackSeed, skinSeed)
+		process.writeInt(weaponAddress + nFallbackStatTrak, statTrak)
+		process.writeInt(weaponAddress + iEntityQuality, quality)
+		process.writeFloat(weaponAddress + flFallbackWear, wear)
 	}
 	
 }

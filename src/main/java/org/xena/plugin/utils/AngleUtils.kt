@@ -22,7 +22,7 @@ import org.xena.cs.Player
 import org.xena.cs.Weapons
 import org.xena.engineModule
 import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
-import org.xena.offsets.offsets.EngineOffsets.m_dwViewAngles
+import org.xena.offsets.offsets.EngineOffsets.dwViewAngles
 import org.xena.plugin.Plugin
 import org.xena.process
 import java.lang.Float.isNaN
@@ -96,8 +96,8 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 			return
 		}
 		val anglePointer = engineModule.readUnsignedInt(dwClientState_State.toLong())
-		process.writeFloat(anglePointer + m_dwViewAngles, angles.x)
-		process.writeFloat(anglePointer + m_dwViewAngles.toLong() + 4, angles.y)
+		process.writeFloat(anglePointer + dwViewAngles, angles.x)
+		process.writeFloat(anglePointer + dwViewAngles.toLong() + 4, angles.y)
 	}
 	
 	fun velocityComp(me: Me, target: Player, enemyPos: Vector) {

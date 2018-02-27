@@ -17,7 +17,7 @@
 package org.xena.cs
 
 import org.xena.offsets.OffsetManager.process
-import org.xena.offsets.offsets.ClientOffsets.m_iItemDefinitionIndex
+import org.xena.offsets.offsets.ClientOffsets.iItemDefinitionIndex
 
 open class Player : GameEntity() {
 	
@@ -38,7 +38,7 @@ open class Player : GameEntity() {
 	}
 	
 	open fun processWeapon(weaponAddress: Long, index: Int, active: Boolean): Int {
-		val weaponId = process().readInt(weaponAddress + m_iItemDefinitionIndex)
+		val weaponId = process().readInt(weaponAddress + iItemDefinitionIndex)
 		if (weaponId == Weapons.C4.id) {
 			isBombCarrier = true
 			
