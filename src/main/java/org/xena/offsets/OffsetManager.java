@@ -20,7 +20,6 @@ import com.github.jonatino.process.Module;
 import com.github.jonatino.process.Process;
 import com.github.jonatino.process.Processes;
 import com.sun.jna.Platform;
-import com.sun.xml.internal.ws.api.pipe.Engine;
 import org.xena.offsets.netvars.NetVars;
 import org.xena.offsets.offsets.ClientOffsets;
 import org.xena.offsets.offsets.EngineOffsets;
