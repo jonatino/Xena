@@ -72,6 +72,7 @@ public final class ForceAimPlugin extends Plugin {
 		} else {
 			lastTarget = null;
 		}
+		sleep(25);
 	}
 	
 }

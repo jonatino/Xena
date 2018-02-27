@@ -33,5 +33,11 @@ public final class Settings {
 	 */
 	public static final int HIDE_GUI_KEY = KeyEvent.VK_F9;
 	
+	/**
+	 * ESP settings RGBA values
+	 */
+	public static final int[] ESP_TEAM_CT = {114, 155, 221, 153};
+	public static final int[] ESP_TEAM_T = {224, 175, 86, 153};
+	public static final int[] ESP_BOMB_CARRY = {255, 0, 0, 200};
 	
 }

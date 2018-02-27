@@ -17,6 +17,7 @@
 package org.xena.plugin.official
 
 import org.xena.Indexer
+import org.xena.Settings.*
 import org.xena.clientModule
 import org.xena.cs.ClientState
 import org.xena.cs.GameEntity
@@ -34,7 +35,7 @@ class GlowESPPlugin : Plugin() {
 		val pointerGlow = clientModule.readUnsignedInt(m_dwGlowObject.toLong())
 		val glowObjectCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
 		
-		for (i in 0..glowObjectCount - 1) {
+		for (i in 0 until glowObjectCount) {
 			val glowObjectPointer = pointerGlow + i * 56
 			val entityAddress = process.readUnsignedInt(glowObjectPointer)
 			
@@ -51,13 +52,9 @@ class GlowESPPlugin : Plugin() {
 	}
 	
 	private fun getColor(entity: GameEntity): IntArray {
-		if (entity.team == 3) return TEAM_CT
-		if (entity.isBombCarrier) return BOMB_CARRY
-		return TEAM_T
+		if (entity.team == 3) return ESP_TEAM_CT
+		if (entity.isBombCarrier) return ESP_BOMB_CARRY
+		return ESP_TEAM_T
 	}
-	
-	private val TEAM_CT = intArrayOf(114, 155, 221, 153)
-	private val TEAM_T = intArrayOf(224, 175, 86, 153)
-	private val BOMB_CARRY = intArrayOf(255, 0, 0, 200)
 	
 }
