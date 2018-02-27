@@ -16,6 +16,7 @@
 
 package org.xena.offsets.tools;
 
+import org.xena.cs.EntityType;
 import org.xena.offsets.OffsetManager;
 import org.xena.offsets.misc.PatternScanner;
 import org.xena.offsets.netvars.impl.ClientClass;
@@ -33,9 +34,10 @@ import java.util.List;
 public final class ClassIdDumper {
 	
 	public static void main(String[] args) {
-		int firstclass = PatternScanner.getAddressForPattern(OffsetManager.clientModule(), 0, 0, 0, "DT_TEWorldDecal");
-		firstclass = PatternScanner.getAddressForPattern(OffsetManager.clientModule(), 0x2B, 0, PatternScanner.READ, firstclass);
+		System.setProperty("jna.nosys", "true");
 		
+		int firstclass = PatternScanner.byPattern(OffsetManager.clientModule(), 0, 0, 0, "DT_TEWorldDecal");
+		firstclass = PatternScanner.byPattern(OffsetManager.clientModule(), 0x2B, 0, PatternScanner.READ, firstclass);
 		
 		List<ClientClassInfo> text = new ArrayList<>();
 		ClientClass clientClass = new ClientClass();
@@ -66,10 +68,15 @@ public final class ClassIdDumper {
 		public String toString() {
 			StringBuilder b = new StringBuilder();
 			b.append(name).append("(").append(id);
-			if ((name.startsWith("CWeapon") && !name.equals("CWeaponCubemap") && !name.equals("CWeaponBaseItem")) || name.startsWith("CKnife") || name.equals("CAK47") || name.equals("CDEagle") || name.equals("CSCAR17")) {
-				b.append(", weapon = true");
-			} else if (name.startsWith("CBaseCSGrenade") || name.startsWith("CBaseGrenade") || name.startsWith("CDecoy") || name.startsWith("CMolotov") || name.startsWith("CSmokeGrenade") || name.equals("ParticleSmokeGrenade") || name.equals("CFlashbang") || name.equals("CHEGrenade") || name.equals("CIncendiaryGrenade") || name.equals("CInferno")) {
-				b.append(", grenade = true");
+			for (EntityType e : EntityType.values()) {
+				if (e.getWeapon() && name.toLowerCase().startsWith(e.name().toLowerCase())) {
+					b.append(", weapon = true");
+					break;
+				}
+				if (e.getGrenade() && name.toLowerCase().startsWith(e.name().toLowerCase())) {
+					b.append(", grenade = true");
+					break;
+				}
 			}
 			b.append("),");
 			return b.toString();

@@ -21,8 +21,8 @@ import org.xena.cs.Me
 import org.xena.cs.Player
 import org.xena.cs.Weapons
 import org.xena.engineModule
-import org.xena.offsets.offsets.Offsets.m_dwClientState
-import org.xena.offsets.offsets.Offsets.m_dwViewAngles
+import org.xena.offsets.offsets.EngineOffsets.m_dwClientState
+import org.xena.offsets.offsets.EngineOffsets.m_dwViewAngles
 import org.xena.plugin.Plugin
 import org.xena.process
 import java.lang.Float.isNaN
@@ -51,6 +51,8 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 	}
 	
 	private val delta by lazy { Vector() }
+	
+	fun calculateAngle(player: Player, dst: Vector, angles: Vector) = calculateAngle(player, player.viewOrigin, dst, angles)
 	
 	fun calculateAngle(player: Player, src: Vector, dst: Vector, angles: Vector) {
 		val pitchreduction = randomFloat(lowestPitch, highestPitch)

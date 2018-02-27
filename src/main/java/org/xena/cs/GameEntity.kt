@@ -18,20 +18,21 @@ package org.xena.cs
 
 import org.xena.offsets.OffsetManager.engineModule
 import org.xena.offsets.OffsetManager.process
-import org.xena.offsets.offsets.Offsets.m_bDormant
-import org.xena.offsets.offsets.Offsets.m_bMoveType
-import org.xena.offsets.offsets.Offsets.m_bSpotted
-import org.xena.offsets.offsets.Offsets.m_dwBoneMatrix
-import org.xena.offsets.offsets.Offsets.m_dwClientState
-import org.xena.offsets.offsets.Offsets.m_dwModel
-import org.xena.offsets.offsets.Offsets.m_dwViewAngles
-import org.xena.offsets.offsets.Offsets.m_iTeamNum
-import org.xena.offsets.offsets.Offsets.m_lifeState
-import org.xena.offsets.offsets.Offsets.m_vecOrigin
-import org.xena.offsets.offsets.Offsets.m_vecPunch
-import org.xena.offsets.offsets.Offsets.m_vecVelocity
-import org.xena.offsets.offsets.Offsets.m_vecViewOffset
+import org.xena.offsets.offsets.ClientOffsets.m_bDormant
+import org.xena.offsets.offsets.EngineOffsets.m_bMoveType
+import org.xena.offsets.offsets.EngineOffsets.m_bSpotted
+import org.xena.offsets.offsets.EngineOffsets.m_dwBoneMatrix
+import org.xena.offsets.offsets.EngineOffsets.m_dwClientState
+import org.xena.offsets.offsets.EngineOffsets.m_dwModel
+import org.xena.offsets.offsets.EngineOffsets.m_dwViewAngles
+import org.xena.offsets.offsets.EngineOffsets.m_iTeamNum
+import org.xena.offsets.offsets.EngineOffsets.m_lifeState
+import org.xena.offsets.offsets.EngineOffsets.m_vecOrigin
+import org.xena.offsets.offsets.EngineOffsets.m_vecPunch
+import org.xena.offsets.offsets.EngineOffsets.m_vecVelocity
+import org.xena.offsets.offsets.EngineOffsets.m_vecViewOffset
 import org.xena.plugin.utils.Vector
+import java.lang.Math.abs
 
 open class GameEntity : GameObject() {
 	
@@ -114,6 +115,8 @@ open class GameEntity : GameObject() {
 		isDead = process().readByte(address() + m_lifeState) != 0
 		isSpotted = process().readUnsignedInt(address() + m_bSpotted).toInt() != 0
 	}
+	
+	fun distanceTo(vector: Vector, target: Vector) = abs(vector.x - target.x) + abs(vector.y - target.y) + abs(vector.z - target.z)
 	
 	val eyePos by lazy { viewOffsets.plus(viewOrigin) }
 	

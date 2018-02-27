@@ -17,7 +17,7 @@
 package org.xena.cs
 
 import org.xena.offsets.OffsetManager.process
-import org.xena.offsets.offsets.Offsets.m_iItemDefinitionIndex
+import org.xena.offsets.offsets.ClientOffsets.m_iItemDefinitionIndex
 
 open class Player : GameEntity() {
 	

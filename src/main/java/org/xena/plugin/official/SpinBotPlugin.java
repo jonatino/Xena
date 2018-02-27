@@ -31,6 +31,9 @@ import org.xena.plugin.utils.Vector;
 import java.awt.*;
 import java.awt.event.InputEvent;
 
+import static org.xena.offsets.OffsetManager.scaleFormModule;
+import static org.xena.offsets.offsets.ScaleFormOffsets.bCursorEnabled;
+
 @PluginManifest(name = "Spin Bot", description = "Helps you to stay on target.")
 public final class SpinBotPlugin extends Plugin {
 	
@@ -51,7 +54,7 @@ public final class SpinBotPlugin extends Plugin {
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
-		if (NativeKeyUtils.isKeyDown(Settings.SPIN_BOT_TOGGLE)) {
+		if (NativeKeyUtils.isKeyDown(Settings.SPIN_BOT_TOGGLE) && !scaleFormModule().readBoolean(bCursorEnabled)) {
 			if (lastTarget == null) {
 				while (lastTarget == null) {
 					if (lastIdx + 1 >= entities.size()) {

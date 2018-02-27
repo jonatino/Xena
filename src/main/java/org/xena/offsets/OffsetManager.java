@@ -20,8 +20,10 @@ import com.github.jonatino.process.Module;
 import com.github.jonatino.process.Process;
 import com.github.jonatino.process.Processes;
 import com.sun.jna.Platform;
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import org.xena.offsets.netvars.NetVars;
-import org.xena.offsets.offsets.Offsets;
+import org.xena.offsets.offsets.ClientOffsets;
+import org.xena.offsets.offsets.EngineOffsets;
 
 /**
  * Created by Jonathan on 12/22/2015.
@@ -29,25 +31,29 @@ import org.xena.offsets.offsets.Offsets;
 public final class OffsetManager {
 	
 	private static Process process;
-	private static Module clientModule, engineModule;
+	private static Module clientModule, engineModule, scaleFormModule;
 	
 	static {
 		StringBuilder procBaseName = new StringBuilder("csgo");
 		StringBuilder clientBaseName = new StringBuilder("client");
 		StringBuilder engineBaseName = new StringBuilder("engine");
+		StringBuilder scaleFormBaseName = new StringBuilder("scaleformui");
 		
 		if (Platform.isWindows()) {
 			procBaseName.append(".exe");
 			clientBaseName.append(".dll");
 			engineBaseName.append(".dll");
+			scaleFormBaseName.append(".dll");
 		} else if (Platform.isLinux()) {
 			procBaseName.append("_linux");
 			clientBaseName.append("_client.so");
 			engineBaseName.append("_client.so");
+			scaleFormBaseName.append("_client.so");
 		} else if (Platform.isMac()) {
 			procBaseName.append("_osx");
 			clientBaseName.append(".dylib");
 			engineBaseName.append(".dylib");
+			scaleFormBaseName.append(".dylib");
 		} else {
 			throw new RuntimeException("Unsupported operating system type!");
 		}
@@ -55,10 +61,12 @@ public final class OffsetManager {
 		String processName = procBaseName.toString();
 		String clientName = clientBaseName.toString();
 		String engineName = engineBaseName.toString();
+		String scaleFormName = scaleFormBaseName.toString();
 		
 		waitUntilFound("process", () -> (process = Processes.byName(processName)) != null);
 		waitUntilFound("client module", () -> (clientModule = process.findModule(clientName)) != null);
 		waitUntilFound("engine module", () -> (engineModule = process.findModule(engineName)) != null);
+		waitUntilFound("scale form module", () -> (scaleFormModule = process.findModule(scaleFormName)) != null);
 	}
 	
 	public static void initAll() {
@@ -71,7 +79,8 @@ public final class OffsetManager {
 	}
 	
 	public static void loadOffsets() {
-		Offsets.load();
+		ClientOffsets.load();
+		EngineOffsets.load();
 	}
 	
 	public static Process process() {
@@ -84,6 +93,10 @@ public final class OffsetManager {
 	
 	public static Module engineModule() {
 		return engineModule;
+	}
+	
+	public static Module scaleFormModule() {
+		return scaleFormModule;
 	}
 	
 	private static void waitUntilFound(String message, Clause clause) {

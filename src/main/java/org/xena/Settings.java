@@ -13,21 +13,20 @@ public final class Settings {
 	 * Aim assist settings
 	 */
 	public static final float AIM_ASSIST_STRENGTH = 30f;
-	
+	public static final int AIM_ASSIST_FOV = 190;
 	
 	/**
 	 * Force aim settings
 	 */
 	public static final float FORCE_AIM_STRENGTH = 40f;
 	public static final int FORCE_AIM_TOGGLE = NativeKeyUtils.LEFT_ALT;
-	
+	public static final int FORCE_AIM_FOV = 190;
 	
 	/**
 	 * Spin Bot assist settings
 	 */
 	public static final float SPIN_BOT_STRENGTH = 40f;
 	public static final int SPIN_BOT_TOGGLE = NativeKeyUtils.LEFT_CTRL;
-	
 	
 	/**
 	 * GUI settings

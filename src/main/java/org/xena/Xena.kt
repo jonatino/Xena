@@ -22,15 +22,15 @@ import org.xena.keylistener.GlobalKeyboard
 import org.xena.keylistener.NativeKeyEvent
 import org.xena.keylistener.NativeKeyListener
 import org.xena.offsets.OffsetManager
-import org.xena.offsets.offsets.Offsets.m_dwClientState
-import org.xena.offsets.offsets.Offsets.m_dwEntityList
-import org.xena.offsets.offsets.Offsets.m_dwGlowObject
-import org.xena.offsets.offsets.Offsets.m_dwInGame
-import org.xena.offsets.offsets.Offsets.m_dwIndex
-import org.xena.offsets.offsets.Offsets.m_dwLocalPlayer
-import org.xena.offsets.offsets.Offsets.m_dwLocalPlayerIndex
-import org.xena.offsets.offsets.Offsets.m_dwMaxPlayer
-import org.xena.offsets.offsets.Offsets.m_iTeamNum
+import org.xena.offsets.offsets.EngineOffsets.m_dwClientState
+import org.xena.offsets.offsets.ClientOffsets.m_dwEntityList
+import org.xena.offsets.offsets.ClientOffsets.m_dwGlowObject
+import org.xena.offsets.offsets.EngineOffsets.m_dwInGame
+import org.xena.offsets.offsets.EngineOffsets.m_dwIndex
+import org.xena.offsets.offsets.ClientOffsets.m_dwLocalPlayer
+import org.xena.offsets.offsets.EngineOffsets.m_dwLocalPlayerIndex
+import org.xena.offsets.offsets.EngineOffsets.m_dwMaxPlayer
+import org.xena.offsets.offsets.EngineOffsets.m_iTeamNum
 import org.xena.plugin.PluginManager
 import org.xena.plugin.official.*
 import java.lang.System.currentTimeMillis
@@ -118,7 +118,6 @@ object Xena : NativeKeyListener {
 	@Throws(InterruptedException::class)
 	private fun checkGameStatus() {
 		while (true) {
-			
 			val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
 			
 			if (myAddress < 0x200) {
@@ -192,7 +191,6 @@ object Xena : NativeKeyListener {
 	
 	private fun updateEntityList() {
 		val entityCount = clientModule.readUnsignedInt((m_dwGlowObject + 4).toLong())
-		
 		val myAddress = clientModule.readUnsignedInt(m_dwLocalPlayer.toLong())
 		
 		for (i in 0 until entityCount) {
@@ -203,16 +201,17 @@ object Xena : NativeKeyListener {
 			val type = EntityType.byAddress(entityAddress) ?: continue
 			
 			val team = process.readInt(entityAddress + m_iTeamNum)
+			
 			if (team != 2 && team != 3 || type !== EntityType.CCSPlayer) {
 				continue
 			}
 			
 			var entity = entities[entityAddress]
 			if (entity == null) {
-				if (myAddress == entityAddress) {
-					entity = me
+				entity = if (myAddress == entityAddress) {
+					me
 				} else {
-					entity = Player()
+					Player()
 				}
 				entity.setAddress(entityAddress)
 				Game.register(entity)

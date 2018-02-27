@@ -22,7 +22,7 @@ import org.xena.cs.ClientState
 import org.xena.cs.GameEntity
 import org.xena.cs.Me
 import org.xena.cs.get
-import org.xena.offsets.offsets.Offsets.m_dwGlowObject
+import org.xena.offsets.offsets.ClientOffsets.m_dwGlowObject
 import org.xena.plugin.Plugin
 import org.xena.plugin.PluginManifest
 import org.xena.process

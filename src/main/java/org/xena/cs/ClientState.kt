@@ -16,6 +16,10 @@
 
 package org.xena.cs
 
+import org.xena.offsets.offsets.EngineOffsets.m_dwViewAngles
+import org.xena.plugin.utils.Vector
+import org.xena.process
+
 class ClientState : GameObject() {
 	
 	var localPlayerIndex: Long = 0
@@ -23,5 +27,14 @@ class ClientState : GameObject() {
 	var inGame: Long = 0
 	
 	var maxPlayer: Long = 0
+	
+	private val angleVector = Vector()
+	
+	fun angle(): Vector {
+		angleVector.x = process.readFloat(address() + m_dwViewAngles)
+		angleVector.y = process.readFloat(address() + m_dwViewAngles + 4)
+		angleVector.z = process.readFloat(address() + m_dwViewAngles + 8)
+		return angleVector
+	}
 	
 }

@@ -18,19 +18,19 @@ package org.xena.offsets;
 
 
 import org.xena.offsets.netvars.NetVars;
-import org.xena.offsets.offsets.Offsets;
+import org.xena.offsets.offsets.ClientOffsets;
 
 /**
  * Created by Jonathan on 12/22/2015.
  */
-public final class Main {
+public final class OffsetDumper {
 	
 	public static void main(String... args) {
 		System.setProperty("jna.nosys", "true");
 		OffsetManager.initAll();
 		
 		NetVars.dump();
-		Offsets.dump();
+		ClientOffsets.dump();
 	}
 	
 }

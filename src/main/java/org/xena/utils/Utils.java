@@ -21,7 +21,7 @@ import com.github.jonatino.misc.MemoryBuffer;
 import java.awt.*;
 
 import static org.xena.offsets.OffsetManager.clientModule;
-import static org.xena.offsets.offsets.Offsets.m_dwViewMatrix;
+import static org.xena.offsets.offsets.ClientOffsets.m_dwViewMatrix;
 
 public final class Utils {
 	

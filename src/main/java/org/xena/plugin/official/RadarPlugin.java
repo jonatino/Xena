@@ -24,7 +24,7 @@ import org.xena.plugin.Plugin;
 import org.xena.plugin.PluginManifest;
 
 import static org.xena.XenaKt.process;
-import static org.xena.offsets.offsets.Offsets.m_bSpotted;
+import static org.xena.offsets.offsets.EngineOffsets.m_bSpotted;
 
 @PluginManifest(name = "Radar", description = "Pinpoints enemies on the minimap.")
 public final class RadarPlugin extends Plugin {

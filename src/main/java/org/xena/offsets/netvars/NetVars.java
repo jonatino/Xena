@@ -43,8 +43,8 @@ public final class NetVars {
 	private static final RecvProp prop = new RecvProp();
 	
 	public static void load() {
-		int firstclass = PatternScanner.getAddressForPattern(OffsetManager.clientModule(), 0, 0, 0, "DT_TEWorldDecal");
-		firstclass = PatternScanner.getAddressForPattern(OffsetManager.clientModule(), 0x2B, 0, PatternScanner.READ, firstclass);
+		int firstclass = PatternScanner.byPattern(OffsetManager.clientModule(), 0, 0, 0, "DT_TEWorldDecal");
+		firstclass = PatternScanner.byPattern(OffsetManager.clientModule(), 0x2B, 0, PatternScanner.READ, firstclass);
 		
 		for (clientClass.setBase(firstclass); clientClass.readable(); clientClass.setBase(clientClass.next())) {
 			table.setBase(clientClass.table());

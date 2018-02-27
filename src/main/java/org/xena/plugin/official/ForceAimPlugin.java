@@ -28,6 +28,9 @@ import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
 import org.xena.plugin.utils.Vector;
 
+import static org.xena.offsets.OffsetManager.scaleFormModule;
+import static org.xena.offsets.offsets.ScaleFormOffsets.bCursorEnabled;
+
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class ForceAimPlugin extends Plugin {
 	
@@ -42,8 +45,8 @@ public final class ForceAimPlugin extends Plugin {
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
-		if (NativeKeyUtils.isKeyDown(Settings.FORCE_AIM_TOGGLE)) {
-			Player target = me.getTarget();
+		if (NativeKeyUtils.isKeyDown(Settings.FORCE_AIM_TOGGLE) && !scaleFormModule().readBoolean(bCursorEnabled)) {
+			Player target = me.getClosestTarget(aimHelper, Settings.FORCE_AIM_FOV);
 			if (lastTarget != null && target == null) {
 				if (!lastTarget.isDead() && lastTarget.isSpotted()) {
 					target = lastTarget;

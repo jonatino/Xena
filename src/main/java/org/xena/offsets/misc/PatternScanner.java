@@ -26,19 +26,19 @@ public final class PatternScanner {
 	
 	public static final int READ = 1, SUBTRACT = 2;
 	
-	public static int getAddressForPattern(Module module, int pattern_offset, int address_offset, int flags, String className) {
-		return getAddressForPattern(module, pattern_offset, address_offset, flags, className.getBytes());
+	public static int byPattern(Module module, int pattern_offset, int address_offset, int flags, String className) {
+		return byPattern(module, pattern_offset, address_offset, flags, className.getBytes());
 	}
 	
-	public static int getAddressForPattern(Module module, int pattern_offset, int address_offset, int flags, int value) {
-		return getAddressForPattern(module, pattern_offset, address_offset, flags, toByteArray(value));
+	public static int byPattern(Module module, int pattern_offset, int address_offset, int flags, int value) {
+		return byPattern(module, pattern_offset, address_offset, flags, toByteArray(value));
 	}
 	
-	public static int getAddressForPattern(Module module, int pattern_offset, int address_offset, int flags, int... values) {
-		return getAddressForPattern(module, pattern_offset, address_offset, flags, toByteArray(values));
+	public static int byPattern(Module module, int pattern_offset, int address_offset, int flags, int... values) {
+		return byPattern(module, pattern_offset, address_offset, flags, toByteArray(values));
 	}
 	
-	public static int getAddressForPattern(Module module, int pattern_offset, int address_offset, int flags, byte... values) {
+	public static int byPattern(Module module, int pattern_offset, int address_offset, int flags, byte... values) {
 		long off = module.size() - values.length;
 		for (int i = 0; i < off; i++) {
 			if (checkMask(module, i, values)) {
