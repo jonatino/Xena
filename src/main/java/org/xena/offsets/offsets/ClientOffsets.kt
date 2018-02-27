@@ -81,8 +81,9 @@ object ClientOffsets {
 	
 	private fun getValue(field: Field): Int {
 		try {
-			return field.get(ClientOffsets::class.java) as Int
+			return field.get(ClientOffsets::class.java) as? Int ?: -1
 		} catch (t: Throwable) {
+			println(field)
 			t.printStackTrace()
 		}
 		

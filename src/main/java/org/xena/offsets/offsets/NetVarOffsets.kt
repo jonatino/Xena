@@ -133,7 +133,7 @@ object NetVarOffsets {
 	
 	private fun getValue(field: Field): Int {
 		try {
-			return field.get(NetVarOffsets::class.java) as Int
+			return field.get(NetVarOffsets::class.java) as? Int ?: -1
 		} catch (t: Throwable) {
 			t.printStackTrace()
 		}

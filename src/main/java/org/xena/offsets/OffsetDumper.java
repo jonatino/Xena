@@ -17,20 +17,17 @@
 package org.xena.offsets;
 
 
-import org.xena.offsets.netvars.NetVars;
-import org.xena.offsets.offsets.ClientOffsets;
-
 /**
  * Created by Jonathan on 12/22/2015.
  */
 public final class OffsetDumper {
 	
 	public static void main(String... args) {
+		long stamp = System.currentTimeMillis();
 		System.setProperty("jna.nosys", "true");
 		OffsetManager.initAll();
-		
-		NetVars.dump();
-		ClientOffsets.dump();
+		System.out.println(System.currentTimeMillis() - stamp);
+		OffsetManager.dumpAll();
 	}
 	
 }

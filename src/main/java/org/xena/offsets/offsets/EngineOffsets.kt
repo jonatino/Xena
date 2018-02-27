@@ -77,7 +77,7 @@ object EngineOffsets {
 	
 	private fun getValue(field: Field): Int {
 		try {
-			return field.get(EngineOffsets::class.java) as Int
+			return field.get(EngineOffsets::class.java) as? Int ?: -1
 		} catch (t: Throwable) {
 			t.printStackTrace()
 		}

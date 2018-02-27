@@ -75,6 +75,12 @@ public final class OffsetManager {
 		loadOffsets();
 	}
 	
+	public static void dumpAll() {
+		ClientOffsets.dump();
+		EngineOffsets.dump();
+		NetVarOffsets.dump();
+	}
+	
 	public static void loadNetVars() {
 		NetVars.load();
 	}
