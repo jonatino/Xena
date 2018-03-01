@@ -41,5 +41,5 @@ public final class Logging {
 	public static Logger logger(Outputter outputter) {
 		return new DefaultLogger(outputter);
 	}
-
+	
 }

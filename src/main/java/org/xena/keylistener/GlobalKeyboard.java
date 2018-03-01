@@ -102,7 +102,6 @@ public final class GlobalKeyboard extends NativeKeyUtils implements EventListene
 		return comb;
 	}
 	
-	
 	public boolean removeHotkey(NativeKeyCombination comb) {
 		return keyMaps.remove(comb);
 	}

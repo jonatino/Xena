@@ -34,14 +34,10 @@ import static org.xena.offsets.offsets.ScaleFormOffsets.bCursorEnabled;
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class ForceAimPlugin extends Plugin {
 	
-	private final AngleUtils aimHelper;
+	private final AngleUtils aimHelper = new AngleUtils(this, Settings.FORCE_AIM_STRENGTH, 1.7F, 2.5F, 1.7F, 2.5F);
 	private final Vector aim = new Vector();
 	private final Vector lastaim = new Vector();
 	private Player lastTarget = null;
-	
-	public ForceAimPlugin() {
-		aimHelper = new AngleUtils(this, Settings.FORCE_AIM_STRENGTH, 1.7F, 2.5F, 1.7F, 2.5F);
-	}
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
