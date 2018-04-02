@@ -1,5 +1,5 @@
 
-package org.xena.plugin.unofficial;
+package org.xena.plugin.official;
 
 import org.xena.Indexer;
 import org.xena.cs.ClientState;
