@@ -25,10 +25,5 @@ public final class NoHandAndFOV extends Plugin {
     public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
         process().writeInt(me.address() + 0x31D4, (int) 130);
         process().writeInt(me.address() + nModelIndex, 20);
-
-
-
-        }
-
     }
-
+}
