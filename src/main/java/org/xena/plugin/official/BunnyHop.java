@@ -1,4 +1,3 @@
-
 package org.xena.plugin.official;
 
 import org.xena.Indexer;
@@ -16,7 +15,7 @@ import static org.xena.offsets.OffsetManager.process;
 import static org.xena.offsets.offsets.NetVarOffsets.fFlags;
 
 @PluginManifest(name = "No Hand", description = "No hand.")
-public class  BunnyHop extends Plugin {
+public class BunnyHop extends Plugin {
 
     public static int FL_ONGROUND = (1 << 0); // At rest / on the ground
 
@@ -26,7 +25,6 @@ public class  BunnyHop extends Plugin {
         long m_fFlags = process().readLong(me.address() + fFlags);
         int FL_ONGROUND = 257; // At rest / on the ground
         int jump = 0x4F1AAF4;
-
 
         if(NativeKeyUtils.isKeyDown(KeyEvent.VK_SPACE))
         {
@@ -38,14 +36,10 @@ public class  BunnyHop extends Plugin {
                     clientModule().writeInt(jump, 5);
                     Thread.sleep(5 + (int) (Math.random() * 15 ));
                     clientModule().writeInt(jump, 4);
-
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-
                 }
             }
         }
-
     }
 }
