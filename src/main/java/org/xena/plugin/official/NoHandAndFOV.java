@@ -16,7 +16,7 @@ public final class NoHandAndFOV extends Plugin {
 
     @Override
     public void pulse(ClientState clientState, Me me, Indexer<GameEntity> entities) {
-        process().writeInt(me.address() + 0x31D4, (int) 130);
-        process().writeInt(me.address() + nModelIndex, 20);
+        process().writeInt(me.address() + 0x31D4 /* fov offsets */ , (int) 130/* fov int */);
+        process().writeInt(me.address() + nModelIndex, 20); // Making hand invisible
     }
 }
