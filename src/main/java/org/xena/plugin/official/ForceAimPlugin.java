@@ -41,7 +41,7 @@ public final class ForceAimPlugin extends Plugin {
 	
 	@Override
 	public void pulse(ClientState clientState, Me me, Indexer<GameEntity> players) {
-		if (NativeKeyUtils.isKeyDown(Settings.FORCE_AIM_TOGGLE) && !scaleFormModule().readBoolean(bCursorEnabled)) {
+		if (NativeKeyUtils.isKeyDown(Settings.FORCE_AIM_TOGGLE) /*&& !scaleFormModule().readBoolean(bCursorEnabled)*/) {
 			Player target = me.getClosestTarget(aimHelper, Settings.FORCE_AIM_FOV);
 			if (lastTarget != null && target == null) {
 				if (!lastTarget.isDead() && lastTarget.isSpotted()) {

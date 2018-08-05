@@ -35,7 +35,7 @@ public final class OffsetManager {
 	
 	static {
 		StringBuilder procBaseName = new StringBuilder("csgo");
-		StringBuilder clientBaseName = new StringBuilder("client");
+		StringBuilder clientBaseName = new StringBuilder("client_panorama");
 		StringBuilder engineBaseName = new StringBuilder("engine");
 		StringBuilder scaleFormBaseName = new StringBuilder("scaleformui");
 		
@@ -66,7 +66,7 @@ public final class OffsetManager {
 		waitUntilFound("process", () -> (process = Processes.byName(processName)) != null);
 		waitUntilFound("client module", () -> (clientModule = process.findModule(clientName)) != null);
 		waitUntilFound("engine module", () -> (engineModule = process.findModule(engineName)) != null);
-		waitUntilFound("scale form module", () -> (scaleFormModule = process.findModule(scaleFormName)) != null);
+		//waitUntilFound("scale form module", () -> (scaleFormModule = process.findModule(scaleFormName)) != null);
 	}
 	
 	public static void initAll() {
