@@ -79,7 +79,14 @@ enum class Weapons(val id: Int, val skin: Int = -1, val customSkin: Boolean = (s
 	KNIFE_TALCHION(512),
 	KNIFE_BOWIE(514),
 	KNIFE_BUTTERFLY(515),
-	KNIFE_PUSH(516);
+	KNIFE_PUSH(516),
+	FISTS(69),
+	MEDISHOT(57),
+	TABLET(72),
+	DIVERSION_DEVICE(82),
+	FIRE_BOMB(81),
+	CHARGE(70),
+	HAMMER(76);
 	
 	companion object {
 		

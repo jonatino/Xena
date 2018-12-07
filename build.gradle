@@ -23,10 +23,9 @@ buildscript {
     ext.project_description = 'Lightweight, lighting-fast Java Based Cross-Platform CSGO Cheat'
     ext.project_group = 'com.github.'
     ext.project_artifact = 'Xena'
-    ext.project_version = '1.5'
+    ext.project_version = '1.7'
 
-    ext.jna_version = '4.5.2'
-    ext.kotlin_version = '1.2.60'
+    ext.kotlin_version = '1.3.11'
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -132,5 +131,5 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile 'com.github.jonatino:Java-Memory-Manipulation:2.1.1'
+    compile 'com.github.jonatino:Java-Memory-Manipulation:2.1.2'
 }

@@ -13,7 +13,7 @@ public final class Settings {
 	 * Aim assist settings
 	 */
 	public static final float AIM_ASSIST_STRENGTH = 30f;
-	public static final int AIM_ASSIST_FOV = 190;
+	public static final int AIM_ASSIST_FOV = 180;
 	
 	/**
 	 * Force aim settings

@@ -23,6 +23,8 @@ enum class Bones(val id: Int, val percentage: Double) {
 	
 	HEAD(8, 0.75),
 	NECK(7, 0.45),
+	UPPER_CHEST2(6, 0.30),
+	UPPER_CHEST3(5, 0.30),
 	UPPER_CHEST(4, 0.30),
 	LOWER_CHEST(3, -0.00),
 	LEGS(2, -1.0),
