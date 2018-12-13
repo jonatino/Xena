@@ -71,9 +71,6 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 	fun canShoot(me: Me, target: GameEntity): Boolean {
 		val weaponID = me.activeWeapon.weaponID.toInt()
 		
-		val type = EntityType.byAddress(target.address())
-		println(type)
-		
 		var canShoot = weaponID != Weapons.KNIFE_T.id
 		canShoot = canShoot || weaponID != Weapons.KNIFE_CT.id
 		canShoot = canShoot || me.activeWeapon.clip1 > 0

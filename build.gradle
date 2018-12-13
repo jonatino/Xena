@@ -15,30 +15,25 @@
  */
 
 buildscript {
-    ext.your_github_name = 'Jonatino'
-    ext.your_name = 'Jonathan Beaudoin'
-    ext.your_email = 'jonathanbeaudoin1996@gmail.com'
-
     ext.project_name = 'Xena'
     ext.project_description = 'Lightweight, lighting-fast Java Based Cross-Platform CSGO Cheat'
     ext.project_group = 'com.github.'
     ext.project_artifact = 'Xena'
-    ext.project_version = '1.7'
+    ext.project_version = '1.7.1'
 
     ext.kotlin_version = '1.3.11'
+
+    repositories {
+        mavenCentral()
+    }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
-plugins {
-    id "com.jfrog.bintray" version "1.7"
-}
-
 allprojects {
     apply plugin: 'maven'
-    apply plugin: 'maven-publish'
     apply plugin: 'java'
     apply plugin: 'application'
     apply plugin: 'kotlin'
@@ -49,83 +44,8 @@ version project_version
 
 mainClassName = "org.xena.Main"
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-            groupId project_group
-            artifactId project_artifact
-            version project_version
-            artifact sourcesJar
-            artifact javadocJar
-            pom.withXml {
-                asNode().children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
-                    name project_name
-                    description project_description
-                    url "https://github.com/$your_github_name/$project_name"
-                    scm {
-                        url "https://github.com/$your_github_name/$project_name"
-                        connection "scm:git:git://github.com/$your_github_name/${project_name}.git"
-                        developerConnection "scm:git:ssh:git@github.com:$your_github_name/${project_name}.git"
-                    }
-                    licenses {
-                        license {
-                            name 'Apache License 2.0'
-                            url 'https://raw.githubusercontent.com/$your_github_name/$project_name/master/LICENSE'
-                            distribution 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id your_github_name
-                            name your_name
-                            email your_email
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_API_KEY')
-    publications = ['maven']
-    pkg {
-        repo = 'maven'
-        name = project_name
-        licenses = ['Apache-2.0']
-        publicDownloadNumbers = true
-        websiteUrl = "https://github.com/$your_github_name/$project_name"
-        issueTrackerUrl = "https://github.com/$your_github_name/$project_name/issues"
-        vcsUrl = "https://github.com/$your_github_name/${project_name}.git"
-        githubRepo = "$your_github_name/$project_name"
-        version {
-            name = project_version
-            vcsTag = project_version
-            gpg {
-                sign = true
-            }
-        }
-    }
-}
-
 repositories {
     mavenCentral()
-
-    jcenter()
 }
 
 dependencies {
