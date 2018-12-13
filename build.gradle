@@ -70,7 +70,7 @@ publishing {
             artifact javadocJar
             pom.withXml {
                 asNode().children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
+                    resolveStrategy = DELEGATE_FIRST
                     name project_name
                     description project_description
                     url "https://github.com/$your_github_name/$project_name"
