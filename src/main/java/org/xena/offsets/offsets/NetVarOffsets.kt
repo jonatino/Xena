@@ -63,13 +63,17 @@ object NetVarOffsets {
 	@JvmField var iClip1: Int = 0
 	@JvmField var iClip2: Int = 0
 	@JvmField var bSpotted: Int = 0
+	@JvmField var bSpottedByMask: Int = 0
 	@JvmField var vecOrigin: Int = 0
 	@JvmField var iTeamNum: Int = 0
 	@JvmField var dwBoneMatrix: Int = 0
 	@JvmField var iCrossHairID: Int = 0
+	@JvmField var nSurvivalTeam: Int = 0
 	@JvmField var dwModel: Int = 0
 	@JvmField var dwIndex: Int = 0
 	@JvmField var bMoveType: Int = 0
+	@JvmField var flSurvivalStartTime: Int = 0
+	@JvmField var m_SurvivalGameRuleDecisionTypes: Int = 0
 	
 	@JvmStatic
 	fun load() {
@@ -88,12 +92,14 @@ object NetVarOffsets {
 		hMyWeapons = byName("DT_CSPlayer", "m_hMyWeapons")
 		hViewModel = byName("DT_CSPlayer", "m_hViewModel[0]")
 		iCrossHairID = byName("DT_CSPlayer", "m_bHasDefuser") + 0x5C
+		nSurvivalTeam = byName("DT_CSPlayer", "m_nSurvivalTeam")
 		
 		flNextPrimaryAttack = byName("DT_BaseCombatWeapon", "m_flNextPrimaryAttack")
 		iClip1 = byName("DT_BaseCombatWeapon", "m_iClip1")
 		iClip2 = byName("DT_BaseCombatWeapon", "m_iClip2")
 		
 		bSpotted = byName("DT_BaseEntity", "m_bSpotted")
+		bSpottedByMask = byName("DT_BaseEntity", "m_bSpottedByMask")
 		vecOrigin = byName("DT_BaseEntity", "m_vecOrigin")
 		iTeamNum = byName("DT_BaseEntity", "m_iTeamNum")
 		
@@ -114,6 +120,10 @@ object NetVarOffsets {
 		dwBoneMatrix = byName("DT_BaseAnimating", "m_nForceBone") + 0x1c
 		
 		nModelIndex = byName("DT_BaseViewModel", "m_nModelIndex")
+		
+		flSurvivalStartTime = byName("DT_CSGameRulesProxy", "m_flSurvivalStartTime")
+		m_SurvivalGameRuleDecisionTypes = byName("DT_CSGameRulesProxy", "m_SurvivalGameRuleDecisionTypes")
+		
 		
 		dwModel = 0x6C
 		dwIndex = 0x64

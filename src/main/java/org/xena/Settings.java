@@ -9,6 +9,8 @@ import java.awt.event.KeyEvent;
  */
 public final class Settings {
 	
+	public static final boolean DEBUG = true;
+	
 	/**
 	 * Aim assist settings
 	 */

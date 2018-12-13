@@ -102,13 +102,13 @@ public final class Overlay extends JWindow {
 		
 		height += 30;
 		
-		status = new JLabel("<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + Xena.CYCLE_TIME + ")</html>", SwingConstants.LEFT);
+		status = new JLabel(getStatus(), SwingConstants.LEFT);
 		status.setFont(new Font("Sans Serif", Font.BOLD, 12));
 		status.setForeground(Color.WHITE);
-		status.setBounds(3, height, getWidth() - 5, 35);
+		status.setBounds(3, height, getWidth() - 5, 50);
 		add(status);
 		
-		height += 35;
+		height += 50;
 		setSize(getWidth(), height);
 		
 		HEIGHT = height;
@@ -122,7 +122,7 @@ public final class Overlay extends JWindow {
 			Plugin plugin = xena.getPluginManager().get(i);
 			label.setForeground(plugin.isEnabled() ? Color.GREEN : Color.RED);
 		}
-		//status.setText("<html>Status: Running<br>Cycle: " + abendigo.getLastCycle() + "(max=" + CYCLE_TIME + ")</html>");
+		status.setText(getStatus());
 	}
 	
 	public void minimize() {
@@ -131,4 +131,7 @@ public final class Overlay extends JWindow {
 		repaint();
 	}
 	
+	private String getStatus() {
+		return "<html>Status: Running<br>Cycle: " + xena.getLastCycle() + "(max=" + Xena.CYCLE_TIME + ")<br>Game mode: " + xena.getGameMode() + "</html>".intern();
+	}
 }

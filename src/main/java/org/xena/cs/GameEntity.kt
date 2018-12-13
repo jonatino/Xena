@@ -22,8 +22,9 @@ import org.xena.offsets.offsets.ClientOffsets.bDormant
 import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
 import org.xena.offsets.offsets.EngineOffsets.dwViewAngles
 import org.xena.offsets.offsets.NetVarOffsets.bMoveType
-import org.xena.offsets.offsets.NetVarOffsets.bSpotted
+import org.xena.offsets.offsets.NetVarOffsets.bSpottedByMask
 import org.xena.offsets.offsets.NetVarOffsets.dwBoneMatrix
+import org.xena.offsets.offsets.NetVarOffsets.dwIndex
 import org.xena.offsets.offsets.NetVarOffsets.dwModel
 import org.xena.offsets.offsets.NetVarOffsets.lifeState
 import org.xena.offsets.offsets.NetVarOffsets.vecOrigin
@@ -96,13 +97,14 @@ open class GameEntity : GameObject() {
 		val boneMatrix = process().readUnsignedInt(address() + dwBoneMatrix)
 		if (boneMatrix > 0) {
 			//Bones bone = Bones.roll();
-			val bone = Bones.HEAD
+			val bone = Bones.UPPER_CHEST2
 			try {
 				bones.x = process().readFloat(boneMatrix + (0x30 * bone.id) + 0x0C)
 				bones.y = process().readFloat(boneMatrix + (0x30 * bone.id) + 0x1C)
 				bones.z = process().readFloat(boneMatrix + (0x30 * bone.id) + 0x2C)
 			} catch (e: Exception) {
-				e.printStackTrace()
+				//println(boneMatrix)
+				//e.printStackTrace()
 			}
 			
 		}
@@ -111,9 +113,25 @@ open class GameEntity : GameObject() {
 		punch.y = process().readFloat(address() + vecPunch + 4)
 		
 		isDead = process().readByte(address() + lifeState) != 0
-		isSpotted = process().readUnsignedInt(address() + bSpotted).toInt() != 0
+		
+		val meID = process().readInt(me.address() + dwIndex) - 1
+		val spottedByMask = process().readUnsignedInt(address() + bSpottedByMask)
+		val result = spottedByMask and (1 shl meID).toLong()
+		
+		isSpotted = result != 0L
 	}
 	
+	fun isSpottedd(): Boolean {
+		val meID = process().readInt(me.address() + dwIndex) - 1
+		val spottedByMask = process().readUnsignedInt(address() + bSpottedByMask)
+		
+		val result = spottedByMask and (1 shl meID).toLong()
+		
+		println(result)
+		isSpotted = result != 0L
+		
+		return isSpotted as Boolean
+	}
 	fun distanceTo(vector: Vector, target: Vector) = abs(vector.x - target.x) + abs(vector.y - target.y) + abs(vector.z - target.z)
 	
 	val eyePos by lazy { viewOffsets.plus(viewOrigin) }

@@ -31,9 +31,6 @@ import org.xena.plugin.utils.Vector;
 import java.awt.*;
 import java.awt.event.InputEvent;
 
-import static org.xena.offsets.OffsetManager.scaleFormModule;
-import static org.xena.offsets.offsets.ScaleFormOffsets.bCursorEnabled;
-
 @PluginManifest(name = "Spin Bot", description = "Helps you to stay on target.")
 public final class SpinBotPlugin extends Plugin {
 	

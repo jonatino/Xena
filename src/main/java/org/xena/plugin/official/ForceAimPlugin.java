@@ -28,9 +28,6 @@ import org.xena.plugin.PluginManifest;
 import org.xena.plugin.utils.AngleUtils;
 import org.xena.plugin.utils.Vector;
 
-import static org.xena.offsets.OffsetManager.scaleFormModule;
-import static org.xena.offsets.offsets.ScaleFormOffsets.bCursorEnabled;
-
 @PluginManifest(name = "Aim Assist", description = "Helps you to stay on target.")
 public final class ForceAimPlugin extends Plugin {
 	

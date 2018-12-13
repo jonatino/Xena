@@ -23,6 +23,7 @@ import org.xena.keylistener.NativeKeyEvent
 import org.xena.keylistener.NativeKeyListener
 import org.xena.offsets.OffsetManager
 import org.xena.offsets.offsets.ClientOffsets.dwEntityList
+import org.xena.offsets.offsets.ClientOffsets.dwGameRulesProxy
 import org.xena.offsets.offsets.ClientOffsets.dwGlowObject
 import org.xena.offsets.offsets.ClientOffsets.dwLocalPlayer
 import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
@@ -31,12 +32,15 @@ import org.xena.offsets.offsets.EngineOffsets.dwLocalPlayerIndex
 import org.xena.offsets.offsets.EngineOffsets.dwMaxPlayer
 import org.xena.offsets.offsets.NetVarOffsets.dwIndex
 import org.xena.offsets.offsets.NetVarOffsets.iTeamNum
+import org.xena.offsets.offsets.NetVarOffsets.m_SurvivalGameRuleDecisionTypes
 import org.xena.plugin.PluginManager
 import org.xena.plugin.official.AimAssistPlugin
 import org.xena.plugin.official.ForceAimPlugin
 import org.xena.plugin.official.GlowESPPlugin
 import org.xena.plugin.official.NoFlashPlugin
+import org.xena.utils.Logging
 import java.lang.System.currentTimeMillis
+import javax.swing.SwingUtilities
 
 
 @JvmField
@@ -52,12 +56,15 @@ object Xena : NativeKeyListener {
 	
 	val pluginManager = PluginManager()
 	
+	var gameMode = GameTypes.UNKNOWN
+	
 	var lastCycle = 0L
+	
 	var lastRefresh = 0L
 	
-	val overlay by lazy { Overlay.open(this) }
+	val overlay: Overlay by lazy { Overlay.open(this) }
 	
-	val keylistener by lazy { GlobalKeyboard.register(this) }
+	val keylistener: GlobalKeyboard by lazy { GlobalKeyboard.register(this) }
 	
 	@JvmStatic
 	@Throws(InterruptedException::class)
@@ -93,11 +100,17 @@ object Xena : NativeKeyListener {
 				updateEntityList()
 				
 				if (entities.size() <= 0) {
+					Logging.debug("Failed entity.size() check ${entities.size()}")
 					Thread.sleep(1000)
 					continue
 				}
 				
-				entities.forEach({ it?.update() })
+				entities.forEach { it?.update() }
+				
+				val rulesProxyAddress = clientModule.readUnsignedInt(dwGameRulesProxy.toLong())
+				val gameRuleTypes = process.readUnsignedInt(rulesProxyAddress + m_SurvivalGameRuleDecisionTypes.toLong())
+				val gameMode = if (gameRuleTypes != 0L) GameTypes.DANGERZONE else GameTypes.MATCHMAKING
+				updateGameMode(gameMode)
 				
 				for (plugin in pluginManager) {
 					if (plugin.canPulse()) {
@@ -121,50 +134,58 @@ object Xena : NativeKeyListener {
 	@Throws(InterruptedException::class)
 	private fun checkGameStatus() {
 		while (true) {
+			var failed = false
+			
 			val myAddress = clientModule.readUnsignedInt(dwLocalPlayer.toLong())
-			if (myAddress < 0x200) {
+			if (!failed && myAddress < 0x200) {
 				clearPlayers()
-				Thread.sleep(10000)
-				continue
+				failed = true
+				Logging.debug("Failed myAddress check $myAddress")
 			}
 			
 			val myTeam = process.readUnsignedInt(myAddress + iTeamNum).toInt()
-			if (myTeam != 2 && myTeam != 3) {
+			if (!failed && (myTeam != 2 && myTeam != 3)) {
 				clearPlayers()
-				Thread.sleep(10000)
-				continue
+				failed = true
+				Logging.debug("Failed myTeam check $myTeam")
 			}
 			
 			val objectCount = clientModule.readUnsignedInt((dwGlowObject + 4).toLong())
-			if (objectCount <= 0) {
+			if (!failed && objectCount <= 0) {
 				clearPlayers()
-				Thread.sleep(10000)
-				continue
+				failed = true
+				Logging.debug("Failed objectCount check $objectCount")
 			}
 			
 			val myIndex = process.readUnsignedInt(myAddress + dwIndex) - 1
-			if (myIndex < 0 || myIndex >= objectCount) {
+			if (!failed && (myIndex < 0 || myIndex >= objectCount)) {
 				clearPlayers()
-				Thread.sleep(10000)
-				continue
+				failed = true
+				Logging.debug("Failed myIndex check $myIndex")
 			}
 			
 			val enginePointer = engineModule.readUnsignedInt(dwClientState_State.toLong())
-			if (enginePointer <= 0) {
+			if (!failed && enginePointer <= 0) {
 				clearPlayers()
-				Thread.sleep(10000)
-				continue
+				failed = true
+				Logging.debug("Failed enginePointer check $enginePointer")
 			}
 			
 			val inGame = process.readUnsignedInt(enginePointer + dwInGame).toInt()
-			if (inGame != 6) {
+			if (!failed && inGame != 6) {
 				clearPlayers()
-				Thread.sleep(10000)
-				continue
+				failed = true
+				Logging.debug("Failed inGame check $inGame")
 			}
 			
-			if (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0) {
+			if (!failed && (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0)) {
 				clearPlayers()
+				failed = true
+				Logging.debug("Failed myAddress check $myAddress, myIndex check $myIndex, objectCount check $objectCount")
+			}
+			
+			if (failed) {
+				updateGameMode(GameTypes.UNKNOWN)
 				Thread.sleep(10000)
 				continue
 			}
@@ -183,7 +204,7 @@ object Xena : NativeKeyListener {
 		clientState.localPlayerIndex = process.readUnsignedInt(address + dwLocalPlayerIndex)
 	}
 	
-	fun clearPlayers() = removePlayers()
+	private fun clearPlayers() = removePlayers()
 	
 	private fun updateEntityList() {
 		val entityCount = clientModule.readUnsignedInt((dwGlowObject + 4).toLong())
@@ -228,4 +249,18 @@ object Xena : NativeKeyListener {
 	
 	override fun onKeyReleased(event: NativeKeyEvent) = false
 	
+	private fun updateGameMode(newGameMode: GameTypes) {
+		if (newGameMode != gameMode) {
+			SwingUtilities.invokeLater {
+				overlay.repaint()
+			}
+		}
+		gameMode = newGameMode
+	}
+	
+	fun isDangerZone() = gameMode == GameTypes.DANGERZONE
+	
+	enum class GameTypes {
+		UNKNOWN, MATCHMAKING, DANGERZONE
+	}
 }

@@ -16,10 +16,8 @@
 
 package org.xena.plugin.utils
 
-import org.xena.cs.GameEntity
-import org.xena.cs.Me
-import org.xena.cs.Player
-import org.xena.cs.Weapons
+import org.xena.Xena
+import org.xena.cs.*
 import org.xena.engineModule
 import org.xena.offsets.offsets.EngineOffsets.dwClientState_State
 import org.xena.offsets.offsets.EngineOffsets.dwViewAngles
@@ -72,7 +70,24 @@ class AngleUtils(private val plugin: Plugin, private val smoothing: Float, priva
 	
 	fun canShoot(me: Me, target: GameEntity): Boolean {
 		val weaponID = me.activeWeapon.weaponID.toInt()
-		return weaponID != Weapons.KNIFE_T.id && weaponID != Weapons.KNIFE_CT.id && me.activeWeapon.clip1 > 0 && !target.isDead && !me.isDead && target.team != me.team && target.isSpotted && !target.isDormant
+		
+		val type = EntityType.byAddress(target.address())
+		println(type)
+		
+		var canShoot = weaponID != Weapons.KNIFE_T.id
+		canShoot = canShoot || weaponID != Weapons.KNIFE_CT.id
+		canShoot = canShoot || me.activeWeapon.clip1 > 0
+		canShoot = canShoot || !target.isDead
+		canShoot = canShoot || !me.isDead
+		
+		if (!Xena.isDangerZone())
+			canShoot = canShoot || target.team != me.team
+		
+		canShoot = canShoot || target.isSpotted
+		
+		canShoot = canShoot || !target.isDormant
+		
+		return canShoot
 	}
 	
 	private val smoothedAngles = Vector()
