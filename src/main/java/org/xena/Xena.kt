@@ -136,54 +136,59 @@ object Xena : NativeKeyListener {
 		while (true) {
 			var failed = false
 			
-			val myAddress = clientModule.readUnsignedInt(dwLocalPlayer.toLong())
-			if (!failed && myAddress < 0x200) {
-				clearPlayers()
+			try {
+				val myAddress = clientModule.readUnsignedInt(dwLocalPlayer.toLong())
+				if (!failed && myAddress < 0x200) {
+					clearPlayers()
+					failed = true
+					Logging.debug("Failed myAddress check $myAddress")
+				}
+				
+				val myTeam = process.readUnsignedInt(myAddress + iTeamNum).toInt()
+				if (!failed && (myTeam != 2 && myTeam != 3)) {
+					clearPlayers()
+					failed = true
+					Logging.debug("Failed myTeam check $myTeam")
+				}
+				
+				val objectCount = clientModule.readUnsignedInt((dwGlowObject + 4).toLong())
+				if (!failed && objectCount <= 0) {
+					clearPlayers()
+					failed = true
+					Logging.debug("Failed objectCount check $objectCount")
+				}
+				
+				val myIndex = process.readUnsignedInt(myAddress + dwIndex) - 1
+				if (!failed && (myIndex < 0 || myIndex >= objectCount)) {
+					clearPlayers()
+					failed = true
+					Logging.debug("Failed myIndex check $myIndex")
+				}
+				
+				val enginePointer = engineModule.readUnsignedInt(dwClientState_State.toLong())
+				if (!failed && enginePointer <= 0) {
+					clearPlayers()
+					failed = true
+					Logging.debug("Failed enginePointer check $enginePointer")
+				}
+				
+				val inGame = process.readUnsignedInt(enginePointer + dwInGame).toInt()
+				if (!failed && inGame != 6) {
+					clearPlayers()
+					failed = true
+					Logging.debug("Failed inGame check $inGame")
+				}
+				
+				if (!failed && (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0)) {
+					clearPlayers()
+					failed = true
+					Logging.debug("Failed myAddress check $myAddress, myIndex check $myIndex, objectCount check $objectCount")
+				}
+			} catch (e: Exception) {
 				failed = true
-				Logging.debug("Failed myAddress check $myAddress")
+				if (Settings.DEBUG)
+					e.printStackTrace()
 			}
-			
-			val myTeam = process.readUnsignedInt(myAddress + iTeamNum).toInt()
-			if (!failed && (myTeam != 2 && myTeam != 3)) {
-				clearPlayers()
-				failed = true
-				Logging.debug("Failed myTeam check $myTeam")
-			}
-			
-			val objectCount = clientModule.readUnsignedInt((dwGlowObject + 4).toLong())
-			if (!failed && objectCount <= 0) {
-				clearPlayers()
-				failed = true
-				Logging.debug("Failed objectCount check $objectCount")
-			}
-			
-			val myIndex = process.readUnsignedInt(myAddress + dwIndex) - 1
-			if (!failed && (myIndex < 0 || myIndex >= objectCount)) {
-				clearPlayers()
-				failed = true
-				Logging.debug("Failed myIndex check $myIndex")
-			}
-			
-			val enginePointer = engineModule.readUnsignedInt(dwClientState_State.toLong())
-			if (!failed && enginePointer <= 0) {
-				clearPlayers()
-				failed = true
-				Logging.debug("Failed enginePointer check $enginePointer")
-			}
-			
-			val inGame = process.readUnsignedInt(enginePointer + dwInGame).toInt()
-			if (!failed && inGame != 6) {
-				clearPlayers()
-				failed = true
-				Logging.debug("Failed inGame check $inGame")
-			}
-			
-			if (!failed && (myAddress <= 0 || myIndex < 0 || myIndex > 0x200 || myIndex > objectCount || objectCount <= 0)) {
-				clearPlayers()
-				failed = true
-				Logging.debug("Failed myAddress check $myAddress, myIndex check $myIndex, objectCount check $objectCount")
-			}
-			
 			if (failed) {
 				updateGameMode(GameTypes.UNKNOWN)
 				Thread.sleep(10000)
