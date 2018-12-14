@@ -31,7 +31,6 @@ import org.xena.plugin.utils.Vector;
 public final class AimAssistPlugin extends Plugin {
 	
 	private final AngleUtils aimHelper = new AngleUtils(this, Settings.AIM_ASSIST_STRENGTH, 1.7F, 2.5F, 1.7F, 2.5F);
-	;
 	private final Vector aim = new Vector();
 	private long prevFired = 0;
 	private Player lastTarget = null;
