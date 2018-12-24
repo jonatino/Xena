@@ -1,3 +1,6 @@
+## Need help? Want to chat? Join my Discord
+**Join our Discord:** https://discord.gg/Y8mWA2H
+
 [![Build Status](https://travis-ci.org/Jonatino/Xena.svg?branch=master)](https://travis-ci.org/Jonatino/Xena)
 [![Release](https://jitpack.io/v/Jonatino/Xena.svg)](https://jitpack.io/#Jonatino/Xena)
 ![license](https://img.shields.io/github/license/Jonatino/Xena.svg)
