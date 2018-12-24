@@ -1,5 +1,5 @@
 ## Need help? Want to chat? Join my Discord
-**Join our Discord:** https://discord.gg/Y8mWA2H
+**Join our Discord:** https://discord.gg/5mPppWV
 
 [![Build Status](https://travis-ci.org/Jonatino/Xena.svg?branch=master)](https://travis-ci.org/Jonatino/Xena)
 [![Release](https://jitpack.io/v/Jonatino/Xena.svg)](https://jitpack.io/#Jonatino/Xena)
