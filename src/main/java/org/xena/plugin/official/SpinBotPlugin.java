@@ -41,7 +41,7 @@ public final class SpinBotPlugin extends Plugin {
 	private Robot robot;
 	
 	public SpinBotPlugin() {
-		aimHelper = new AngleUtils(this, Settings.SPIN_BOT_STRENGTH, 1.7F, 2.5F, 1.7F, 2.5F);
+		aimHelper = new AngleUtils(this, Settings.SPIN_BOT_STRENGTH, 2F, 2F, 2F, 2F);
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
