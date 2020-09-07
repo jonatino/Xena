@@ -5,7 +5,7 @@
 I wrote Xena because I was curious how game cheats worked. I figured the best way to learn is to write one myself. 
 I learned so much about cross platform development, optimizing applications at the garbage collection/jit level
 and how different operating systems handle system memory. Sadly I will be archiving this repo. I don't want to 
-contribute to the growing amount of cheaters in games. Feel free to use this as an education reference. 
+contribute to the growing amount of cheaters in games. Feel free to use this as a education reference. 
 
 Xena is a CS:GO (Counter Strike Global Offensive) cheat made from scratch written in Java. 
 Xena is built from the ground up with garbage-free, high performance, low resource usage programming practices in mind. 
